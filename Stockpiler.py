@@ -1,39 +1,16 @@
 import os
 import os.path
-from os import path
-# import time
-# from time import sleep
-# import pyautogui
-# from playsound import playsound
+import time
 from tkinter import *
-# from tkinter import filedialog
 from tkinter import ttk
-# from tkinter.filedialog import askopenfilename
 from PIL import ImageTk, ImageGrab, Image
 import logging
 import datetime
-# from selenium import webdriver
-# from selenium.webdriver.chrome.options import Options
-# import subprocess
-from pynput import keyboard
 from pynput.mouse import Button, Controller
-import threading
-# import queue
-# import asyncio
 import glob
-# import shutil
-# import pygame
-# import psutil
 import cv2
 import numpy as np
-# import multiprocessing
-# import pytesseract
-# import pyttsx3
-# from gtts import gTTS
-# import math
 from global_hotkeys import *
-# from bindglobal import BindGlobal
-# import itertools
 import csv
 import win32gui
 import win32api
@@ -86,12 +63,31 @@ print(type(current_mouse_position))
 print(current_mouse_position[0])
 
 logfilename = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
-logfilename = "logs/Stockpile-log-" + logfilename + ".txt"
+logfilename = "logs/Stockpiler-log-" + logfilename + ".txt"
 
 logging.basicConfig(filename=logfilename, format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 print("Log file created: " + logfilename)
 logging.info(str(datetime.datetime.now()) + ' Log Created')
+
+
+def get_file_directory(file):
+	return os.path.dirname(os.path.abspath(file))
+
+
+now = time.time()
+cutoff = now - (7 * 86400)
+files = os.listdir(os.path.join(get_file_directory(__file__), "logs"))
+file_path = os.path.join(get_file_directory(__file__), "logs/")
+for xfile in files:
+	if os.path.isfile(str(file_path) + xfile):
+		t = os.stat(str(file_path) + xfile)
+		c = t.st_ctime
+
+		if c < cutoff:
+			os.remove(str(file_path) + xfile)
+			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
+
 
 Version = "0.6b"
 
