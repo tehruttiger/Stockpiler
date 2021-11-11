@@ -1,0 +1,85 @@
+Number,I,C,Name,SubType,Faction,StockpileCategory
+1,X,,Dusk ce.III,Assault Rifle,Colonial,Small Weapons
+27,X,,The Pitch Gun mc.V,Submachine Gun,Colonial,Small Weapons
+132,X,,BMS - Universal Assembly Rig,Construction Vehicle,Both,Vehicle
+134,X,,Noble Widow MK. XIV,Destroyer Tank,Warden,Vehicle
+137,X,,Collins Cannon 68mm,Field AT Gun,Colonial,Vehicle
+142,X,,Swallowtail 988/127-2,Field Machine Gun,Warden,Vehicle
+157,X,,Mulloy APC,Landing APC,Warden,Vehicle
+159,X,,Devitt-Caine Mk. IV MMR,Light Tank,Warden,Vehicle
+178,X,,King Spire Mk. I,Scout Tank,Warden,Vehicle
+182,X,,"UV-5c ""Odyssey""",Light Utility Vehicle,Colonial,Vehicle
+186,X,,BMS - White Whale,Landing Ship,Both,Vehicle
+199,X,,Huber Exalt 150mm,,Warden,Shippables
+141,X,,"G40 ""Sagittarii""",Field Machine Gun,Colonial,Vehicle
+209,,-,Metal Beam,,Both,Shippables
+34,,X,8.5mm,,Both,Small Weapons
+42,,X,Cremari Mortar,Mortar,Both,Heavy Weapons
+48,,X,Mounted Bonesaw MK.3,Anti-Tank RPG,Warden,Heavy Weapons
+51,,X,A3 Harpa Fragmentation Grenade,Grenade,Warden,Heavy Weapons
+52,,X,150mm,,Both,Heavy Weapons
+56,,X,300mm,,Both,Heavy Weapons
+69,,X,Radio Backpack,,Both,Utility
+70,,X,Alligator Charge,Explosive Charge,Both,Utility
+89,,X,Aluminum Alloy,,Both,Resource
+94,,X,Heavy Explosive Materials,,Both,Resource
+95,,X,Iron Alloy,,Both,Resource
+169,,X,Silverhand Chieftain - Mk. VI,Assault Tank,Warden,Vehicle
+13,,X,Cometa T2-9,Revolver,Both,Small Weapons
+21,,X,KRR2-790 Omen,Long Rifle,Colonial,Small Weapons
+37,,X,Venom c.II 35,Anti-Tank RPG,Colonial,Heavy Weapons
+47,,X,Ignifist 30,Anti-Tank RPG,Colonial,Heavy Weapons
+50,,X,Bombastone Grenade,Grenade,Colonial,Heavy Weapons
+118,,X,Tankman's Coveralls,Colonial Tank Uniform,Colonial,Uniforms
+140,,X,"120-68 ""Koronides"" Field Gun",Field Artillery,Colonial,Vehicle
+179,,X,"UV-05a ""Argonaut""",Light Utility Vehicle,Colonial,Vehicle
+2,,,Booker Storm Rifle Model 838,Assault Rifle,Warden,Small Weapons
+5,,,Catara mo. II,Light Machine Gun,Colonial,Small Weapons
+7,,,Malone MK.2,Machine Gun,Warden,Small Weapons
+9,,,PT-815 Smoke Grenade,Smoke Grenade,Both,Small Weapons
+11,,,Cascadier 873,Pistol,Warden,Small Weapons
+19,,,Fuscina pi.I,Rifle,Colonial,Small Weapons
+20,,,Blakerow 871,Rifle,Warden,Small Weapons
+22,,,Clancy Cinder M3,Long Rifle,Warden,Small Weapons
+25,,,Brasa Shotgun,Shotgun,Both,Small Weapons
+33,,,Clancy-Raca M4,Sniper Rifle,Warden,Small Weapons
+38,,,Bane 45,Anti-Tank RPG,Colonial,Heavy Weapons
+62,,,75mm Round,,Both,Heavy Weapons
+65,,,Warhead,,Both,Heavy Weapons
+67,,,Hydra's Whisper,Explosive Charge,Colonial,Utility
+81,,,Rocket Booster,,Both,Utility
+100,,,Aluminum,,Both,Resource
+101,,,Iron,,Both,Resource
+122,,,"T3 ""Xiphos""",Armoured Car,Colonial,Vehicle
+123,,,"T12 ""Actaeon"" Tankette",Armoured Car,Colonial,Vehicle
+124,,,O'Brien v.121 Highlander,Armoured Car,Warden,Vehicle
+125,,,"T5 ""Percutio""",Armoured Car,Colonial,Vehicle
+126,,,O'Brien v.101 Freeman,Armoured Car,Warden,Vehicle
+135,,,AA-2 Battering Ram,Field AT Gun,Colonial,Vehicle
+136,,,"68-45 ""Smelter"" Heavy Field Gun",Heavy Field Gun,Colonial,Vehicle
+146,,,"Type C - ""Charon""",Gunboat,Colonial,Vehicle
+147,,,74c-2 Ronan Meteora Gunship,Gunboat,Warden,Vehicle
+148,,,74b-1 Ronan Gunship,Gunboat,Warden,Vehicle
+149,,,"HH-d ""Peltast""",Half-Track,Colonial,Vehicle
+150,,,"HH-a ""Javelin""",Half-Track,Colonial,Vehicle
+151,,,"HH-b ""Hoplite""",Half-Track,Colonial,Vehicle
+152,,,Niska Mk. II Blinder,Half-Track,Warden,Vehicle
+155,,,"AB-8 ""Acheron""",Landing APC,Colonial,Vehicle
+156,,,"AB-11 ""Doru""",Landing APC,Colonial,Vehicle
+158,,,"HC-2 ""Scorpion""",Light Infantry Tank,Colonial,Vehicle
+160,,,"H5 ""Hatchet""",Light Tank,Colonial,Vehicle
+161,,,Devitt Ironhide Mk. IV,Light Tank,Warden,Vehicle
+162,,,"H-8 ""Kraneska""",Light Tank,Colonial,Vehicle
+163,,,"H-10 ""Pelekys""",Light Tank,Colonial,Vehicle
+164,,,Devitt Mk. III,Light Tank,Warden,Vehicle
+165,,,"86K-a ""Bardiche""",Assault Tank,Colonial,Vehicle
+167,,,"85K-b ""Falchion""",Assault Tank,Colonial,Vehicle
+168,,,"85K-a ""Spatha""",Assault Tank,Colonial,Vehicle
+171,,,"HC-7 ""Ballista""",Siege Tank,Colonial,Vehicle
+177,,,King Gallant Mk. II,Scout Tank,Warden,Vehicle
+183,,,Drummond Loscann 55c,Light Utility Vehicle,Warden,Vehicle
+185,,,"T20 ""Ixion"" Tankette",Tankette,Colonial,Vehicle
+191,,,"R-5b ""Sisyphus"" Hauler",Truck,Colonial,Vehicle
+193,,,"R-9 ""Speartip"" Escort""",Truck,Colonial,Vehicle
+196,,,Concrete Mixer,,Both,Shippables
+198,,,"50-500 ""Thunderbolt"" Cannon",,Colonial,Shippables

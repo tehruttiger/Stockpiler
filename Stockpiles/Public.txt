@@ -1,0 +1,28 @@
+Public
+Seaport
+2021-11-06 11:00:09
+Garrison Supplies Crate,8
+Bunker Supplies Crate,5
+Diesel Crate,215
+7.62mm Crate,75
+7.92mm Crate,53
+9mm SMG Crate,50
+12.7mm Crate,35
+0.44 Crate,22
+First Aid Kit Crate,16
+Heavy Explosive Materials Crate,9
+Soldier Supplies Crate,7
+Iron Alloy Crate,6
+8.5mm Crate,4
+Mortar Shrapnel Shell Crate,4
+150mm Crate,4
+Trauma Kit Crate,4
+BMS - Ironship Crate,3
+BMS - Class 2 Mobile Auto-Crane Crate,1
+BMS - Packmule Flatbed Crate,1
+Sandbag Pallet Crate,34
+Barbed Wire Pallet Crate,22
+Shipping Container Crate,13
+12.7 Anti Infantry Flak Gun Crate,9
+Metal Beam Pallet Crate,4
+68mm Anti-Tank Cannon Crate,3
