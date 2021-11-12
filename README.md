@@ -15,13 +15,13 @@ Press the **F3** key
 - If the stockpile is a named stockpile that Stockpiler has never seen before:
 -   Stockpiler will display an image of the stockpile name and ask you to enter the name
 -   The stockpile's contents will be exported to ../Stockpiles folder as:
--     CSV TXT file of contents
--     Image of the stockpile title
--     A copy of the stockpile image grabbed by Stockpiler
+-   CSV TXT file of contents
+-   Image of the stockpile title
+-   A copy of the stockpile image grabbed by Stockpiler
 - If the stockpile is a named stockpile that Stockpile has seen before:
 -   Stockpiler will overwrite any existing (previous) export of the stockpile contents as:
--    CSV TXT file of contents
--    A copy of the stockpile image grabbed by Stockpiler
+-   CSV TXT file of contents
+-   A copy of the stockpile image grabbed by Stockpiler
 
 
 Stockpiler runs each stockpile "grab" as a separate thread, so you do not have to wait for one to complete before initiating the next
