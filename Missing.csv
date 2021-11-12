@@ -2,10 +2,8 @@
 2,,,Booker Storm Rifle Model 838,Booker,Assault Rifle,7.92mm,Warden,Small Weapons,1,2,10,165,0,0,0,0,
 7,,,Malone MK.2,Malone,Machine Gun,12.7mm,Warden,Small Weapons,1,7,10,0,0,30,0,0,
 9,,,PT-815 Smoke Grenade,Smoke,Smoke Grenade,,Both,Small Weapons,1,9,10,120,0,0,0,0,
-11,,,Cascadier 873,,Pistol,8mm,Warden,Small Weapons,1,11,20,60,0,0,0,0,
-20,,,Blakerow 871,,Rifle,7.62mm,Warden,Small Weapons,1,20,20,140,0,0,0,0,
+11,,X,Cascadier 873,,Pistol,8mm,Warden,Small Weapons,1,11,20,60,0,0,0,0,
 22,,,Clancy Cinder M3,,Long Rifle,7.62mm,Warden,Small Weapons,1,22,15,130,0,0,0,0,
-33,,,Clancy-Raca M4,,Sniper Rifle,8.5mm,Warden,Small Weapons,1,33,5,200,0,15,0,0,
 38,,,Bane 45,Bane,Anti-Tank RPG,A.T.R.P.G. Shell,Colonial,Heavy Weapons,2,4,5,,,,,,
 48,,X,Mounted Bonesaw MK.3,,Anti-Tank RPG,A.T.R.P.G. Indirect Shell,Warden,Heavy Weapons,2,14,5,200,0,0,0,0,250
 56,,X,300mm,,,300mm,Both,Heavy Weapons,2,22,5,135,0,0,30,0,125

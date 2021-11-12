@@ -15,6 +15,7 @@ import csv
 import win32gui
 import win32api
 import re
+import threading
 
 
 global foxholehwnd
@@ -310,7 +311,7 @@ def ItemScan(screen, garbage):
 	stockpile = cv2.cvtColor(stockpile, cv2.COLOR_BGR2GRAY)
 
 	######## Enable this line to test a specific screenshot
-	stockpile = cv2.imread('testimages//test9.png', cv2.IMREAD_GRAYSCALE)
+	# stockpile = cv2.imread('testimages//test9.png', cv2.IMREAD_GRAYSCALE)
 
 	StockpileTypes = (('CheckImages//Seaport.png', 'Seaport', 0), ('Checkimages//StorageDepot.png', 'Storage Depot', 1),
 					  ('Checkimages//Outpost.png', 'Outpost', 2), ('Checkimages//Townbase.png', 'Town Base', 3),
@@ -380,9 +381,9 @@ def ItemScan(screen, garbage):
 		print("Crate Type")
 		# StockpileImages = [("CheckImages//" + str(item[0]) + "C.png") for item in data if item[7] != "Colonial"]
 		StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[18]) for item in items.data if str(item[18]) == "0"]
-		StockpileImagesAppend = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data if item[9] == 7 and str(item[18]) == "0"]
+		StockpileImagesAppend = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data if str(item[9]) == "7" and str(item[18]) == "0"]
 		StockpileImages.extend(StockpileImagesAppend)
-		# print(StockpileImages)
+		print(StockpileImagesAppend)
 	elif FoundStockpileType in SingleList:
 		print("Single Type")
 		StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data]

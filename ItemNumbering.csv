@@ -10,7 +10,7 @@
 8,X,X,12.7mm,,,12.7mm,Both,Small Weapons,1,8,20,100,0,0,0,0,70
 9,,,PT-815 Smoke Grenade,Smoke,Smoke Grenade,,Both,Small Weapons,1,9,10,120,0,0,0,0,
 10,-,-,Ferro 879,,Pistol,8mm,Both,Small Weapons,1,10,20,,,,,,
-11,,,Cascadier 873,,Pistol,8mm,Warden,Small Weapons,1,11,20,60,0,0,0,0,
+11,,X,Cascadier 873,,Pistol,8mm,Warden,Small Weapons,1,11,20,60,0,0,0,0,
 12,-,-,8mm,,,8mm,Both,Small Weapons,1,12,40,40,0,0,0,0,20
 13,X,X,Cometa T2-9,,Revolver,0.44,Both,Small Weapons,1,13,20,60,0,0,0,0,
 14,X,X,The Hangman 757,Hangman,Heavy Rifle,0.44,Warden,Small Weapons,1,14,20,125,0,0,0,0,80
@@ -19,7 +19,7 @@
 17,X,X,Argentir r.II Rifle,Argentir,Rifle,7.62mm,Colonial,Small Weapons,1,17,20,,,,,,
 18,X,X,Volta r.I Repeater,,Heavy Rifle,7.62mm,Colonial,Small Weapons,1,18,15,,,,,,
 19,X,X,Fuscina pi.I,Fuscina,Rifle,7.62mm,Colonial,Small Weapons,1,19,20,,,,,,
-20,,,Blakerow 871,,Rifle,7.62mm,Warden,Small Weapons,1,20,20,140,0,0,0,0,
+20,X,X,Blakerow 871,,Rifle,7.62mm,Warden,Small Weapons,1,20,20,140,0,0,0,0,
 21,X,X,KRR2-790 Omen,,Long Rifle,7.62mm,Colonial,Small Weapons,1,21,15,,,,,,
 22,,,Clancy Cinder M3,,Long Rifle,7.62mm,Warden,Small Weapons,1,22,15,130,0,0,0,0,
 23,X,X,No.2 Loughcaster,Loughcaster,Rifle,7.62mm,Warden,Small Weapons,1,23,20,100,0,0,0,0,70
@@ -32,7 +32,7 @@
 30,X,X,Fiddler Submachine Gun Model 868,Fiddler,Submachine Gun,9mm SMG,Warden,Small Weapons,1,30,20,120,0,0,0,0,80
 31,X,X,9mm SMG,,,9mm SMG,Both,Small Weapons,1,31,40,80,0,0,0,0,50
 32,X,X,KRR3-792 Auger,,Sniper Rifle,8.5mm,Colonial,Small Weapons,1,32,5,,,,,,
-33,,,Clancy-Raca M4,,Sniper Rifle,8.5mm,Warden,Small Weapons,1,33,5,200,0,15,0,0,
+33,X,X,Clancy-Raca M4,,Sniper Rifle,8.5mm,Warden,Small Weapons,1,33,5,200,0,15,0,0,
 34,X,X,8.5mm,,,8.5mm,Both,Small Weapons,1,34,10,150,0,0,0,0,100
 35,X,X,20 Neville Anti-Tank Rifle,ATR,Anti-Tank Rifle,20mm,Warden,Heavy Weapons,2,1,5,150,0,0,0,0,37
 36,X,X,20mm,,,20mm,Both,Heavy Weapons,2,2,10,100,0,0,0,0,100
