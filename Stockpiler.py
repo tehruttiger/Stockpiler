@@ -61,8 +61,8 @@ except:
 
 mouse = Controller()
 current_mouse_position = mouse.position
-print(type(current_mouse_position))
-print(current_mouse_position[0])
+# print(type(current_mouse_position))
+# print(current_mouse_position[0])
 
 logfilename = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
 logfilename = "logs/Stockpiler-log-" + logfilename + ".txt"
@@ -157,7 +157,8 @@ for filteritem in range(len(filter)):
 	except:
 		print("failed")
 
-print(items.data[4])
+
+# print(items.data[4])
 
 
 ### For troubleshooting
