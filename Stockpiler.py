@@ -381,7 +381,7 @@ def ItemScan(screen, garbage):
 	if FoundStockpileType in CrateList:
 		print("Crate Type")
 		StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[18]) for item in items.data if str(item[18]) == "0"]
-		StockpileImagesAppend = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data if str(item[9]) == "7" and str(item[18]) == "0"]
+		StockpileImagesAppend = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data if (str(item[9]) == "7" and str(item[18]) == "0") or (str(item[9]) == "8" and str(item[18]) == "0")]
 		StockpileImages.extend(StockpileImagesAppend)
 		print(StockpileImagesAppend)
 	elif FoundStockpileType in SingleList:
@@ -461,8 +461,9 @@ def ItemScan(screen, garbage):
 						quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + "000")
 					else:
 						quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + str(numberlist[3][1]))
-				itemsort = 0
-				if image[0] == "93":
+				if image[0] == "86":
+					itemsort = 0
+				elif image[0] == "93":
 					itemsort = 1
 				elif image[0] == "90":
 					itemsort = 2
@@ -501,13 +502,13 @@ def ItemScan(screen, garbage):
 	##################
 	if ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base"):
 		ThisStockpileName = "Public"
-	stockpilefile = open("Stockpiles//" + ThisStockpileName + ".txt", 'w')
-	stockpilefile.write(ThisStockpileName + "\n")
-	stockpilefile.write(FoundStockpileTypeName + "\n")
-	stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + "\n")
+	stockpilefile = open("Stockpiles//" + ThisStockpileName + ".csv", 'w')
+	stockpilefile.write(ThisStockpileName + ",\n")
+	stockpilefile.write(FoundStockpileTypeName + ",\n")
+	stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
 	stockpilefile.close()
 
-	with open("Stockpiles//" + ThisStockpileName + ".txt", 'a') as fp:
+	with open("Stockpiles//" + ThisStockpileName + ".csv", 'a') as fp:
 		# fp.write('\n'.join('{},{},{}'.format(x[0],x[1],x[2]) for x in stockpilecontents))
 		############### THIS ONE DOES IN REGULAR ORDER ############
 		# fp.write('\n'.join('{},{}'.format(x[1],x[2]) for x in stockpilecontents))
