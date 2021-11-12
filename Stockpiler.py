@@ -24,6 +24,7 @@ global NewStockpileName
 global StockpileNameEntry
 global CurrentStockpileName
 
+
 class items(object):
 	data = []
 
@@ -145,8 +146,6 @@ with open('Filter.csv', 'rt') as f_input:
 		filter.append(rowdata)
 
 
-
-
 for filteritem in range(len(filter)):
 	# print(filter[item])
 	try:
@@ -160,10 +159,9 @@ for filteritem in range(len(filter)):
 print(items.data[4])
 
 
+### For troubleshooting
 # data[item].extend(filter[item][1])
-
 # print(data)
-
 # Names = [item[3] for item in data]
 # print(Names)
 
@@ -587,6 +585,9 @@ def changehotkey():
 	start_checking_hotkeys()
 
 
+################################################
+### Potentially can be used to detect new hotkey
+################################################
 # def on_press_detect(key):
 # 	global NewHotkeyDetected
 # 	# global ArtyLocHotkey
@@ -699,10 +700,6 @@ def changehotkey():
 # 	listener.start()
 
 
-# StockpileFrame = ttk.Frame(StockpilerWindow, style="TFrame")
-# StockpileFrame.pack()
-
-
 def _on_mousewheel(event):
 	canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
@@ -723,7 +720,7 @@ StockpileFrame.bind(
 	)
 )
 
-canvas.create_window((0, 0), window=StockpileFrame, anchor="nw", height="1477p", width="550p")
+canvas.create_window((0, 0), window=StockpileFrame, anchor="nw", height="1625p", width="550p")
 
 canvas.configure(yscrollcommand=scrollbar.set)
 
@@ -961,30 +958,9 @@ def open_this(myNum,btn):
 					# print("should be enabling", items.data[item])
 		CreateButtons("blah")
 
-# print(menu.itembuttons)
-	# print(filter)
-	# print([y[0] for y in filter].index(myNum))
-	# print(data)
-	# print([y[0] for y in data].index(str(myNum)))
-	# print(data)
-
-	# print(data)
-	# print(btn['style'])
-	# img = PhotoImage(file=icons[1][1])
-	# btn.configure(image=img)
-	# btn.image = img
-	# state = str(btn['state'])
-	# if state == "normal":
-	# 	btn.configure(style='DisabledButton.TButton')
-	# else:
-	# 	btn.configure(style='EnabledButton.TButton')
-
-
 
 CreateButtons("")
 
-# TestButton = ttk.Button(StockpileFrame, text="Test", style="EnabledButton.TButton")
-# TestButton.grid(row=490, column=0, columnspan=10, sticky="NSEW")
 QuitButton = ttk.Button(StockpileFrame, text="Quit", command=lambda: StockpilerWindow.quit())
 QuitButton.grid(row=500, column=0, columnspan=10, sticky="NSEW")
 
