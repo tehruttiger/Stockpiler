@@ -1,5 +1,4 @@
 ,I,C,Name,Nickname,SubType,Ammo,Faction,StockpileCategory,CategorySort,InCategorySort,perCrate,Bmats,Emats,Rmats,Hemats,Relicmats,FactorySeconds
-2,,,Booker Storm Rifle Model 838,Booker,Assault Rifle,7.92mm,Warden,Small Weapons,1,2,10,165,0,0,0,0,
 7,,,Malone MK.2,Malone,Machine Gun,12.7mm,Warden,Small Weapons,1,7,10,0,0,30,0,0,
 9,,,PT-815 Smoke Grenade,Smoke,Smoke Grenade,,Both,Small Weapons,1,9,10,120,0,0,0,0,
 11,,X,Cascadier 873,,Pistol,8mm,Warden,Small Weapons,1,11,20,60,0,0,0,0,

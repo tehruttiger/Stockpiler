@@ -1,7 +1,7 @@
 ,I,C,Name,Nickname,SubType,Ammo,Faction,StockpileCategory,CategorySort,InCategorySort,perCrate,Bmats,Emats,Rmats,Hemats,Relicmats,FactorySeconds
 0,-,-,Reserved,,,,,,,,,,,,,,
 1,X,X,Dusk ce.III,Dusk,Assault Rifle,7.92mm,Colonial,Small Weapons,1,1,10,,,,,,
-2,,,Booker Storm Rifle Model 838,Booker,Assault Rifle,7.92mm,Warden,Small Weapons,1,2,10,165,0,0,0,0,
+2,X,X,Booker Storm Rifle Model 838,Booker,Assault Rifle,7.92mm,Warden,Small Weapons,1,2,10,165,0,0,0,0,
 3,X,X,Aalto Storm Rifle 24,,Assault Rifle,7.92mm,Warden,Small Weapons,1,3,10,165,0,0,0,0,80
 4,X,X,7.92mm,,,7.92mm,Both,Small Weapons,1,4,30,120,0,0,0,0,60
 5,X,X,Catara mo. II,,Light Machine Gun,12.7mm,Colonial,Small Weapons,1,5,10,,,,,,
