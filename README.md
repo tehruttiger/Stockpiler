@@ -6,22 +6,22 @@ Stockpiler aims to simplify tracking the contents of stockpiles by automating th
 Current (arbitrary) version is .6b
 
 # To use:
-Launch Foxhole and Deploy
-Launch Stockpiler
-Open your Map
-Hover your cursor over the Stockpile/Bunker Base/Town Hall/etc you wish to transcribe **on the map**
+1. Launch Foxhole and Deploy
+2. Launch Stockpiler
+3. Open your Map
+4. Hover your cursor over the Stockpile/Bunker Base/Town Hall/etc you wish to transcribe **on the map**
 - Remember you can tab while hovering over a Seaport/Storage Depot where you have multiple private stockpiles
-Press the **F3** key
+5. Press the **F3** key
 - If the stockpile is a named stockpile that Stockpiler has never seen before:
--   Stockpiler will display an image of the stockpile name and ask you to enter the name
--   The stockpile's contents will be exported to ../Stockpiles folder as:
--   CSV TXT file of contents
--   Image of the stockpile title
--   A copy of the stockpile image grabbed by Stockpiler
+- Stockpiler will display an image of the stockpile name and ask you to enter the name
+- The stockpile's contents will be exported to ../Stockpiles folder as:
+- CSV TXT file of contents
+- Image of the stockpile title
+- A copy of the stockpile image grabbed by Stockpiler
 - If the stockpile is a named stockpile that Stockpile has seen before:
--   Stockpiler will overwrite any existing (previous) export of the stockpile contents as:
--   CSV TXT file of contents
--   A copy of the stockpile image grabbed by Stockpiler
+- Stockpiler will overwrite any existing (previous) export of the stockpile contents as:
+- CSV TXT file of contents
+- A copy of the stockpile image grabbed by Stockpiler
 
 
 Stockpiler runs each stockpile "grab" as a separate thread, so you do not have to wait for one to complete before initiating the next
