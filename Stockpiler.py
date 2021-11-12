@@ -252,19 +252,6 @@ def GrabStockpileImage():
 		y = 0
 		x = 0
 
-	# typethreshold = .99
-	# if np.amax(res) > typethreshold:
-	# 	y, x = np.unravel_index(res.argmax(), res.shape)
-	# 	print("It's a Seaport")
-	# else:
-	# 	print("It's NOT a Seaport")
-
-	# if rect[2] - mouse.position[0] <= 399:
-	# 	# Too close to right edge
-	# 	stockpile = np.array(ImageGrab.grab(bbox=((rect[2]-400), rect[1], rect[2], rect[3])))
-	# else:
-	# 	# Mouse is far enough left that whole stockpile can be shown
-	# 	stockpile = np.array(ImageGrab.grab(bbox=(mouse.position[0]+12, rect[1], mouse.position[0]+412, rect[3])))
 
 	stockpile = np.array(ImageGrab.grab(bbox=(x-11,y-32,x+389,1080)))
 	stockpile = cv2.cvtColor(stockpile, cv2.COLOR_BGR2RGB)
@@ -363,22 +350,7 @@ def ItemScan(screen, garbage):
 								print("Already have it")
 								found = 1
 								ThisStockpileName = (image[11:(len(image) - 4)])
-					# else:
-					# 	cv2.imwrite('Stockpiles//Temp.png', stockpilename)
-					# 	popup()
-					# 	PopupWindow.wait_window()
-					# 	NewStockpileFilename = 'Stockpiles//' + NewStockpileName + '.png'
-					# 	cv2.imwrite(NewStockpileFilename, stockpilename)
-					# 	os.remove('Stockpiles//Temp.png')
-					# 	# StockpileName = StockpileNameEntry.get()
-					# 	# cv2.imwrite('Stockpiles//' + StockpileName + '.png', stockpilename)
 					if found != 1:
-						########################################################################
-						########## NEED TO PASS IMAGE WITHOUT WRITING TEMP, ITS STUPID #########
-						########## WAS ABLE TO PASS THE IMAGE AS AN ARGUMENT TO POPUP  #########
-						########################################################################
-						###### I THINK THIS IS DONE NOW
-						###############################
 						popup(stockpilename)
 						PopupWindow.wait_window()
 						# NewStockpileFilename = 'Stockpiles//' + NewStockpileName + '.png'
