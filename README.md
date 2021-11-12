@@ -27,7 +27,7 @@ Current (arbitrary) version is .6b
 Stockpiler runs each stockpile "grab" as a separate thread, so you do not have to wait for one to complete before initiating the next
 
 
-Currently, pressing the F2 key will grab an image of the stockpile/BB/Relic Base contents you are hovering over and save it to the root folder.  If you are willing to help contribue missing items, these are the images that are needed.  Please message me on Discord if you're interested in helping get the remaining missing item imagers.
+Currently, pressing the F2 key will grab an image of the stockpile/BB/Relic Base contents you are hovering over and save it to the root folder.  If you are willing to help contribute missing items so that Stockpiler can properly tally them, these are the images that are needed.  Please message me on Discord if you're interested in helping get the remaining missing item images added.
 My Discord is ruttiger#6198
 
 
