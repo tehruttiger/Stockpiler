@@ -5,6 +5,8 @@ Stockpiler aims to simplify tracking the contents of stockpiles by automating th
 
 Current (arbitrary) version is .6b
 
+Constructive criticism is welcome, but keep in mind **I DO NOT CODE FOR A LIVING**.  Thanks. :)
+
 # To use:
 1. Launch Foxhole and Deploy
 2. Launch Stockpiler
