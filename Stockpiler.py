@@ -379,7 +379,6 @@ def ItemScan(screen, garbage):
 
 	if FoundStockpileType in CrateList:
 		print("Crate Type")
-		# StockpileImages = [("CheckImages//" + str(item[0]) + "C.png") for item in data if item[7] != "Colonial"]
 		StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[18]) for item in items.data if str(item[18]) == "0"]
 		StockpileImagesAppend = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data if str(item[9]) == "7" and str(item[18]) == "0"]
 		StockpileImages.extend(StockpileImagesAppend)
@@ -721,7 +720,7 @@ StockpileFrame.bind(
 	)
 )
 
-canvas.create_window((0, 0), window=StockpileFrame, anchor="nw", height="1625p", width="550p")
+canvas.create_window((0, 0), window=StockpileFrame, anchor="nw", height="1675p", width="550p")
 
 canvas.configure(yscrollcommand=scrollbar.set)
 
