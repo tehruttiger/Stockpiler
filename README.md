@@ -8,12 +8,12 @@ Current (arbitrary) version is .6b
 Constructive criticism is welcome, but keep in mind **I DO NOT CODE FOR A LIVING**.  Thanks. :)
 
 Current Features:
--Hotkey (F3) to read and transcribe contents of any stockpile/BB/Town Base/etc from the Map.
--App is threaded, so you can initiate a new scan while previous scan(s) are still processing.
--Most items can be read, other than those with missing icons as noted in Missing.csv
--Ability to set a filter to ignore unwanted items
--Toggles to turn on/off faction-specific items and entire categories of items in filter
--Filter can be saved and is automatically loaded at launch
+- Hotkey (F3) to read and transcribe contents of any stockpile/BB/Town Base/etc from the Map.
+- App is threaded, so you can initiate a new scan while previous scan(s) are still processing.
+- Most items can be read, other than those with missing icons as noted in Missing.csv
+- Ability to set a filter to ignore unwanted items
+- Toggles to turn on/off faction-specific items and entire categories of items in filter
+- Filter can be saved and is automatically loaded at launch
 
 # To use:
 1. Launch Foxhole and Deploy
