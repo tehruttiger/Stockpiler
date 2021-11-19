@@ -10,7 +10,7 @@
 8,X,X,12.7mm,,,12.7mm,Both,Small Weapons,1,8,20,100,0,0,0,0,70
 9,,,PT-815 Smoke Grenade,Smoke,Smoke Grenade,,Both,Small Weapons,1,9,10,120,0,0,0,0,
 10,-,-,Ferro 879,,Pistol,8mm,Both,Small Weapons,1,10,20,,,,,,
-11,,X,Cascadier 873,,Pistol,8mm,Warden,Small Weapons,1,11,20,60,0,0,0,0,
+11,X,X,Cascadier 873,,Pistol,8mm,Warden,Small Weapons,1,11,20,60,0,0,0,0,
 12,-,-,8mm,,,8mm,Both,Small Weapons,1,12,40,40,0,0,0,0,20
 13,X,X,Cometa T2-9,,Revolver,0.44,Both,Small Weapons,1,13,20,60,0,0,0,0,
 14,X,X,The Hangman 757,Hangman,Heavy Rifle,0.44,Warden,Small Weapons,1,14,20,125,0,0,0,0,80
@@ -21,7 +21,7 @@
 19,X,X,Fuscina pi.I,Fuscina,Rifle,7.62mm,Colonial,Small Weapons,1,19,20,,,,,,
 20,X,X,Blakerow 871,,Rifle,7.62mm,Warden,Small Weapons,1,20,20,140,0,0,0,0,
 21,X,X,KRR2-790 Omen,,Long Rifle,7.62mm,Colonial,Small Weapons,1,21,15,,,,,,
-22,,,Clancy Cinder M3,,Long Rifle,7.62mm,Warden,Small Weapons,1,22,15,130,0,0,0,0,
+22,X,X,Clancy Cinder M3,,Long Rifle,7.62mm,Warden,Small Weapons,1,22,15,130,0,0,0,0,
 23,X,X,No.2 Loughcaster,Loughcaster,Rifle,7.62mm,Warden,Small Weapons,1,23,20,100,0,0,0,0,70
 24,X,X,7.62mm,,,7.62mm,Both,Small Weapons,1,24,40,80,0,0,0,0,50
 25,X,X,Brasa Shotgun,Shotgun,Shotgun,Buckshot,Both,Small Weapons,1,25,20,120,0,0,0,0,
@@ -208,4 +208,4 @@
 206,X,X,Small Shipping Container,,,,Both,Shippables,8,12,3,,,,,,
 207,X,-,Barbed Wire,,,,Both,Shippables,8,13,,,,,,,
 208,X,-,Sandbags,,,,Both,Shippables,8,14,,,,,,,
-209,,-,Metal Beam,,,,Both,Shippables,8,15,,,,,,,
+209,X,-,Metal Beam,,,,Both,Shippables,8,15,,,,,,,

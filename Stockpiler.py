@@ -326,7 +326,9 @@ def ItemScan(screen, garbage):
 	StockpileTypes = (('CheckImages//Seaport.png', 'Seaport', 0), ('Checkimages//StorageDepot.png', 'Storage Depot', 1),
 					  ('Checkimages//Outpost.png', 'Outpost', 2), ('Checkimages//Townbase.png', 'Town Base', 3),
 					  ('Checkimages//RelicBase.png', 'Relic Base', 4),
-					  ('Checkimages//BunkerBase.png', 'Bunker Base', 5))
+					  ('Checkimages//BunkerBase.png', 'Bunker Base', 5),
+					  ('Checkimages//Encampment.png', 'Encampment', 6),
+					  ('Checkimages//SafeHouse.png', 'Safe House', 7))
 	for image in StockpileTypes:
 		findtype = cv2.imread(image[0], cv2.IMREAD_GRAYSCALE)
 		res = cv2.matchTemplate(stockpile, findtype, cv2.TM_CCOEFF_NORMED)
@@ -380,7 +382,7 @@ def ItemScan(screen, garbage):
 			pass
 
 	CrateList = [0, 1]
-	SingleList = [2, 3, 4, 5]
+	SingleList = [2, 3, 4, 5, 6, 7]
 
 	start = datetime.datetime.now()
 
