@@ -3,7 +3,7 @@ A Foxhole logi companion app for quickly reading and transcribing stockpile cont
 
 Stockpiler aims to simplify tracking the contents of stockpiles by automating the process and exporting a spreadsheet with the stockpile's contents.
 
-Current (arbitrary) version is .6b
+Current (arbitrary) version is .7b
 
 Constructive criticism is welcome, but keep in mind **I DO NOT CODE FOR A LIVING**.  Thanks. :)
 
