@@ -22,6 +22,7 @@ Current Features:
 4. Hover your cursor over the Stockpile/Bunker Base/Town Hall/etc you wish to transcribe **on the map**
 - Remember you can tab while hovering over a Seaport/Storage Depot where you have multiple private stockpiles
 5. Press the **F3** key
+
 If the stockpile is a named stockpile that Stockpiler has never seen before:
 - Stockpiler will display an image of the stockpile name and ask you to enter the name
 - The stockpile's contents will be exported to ../Stockpiles folder as:
@@ -29,6 +30,7 @@ If the stockpile is a named stockpile that Stockpiler has never seen before:
 - CSV TXT file of contents
 - Image of the stockpile title
 - A copy of the stockpile image grabbed by Stockpiler
+
 If the stockpile is a named stockpile that Stockpile has seen before:
 - Stockpiler will overwrite any existing (previous) export of the stockpile contents as:
 - XLSX (Excel Spreadsheet) of the contents
