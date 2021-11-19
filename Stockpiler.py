@@ -94,7 +94,7 @@ for xfile in files:
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
 
-Version = "0.6b"
+Version = "0.7b"
 
 StockpilerWindow = Tk()
 
