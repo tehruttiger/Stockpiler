@@ -12,67 +12,35 @@ import cv2
 import numpy as np
 from global_hotkeys import *
 import csv
-import win32gui
-import win32api
 import re
 import xlsxwriter
 import threading
 
 
-global foxholehwnd
 global stockpilename
 global PopupWindow
 global NewStockpileName
 global StockpileNameEntry
 global CurrentStockpileName
-foxholehwnd = 0
+
 
 class items(object):
 	data = []
-
-
-def callback(hwnd, extra):
-	global foxholehwnd
-	rect = win32gui.GetWindowRect(hwnd)
-	x = rect[0]
-	y = rect[1]
-	w = rect[2] - x
-	h = rect[3] - y
-	try:
-		if win32gui.GetWindowText(hwnd) == "War  ":
-			foxholehwnd = hwnd
-			if win32api.GetSystemMetrics(0) == w and win32api.GetSystemMetrics(1) == h:
-				print("It's fullscreen")
-				print(w, h)
-			else:
-				print("It's not fullscreen")
-				print(type(win32api.GetSystemMetrics(0)))
-				print(type(w))
-				print(w, h)
-	except:
-		print("Foxhole not running")
-
-
-def main():
-	win32gui.EnumWindows(callback, None)
-
-
-main()
+	numbers = (('CheckImages//num0.png', "0"), ('CheckImages//num1.png', "1"), ('CheckImages//num2.png', "2"),
+			   ('CheckImages//num3.png', "3"), ('CheckImages//num4.png', "4"), ('CheckImages//num5.png', "5"),
+			   ('CheckImages//num6.png', "6"), ('CheckImages//num7.png', "7"), ('CheckImages//num8.png', "8"),
+			   ('CheckImages//num9.png', "9"), ('CheckImages//numk.png', "k+"))
 
 
 mouse = Controller()
 current_mouse_position = mouse.position
-# print(type(current_mouse_position))
-# print(current_mouse_position[0])
 
 if not os.path.exists("./logs"):
 	os.makedirs("./logs")
 
 logfilename = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
 logfilename = "logs/Stockpiler-log-" + logfilename + ".txt"
-
 logging.basicConfig(filename=logfilename, format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-
 print("Log file created: " + logfilename)
 logging.info(str(datetime.datetime.now()) + ' Log Created')
 
@@ -81,6 +49,7 @@ def get_file_directory(file):
 	return os.path.dirname(os.path.abspath(file))
 
 
+# Log cleanup of any contents of logs folder older than 7 days
 now = time.time()
 cutoff = now - (7 * 86400)
 files = os.listdir(os.path.join(get_file_directory(__file__), "logs"))
@@ -94,17 +63,20 @@ for xfile in files:
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
 
-Version = "0.7b"
+Version = "0.75b"
 
 StockpilerWindow = Tk()
-
 StockpilerWindow.title('Stockpiler ' + Version)
+# Window width is based on generated UI.  If buttons change, width should change here.
 StockpilerWindow.geometry("537x600")
+# Width locked since button array doesn't adjust dynamically
+StockpilerWindow.resizable(width=False, height=True)
 
 s = ttk.Style()
 s.theme_use('alt')
 s.configure("EnabledButton.TButton", background="gray")
 s.configure("DisabledButton.TButton", background="red2")
+# Manually disabled button is different color because it is retained regardless of category/faction disable/enable
 s.configure("ManualDisabledButton.TButton", background="red4")
 s.configure("EnabledCategory.TButton", background="gray")
 s.configure("DisabledCategory.TButton", background="red2")
@@ -112,7 +84,6 @@ s.configure("EnabledFaction.TButton", background="gray")
 s.configure("DisabledFaction.TButton", background="red2")
 s.configure("TScrollbar", troughcolor="grey20", arrowcolor="grey20", background="gray", bordercolor="grey15")
 s.configure("TFrame", background="black")
-
 
 global hotkey
 global listener
@@ -127,12 +98,10 @@ global threadnum
 counter = 1
 threadnum = 1
 
-stockpilelist = (())
-
-bunkerbaselist = (())
-
 filter = []
 
+# Load contents of ItemNumbering.csv into items.data
+# Adds all fields (columns) even though only a few are used
 with open('ItemNumbering.csv', 'rt') as f_input:
 	csv_input = csv.reader(f_input, delimiter=',')
 	# Skips first line
@@ -140,8 +109,7 @@ with open('ItemNumbering.csv', 'rt') as f_input:
 	for rowdata in csv_input:
 		items.data.append(rowdata)
 
-# print(items.data)
-
+# Load filter values into new array
 with open('Filter.csv', 'rt') as f_input:
 	csv_input = csv.reader(f_input, delimiter=',')
 	# Skips first line
@@ -149,7 +117,7 @@ with open('Filter.csv', 'rt') as f_input:
 	for rowdata in csv_input:
 		filter.append(rowdata)
 
-
+# Matches up filter value with appropriate items in items.data
 for filteritem in range(len(filter)):
 	# print(filter[item])
 	try:
@@ -158,10 +126,7 @@ for filteritem in range(len(filter)):
 			if filter[filteritem][0] == items.data[item][0]:
 				items.data[item].extend(filter[filteritem][1])
 	except:
-		print("failed")
-
-
-# print(items.data[4])
+		print("failed to apply filters to items.data")
 
 
 ### For troubleshooting
@@ -170,12 +135,13 @@ for filteritem in range(len(filter)):
 # Names = [item[3] for item in data]
 # print(Names)
 
+
 class CreateToolTip(object):
 	"""
 	create a tooltip for a given widget
 	"""
 	def __init__(self, widget, text='widget info'):
-		self.waittime = 100     #miliseconds
+		self.waittime = 100     #miliseconds before popup appear
 		self.wraplength = 180   #pixels
 		self.widget = widget
 		self.text = text
@@ -206,8 +172,7 @@ class CreateToolTip(object):
 		x = y = 0
 		x, y, cx, cy = self.widget.bbox("insert")
 		x, y = mouse.position
-		# x += self.widget.winfo_rootx() + 25
-		# y += self.widget.winfo_rooty() + 20
+		# have popup slightly offset from mouse
 		x += 15
 		y += 15
 		# creates a toplevel window
@@ -218,9 +183,6 @@ class CreateToolTip(object):
 		label = ttk.Label(self.tw, text=self.text, justify='left',
 						relief='ridge', borderwidth=5, background="grey25", foreground="white",
 						wraplength = self.wraplength)
-		# label = ttk.Label(self.tw, text=self.text, justify='left',
-		# 				background="#ffffff", relief='solid', borderwidth=1,
-		# 				wraplength = self.wraplength)
 		label.pack(ipadx=1)
 
 	def hidetip(self):
@@ -230,15 +192,14 @@ class CreateToolTip(object):
 			tw.destroy()
 
 
+# Function used simply for grabbing cropped stockpile images
+# Helpful for grabbing test images for assembling missing icons or new sets of icons (for modded icons)
 def GrabStockpileImage():
 	global counter
-	global foxholehwnd
-#	pyautogui.screenshot('c:\\temp\\stockpileshots\\my_full_screenshot' + str(counter) + '.png')
-	rect = win32gui.GetWindowRect(foxholehwnd)
+	# grab whole screen and prepare for template matching
 	screen = np.array(ImageGrab.grab(bbox=None))
-	# cv2.imshow("blah",screen)
-	# cv2.waitKey(0)
 	screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+	# Shirts are always in the same spot in every stockpile, but might be single or crates
 	findshirtC = cv2.imread('CheckImages//86C.png', cv2.IMREAD_GRAYSCALE)
 	findshirt = cv2.imread('CheckImages//86.png', cv2.IMREAD_GRAYSCALE)
 	resC = cv2.matchTemplate(screen, findshirtC, cv2.TM_CCOEFF_NORMED)
@@ -255,11 +216,10 @@ def GrabStockpileImage():
 		y = 0
 		x = 0
 
-
 	stockpile = np.array(ImageGrab.grab(bbox=(x-11,y-32,x+389,1080)))
 	stockpile = cv2.cvtColor(stockpile, cv2.COLOR_BGR2RGB)
 	imagename = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
-	cv2.imwrite('test' + imagename + '.png', stockpile)
+	cv2.imwrite('test_' + imagename + '.png', stockpile)
 	# cv2.imwrite('test' + str(counter) + '.png', stockpile)
 	# cv2.imshow('shot',stockpile)
 	# cv2.waitKey(0)
@@ -271,32 +231,22 @@ def SearchImage():
 	global NewStockpileName
 	global PopupWindow
 	global CurrentStockpileName
-	global foxholehwnd
 	global threadnum
 
-	if foxholehwnd == 0:
-		main()
-
-	if foxholehwnd != 0:
-		rect = win32gui.GetWindowRect(foxholehwnd)
-		screen = np.array(ImageGrab.grab(bbox=None))
-		garbage = "blah"
-		args = (screen, garbage)
-		threadcounter = "t" + str(threadnum)
-		print(threadcounter)
-		threadingthread = threadcounter + " = threading.Thread(target = ItemScan, args = args)"
-		threadingdaemon = threadcounter + ".daemon = True"
-		threadingstart = threadcounter + ".start()"
-		print(threadnum)
-		exec(threadingthread)
-		exec(threadingdaemon)
-		exec(threadingstart)
-		# t1 = threading.Thread(target = ItemScan, args = args)
-		# t1.daemon = True
-		# t1.start()
-		threadnum += 1
-	else:
-		popup("NoFox")
+	screen = np.array(ImageGrab.grab(bbox=None))
+	garbage = "blah"
+	args = (screen, garbage)
+	# Threading commands are generated via text since each thread needs a distinct name, created using threadcounter
+	threadcounter = "t" + str(threadnum)
+	# print(threadcounter)
+	threadingthread = threadcounter + " = threading.Thread(target = ItemScan, args = args)"
+	threadingdaemon = threadcounter + ".daemon = True"
+	threadingstart = threadcounter + ".start()"
+	# print(threadnum)
+	exec(threadingthread)
+	exec(threadingdaemon)
+	exec(threadingstart)
+	threadnum += 1
 
 
 def ItemScan(screen, garbage):
@@ -319,22 +269,20 @@ def ItemScan(screen, garbage):
 
 	stockpile = np.array(ImageGrab.grab(bbox=(x - 11, y - 32, x + 389, 1080)))
 	stockpile = cv2.cvtColor(stockpile, cv2.COLOR_BGR2GRAY)
-
-	######## Enable this line to test a specific screenshot
-	# stockpile = cv2.imread('testimages//test9.png', cv2.IMREAD_GRAYSCALE)
-
+	# Image clips for each type of stockpile should be in this array below
 	StockpileTypes = (('CheckImages//Seaport.png', 'Seaport', 0), ('Checkimages//StorageDepot.png', 'Storage Depot', 1),
 					  ('Checkimages//Outpost.png', 'Outpost', 2), ('Checkimages//Townbase.png', 'Town Base', 3),
 					  ('Checkimages//RelicBase.png', 'Relic Base', 4),
 					  ('Checkimages//BunkerBase.png', 'Bunker Base', 5),
 					  ('Checkimages//Encampment.png', 'Encampment', 6),
 					  ('Checkimages//SafeHouse.png', 'Safe House', 7))
+	# Check cropped stockpile image for each location type image
 	for image in StockpileTypes:
 		findtype = cv2.imread(image[0], cv2.IMREAD_GRAYSCALE)
 		res = cv2.matchTemplate(stockpile, findtype, cv2.TM_CCOEFF_NORMED)
-		# res = cv2.matchTemplate(stockpileimage, findtype, cv2.TM_CCOEFF_NORMED)
+		# Threshold is a bit lower for types as they are slightly see-thru
 		typethreshold = .95
-		print("Checking:", image[1])
+		# print("Checking:", image[1])
 		if np.amax(res) > typethreshold:
 			y, x = np.unravel_index(res.argmax(), res.shape)
 			FoundStockpileType = image[2]
@@ -347,9 +295,11 @@ def ItemScan(screen, garbage):
 				if np.amax(res) > tabthreshold:
 					print("Found the Tab")
 					y, x = np.unravel_index(res.argmax(), res.shape)
+					# Seaports and Storage Depots have the potential to have named stockpiles, so grab the name
 					stockpilename = stockpile[y - 5:y + 17, x - 150:x - 8]
+					# Make a list of all current stockpile name images
 					currentstockpiles = glob.glob("Stockpiles/*.png")
-					print(currentstockpiles)
+					# print(currentstockpiles)
 					found = 0
 					for image in currentstockpiles:
 						stockpilelabel = cv2.imread(image, cv2.IMREAD_GRAYSCALE)
@@ -358,19 +308,22 @@ def ItemScan(screen, garbage):
 							threshold = .99
 							flag = False
 							if np.amax(res) > threshold:
-								print("Already have it")
+								# Named stockpile is one already seen
 								found = 1
 								ThisStockpileName = (image[11:(len(image) - 4)])
 					if found != 1:
 						newstockpopup(stockpilename)
 						PopupWindow.wait_window()
 						# NewStockpileFilename = 'Stockpiles//' + NewStockpileName + '.png'
+						# It's a new stockpile, so save an images of the name as well as the cropped stockpile itself
 						cv2.imwrite('Stockpiles//' + NewStockpileName + '.png', stockpilename)
 						cv2.imwrite('Stockpiles//' + NewStockpileName + ' image.png', stockpile)
 						ThisStockpileName = NewStockpileName
 				else:
+					# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
 					ThisStockpileName = FoundStockpileTypeName
 			else:
+				# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
 				ThisStockpileName = FoundStockpileTypeName
 			# StockpileName = StockpileNameEntry.get()
 			# cv2.imwrite('Stockpiles//' + StockpileName + '.png', stockpilename)
@@ -381,23 +334,28 @@ def ItemScan(screen, garbage):
 			ThisStockpileName = "None"
 			pass
 
+	# These stockpile types allow for crates (ie: Seaport)
 	CrateList = [0, 1]
+	# These stockpile types only allow individual items (ie: Bunker Base)
 	SingleList = [2, 3, 4, 5, 6, 7]
 
 	start = datetime.datetime.now()
 
 	print(ThisStockpileName)
 	if ThisStockpileName != "None":
-		cv2.imwrite('Stockpiles//' + ThisStockpileName + 'image.png', stockpile)
+		cv2.imwrite('Stockpiles//' + ThisStockpileName + ' image.png', stockpile)
 
 		if FoundStockpileType in CrateList:
 			print("Crate Type")
+			# Grab all the crate CheckImages
 			StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[18]) for item in items.data if str(item[18]) == "0"]
+			# Grab all the individual vehicles and shippables
 			StockpileImagesAppend = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data if (str(item[9]) == "7" and str(item[18]) == "0") or (str(item[9]) == "8" and str(item[18]) == "0")]
 			StockpileImages.extend(StockpileImagesAppend)
 			print(StockpileImagesAppend)
 		elif FoundStockpileType in SingleList:
 			print("Single Type")
+			# Grab all the individual items
 			StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data]
 		else:
 			print("No idea what type...")
@@ -410,52 +368,34 @@ def ItemScan(screen, garbage):
 			checked += 1
 			try:
 				findimage = cv2.imread(image[1], cv2.IMREAD_GRAYSCALE)
-				# res = cv2.matchTemplate(stockpileimage, findimage, cv2.TM_CCOEFF_NORMED)
 				res = cv2.matchTemplate(stockpile, findimage, cv2.TM_CCOEFF_NORMED)
 				threshold = .99
 				flag = False
 				if np.amax(res) > threshold:
 					flag = True
 					y, x = np.unravel_index(res.argmax(), res.shape)
-					# print("maybe found", image, "at", x, y)
-					# print("Found: " + str(image) + " with confidence of: " + str(np.amax(res)))
-
-					##################################
-					# Found a thing, now find amount #
-					##################################
-					numbers = (('CheckImages//num0.png',"0"),('CheckImages//num1.png',"1"),('CheckImages//num2.png',"2"),('CheckImages//num3.png',"3"),('CheckImages//num4.png',"4"),('CheckImages//num5.png',"5"),('CheckImages//num6.png',"6"),('CheckImages//num7.png',"7"),('CheckImages//num8.png',"8"),('CheckImages//num9.png',"9"),('CheckImages//numk.png',"k+"))
+					# Found a thing, now find amount
 					numberlist = []
-					for number in numbers:
+					for number in items.numbers:
 						findnum = cv2.imread(number[0], cv2.IMREAD_GRAYSCALE)
-						###############################
-						## Clip the area where the stock number will be
-						###############################
+						# Clip the area where the stock number will be
 						numberarea = stockpile[y+8:y+28, x+45:x+87]
 						resnum = cv2.matchTemplate(numberarea, findnum, cv2.TM_CCOEFF_NORMED)
 						threshold = .90
 						numloc = np.where(resnum >= threshold)
-						###############################
-						## It only looks for up to 3 of each number for each item, since after that it would be a "k+" scenario, which never happens in stockpiles
-						## This will need to be changed to allow for more digits whenever it does in-person looks at BB stockpiles and such, where it will show up to 5 digits
-						###############################
+						# It only looks for up to 3 of each number for each item, since after that it would be a "k+" scenario, which never happens in stockpiles
+						# This will need to be changed to allow for more digits whenever it does in-person looks at BB stockpiles and such, where it will show up to 5 digits
 						if len(numloc[1]) > 0:
 							numberlist.append(tuple([numloc[1][0],number[1]]))
 						if len(numloc[1]) > 1:
 							numberlist.append(tuple([numloc[1][1],number[1]]))
 						if len(numloc[1]) > 2:
 							numberlist.append(tuple([numloc[1][2],number[1]]))
-						###############################
-						## Sort the list of numbers by position closest to the left, putting the numbers in order by extension
-						###############################
+						# Sort the list of numbers by position closest to the left, putting the numbers in order by extension
 						numberlist.sort(key=lambda y: y[0])
-					# print(image[1])
 
-					#######################################
-					## Here's where it assembles the numbers on each stock.
-					## If the number ends in a K, it just adds 000 since you don't know if that's 1001 or 1999
-					## k+ never happens in stockpiles, so this only affects town halls, bunker bases, etc
-					#######################################
-					# print("numberlist",numberlist)
+					# If the number ends in a K, it just adds 000 since you don't know if that's 1001 or 1999
+					# k+ never happens in stockpiles, so this only affects town halls, bunker bases, etc
 					if len(numberlist) == 1:
 						quantity = int(str(numberlist[0][1]))
 					elif len(numberlist) == 2:
@@ -473,10 +413,13 @@ def ItemScan(screen, garbage):
 							quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + "000")
 						else:
 							quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + str(numberlist[3][1]))
+					# place shirts first, since they're always at the top of every stockpile
 					if image[0] == "86":
 						itemsort = 0
+					# bunker supplies next
 					elif image[0] == "93":
 						itemsort = 1
+					# garrison supplies last
 					elif image[0] == "90":
 						itemsort = 2
 					elif image[3] != "Vehicle" and image[3] != "Shippables":
@@ -485,34 +428,21 @@ def ItemScan(screen, garbage):
 						itemsort = 10
 					else:
 						itemsort = 15
-					# print("printing image[1]",image[1][(len(image[1])-5):(len(image[1])-4)])
-					# print("quantity",quantity)
-					# try:
-					# 	print("itemsort",itemsort)
-					# except:
-					# 	print("Can't print itemsort")
 					if image[1][(len(image[1])-5):(len(image[1])-4)] == "C":
-						# print(image[0][13:17], image[1], quantity)
-						# print("found C",image[0],image[2],quantity,itemsort)
 						stockpilecontents.append(tuple((image[0], image[2], quantity, itemsort, 1)))
 					else:
-						# print("Didn't find C apparently")
 						stockpilecontents.append(tuple((image[0], image[2], quantity, itemsort, 0)))
 			except:
 				# print("Exception for some reason")
 				pass
 				# print(len(numberlist))
-			# else:
-				# print("didn't find",image)
 
 		print(stockpilecontents)
 		sortedcontents = sorted(stockpilecontents, key=lambda x: (x[3], x[4], -x[2]))
 		print(sortedcontents)
-		##################
-		### Here's where we sort stockpilecontents by category, then number, so they spit out the same as screenshot
-		### Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
-		##################
-		if ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base"):
+		# Here's where we sort stockpilecontents by category, then number, so they spit out the same as screenshot
+		# Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
+		if ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
 			ThisStockpileName = "Public"
 		stockpilefile = open("Stockpiles//" + ThisStockpileName + ".csv", 'w')
 		stockpilefile.write(ThisStockpileName + ",\n")
@@ -520,6 +450,8 @@ def ItemScan(screen, garbage):
 		stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
 		stockpilefile.close()
 
+		# Writing to both csv and xlsx, only the quantity and name is written
+		# If more elements from items.data are added to stockpilecontents, they could be added to these exports as fields
 		with open("Stockpiles//" + ThisStockpileName + ".csv", 'a') as fp:
 			# fp.write('\n'.join('{},{},{}'.format(x[0],x[1],x[2]) for x in stockpilecontents))
 			############### THIS ONE DOES IN REGULAR ORDER ############
@@ -561,8 +493,12 @@ def newstockpopup(image):
 	global StockpileNameEntry
 	root_x = StockpilerWindow.winfo_rootx()
 	root_y = StockpilerWindow.winfo_rooty()
-	win_x = root_x - 20
-	win_y = root_y + 125
+	if root_x == root_y == -32000:
+		win_x = 100
+		win_y = 100
+	else:
+		win_x = root_x - 20
+		win_y = root_y + 125
 	location = "+" + str(win_x) + "+" + str(win_y)
 	PopupWindow = Toplevel(StockpilerWindow)
 	PopupWindow.geometry(location)
@@ -572,7 +508,6 @@ def newstockpopup(image):
 	PopupWindow.grab_set()
 	PopupWindow.focus_force()
 	im = Image.fromarray(image)
-	# tkimage = ImageTk.PhotoImage(Image.open('Stockpiles/Temp.png'))
 	tkimage = ImageTk.PhotoImage(im)
 	NewStockpileLabel = ttk.Label(PopupFrame, text="Looks like a new stockpile.")
 	NewStockpileLabel.grid(row=2, column=0)
@@ -586,15 +521,19 @@ def newstockpopup(image):
 	OKButton = ttk.Button(PopupFrame, text="OK", command=lambda: NameAndDestroy("blah"))
 	PopupWindow.bind('<Return>', NameAndDestroy)
 	StockpileNameEntry.focus()
-	OKButton.grid(row=10, column=0)
+	OKButton.grid(row=10, column=0, sticky="NSEW")
 
 
 def popup(type):
 	global PopupWindow
 	root_x = StockpilerWindow.winfo_rootx()
 	root_y = StockpilerWindow.winfo_rooty()
-	win_x = root_x - 20
-	win_y = root_y + 125
+	if root_x == root_y == -32000:
+		win_x = 100
+		win_y = 100
+	else:
+		win_x = root_x - 20
+		win_y = root_y + 125
 	location = "+" + str(win_x) + "+" + str(win_y)
 	PopupWindow = Toplevel(StockpilerWindow)
 	PopupWindow.geometry(location)
@@ -611,7 +550,7 @@ def popup(type):
 		NoStockpileLabel.grid(row=2, column=0)
 	OKButton = ttk.Button(PopupFrame, text="OK", command=lambda: Destroy("blah"))
 	PopupWindow.bind('<Return>', Destroy)
-	OKButton.grid(row=10, column=0)
+	OKButton.grid(row=10, column=0, sticky="NSEW")
 
 
 def NameAndDestroy(event):
@@ -627,19 +566,20 @@ def Destroy(event):
 	PopupWindow.destroy()
 
 
-def changehotkey():
-	print("That hotkey hit")
-	newhotkey = "f8"
-	clear_hotkeys()
-	bindings = [
-		[["f2"], None, on_activate],
-		[["f3"], None, on_activate_two],
-		[[newhotkey], None, changehotkey],
-	]
-
-	register_hotkeys(bindings)
-
-	start_checking_hotkeys()
+# Created this function in order to test changing the hotkey while the program is running
+# def changehotkey():
+# 	print("That hotkey hit")
+# 	newhotkey = "f8"
+# 	clear_hotkeys()
+# 	bindings = [
+# 		[["f2"], None, on_activate],
+# 		[["f3"], None, on_activate_two],
+# 		[[newhotkey], None, changehotkey],
+# 	]
+#
+# 	register_hotkeys(bindings)
+#
+# 	start_checking_hotkeys()
 
 
 ################################################
@@ -874,17 +814,6 @@ def CreateButtons(self):
 				catsep = ttk.Separator(StockpileFrame, orient=HORIZONTAL)
 				catsep.grid(row=menu.iconrow, columnspan=8, sticky="ew", pady=10)
 				menu.iconrow += 1
-
-				# imj = Image.open("UI//cat" + str(menu.lastcat) + ".png")
-				# imj = imj.resize((34, 34), Image.ANTIALIAS)
-				# catimg = PhotoImage(imj)
-
-				# width = 34
-				# height = 34
-				# img = Image.open("UI//cat" + str(menu.lastcat) + ".png")
-				# img = img.resize((width, height), Image.ANTIALIAS)
-				# catimg = ImageTk.PhotoImage(img)
-
 				catimg = PhotoImage(file="UI//cat" + str(menu.lastcat) + ".png")
 				if menu.category[menu.lastcat][1] == 0:
 					catbtn = ttk.Button(StockpileFrame, image=catimg, style="EnabledCategory.TButton")
@@ -897,18 +826,12 @@ def CreateButtons(self):
 				catbtn.grid(row=menu.iconrow, column=menu.iconcolumn, sticky="NSEW", columnspan=8)
 				menu.iconrow += 1
 				menu.itembuttons.extend((catbtn, "category", sortedicons[i][2]))
-				# ColonialButton_ttp = CreateToolTip(ColonialButton, 'Enable/Disable Colonial-only Items')
 				catbtnttp = ("cat" + str(counter) + "_ttp = CreateToolTip(catbtn, '" + str(sortedicons[i][6]) + "')")
 				exec(catbtnttp)
-			# print(catbtn, sortedicons[i][2])
 			except:
 				print("Category exception")
 		if os.path.exists("UI//" + str(sortedicons[i][0]) + ".png"):
-			# print(sortedicons[i][1])
 			img = PhotoImage(file="UI//" + str(sortedicons[i][0]) + ".png")
-			# print(sortedicons[i][1])
-			# btn = ttk.Button(StockpileFrame, text="Button "+str(i))
-			# print(sortedicons)
 			if sortedicons[i][4] == 0:
 				btn = ttk.Button(StockpileFrame, image=img, style="EnabledButton.TButton")
 			elif sortedicons[i][4] == 1:
@@ -919,9 +842,7 @@ def CreateButtons(self):
 
 
 			btn.image = img
-			##############
-			## This stuff after the lambda makes sure they're set to the individual values, if I add more, have to be blah=blah before it
-			##############
+			# This stuff after the lambda makes sure they're set to the individual values, if I add more, have to be blah=blah before it
 			btn["command"] = lambda i=i, btn=btn: open_this(sortedicons[i][0],btn)
 			if menu.iconcolumn < 8:
 				btn.grid(row=menu.iconrow, column=menu.iconcolumn, sticky="W", padx=2, pady=2)
@@ -1035,7 +956,6 @@ QuitButton.grid(row=500, column=0, columnspan=10, sticky="NSEW")
 bindings = [
 	[["f2"], None, on_activate],
 	[["f3"], None, on_activate_two],
-	[["f5"], None, changehotkey],
 ]
 
 register_hotkeys(bindings)
