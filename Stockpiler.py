@@ -63,7 +63,7 @@ for xfile in files:
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
 
-Version = "0.75b"
+Version = "0.8b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -71,6 +71,21 @@ StockpilerWindow.title('Stockpiler ' + Version)
 StockpilerWindow.geometry("537x600")
 # Width locked since button array doesn't adjust dynamically
 StockpilerWindow.resizable(width=False, height=True)
+
+
+class menu(object):
+	iconrow = 1
+	iconcolumn = 0
+	lastcat = 0
+	itembuttons = []
+	icons = []
+	category = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]]
+	faction = [0, 0]
+	topscroll = 0
+	CSVExport = IntVar()
+	XLSXExport = IntVar()
+	ImgExport = IntVar()
+
 
 s = ttk.Style()
 s.theme_use('alt')
@@ -84,6 +99,13 @@ s.configure("EnabledFaction.TButton", background="gray")
 s.configure("DisabledFaction.TButton", background="red2")
 s.configure("TScrollbar", troughcolor="grey20", arrowcolor="grey20", background="gray", bordercolor="grey15")
 s.configure("TFrame", background="black")
+s.configure("TCheckbutton", background="black", foreground="grey75")
+s.map("TCheckbutton", foreground=[('!active', 'grey75'),('pressed', 'black'),
+								  ('active', 'black'), ('selected', 'green'), ('alternate', 'purple')],
+	  background=[ ('!active','black'),('pressed', 'grey75'), ('active', 'white'),
+				   ('selected', 'cyan'), ('alternate', 'pink')],
+	  indicatorcolor=[('!active', 'black'),('pressed', 'black'), ('selected','grey75')],
+	  indicatorbackground=[('!active', 'green'),('pressed', 'pink'), ('selected','red')])
 
 global hotkey
 global listener
@@ -317,7 +339,8 @@ def ItemScan(screen, garbage):
 						# NewStockpileFilename = 'Stockpiles//' + NewStockpileName + '.png'
 						# It's a new stockpile, so save an images of the name as well as the cropped stockpile itself
 						cv2.imwrite('Stockpiles//' + NewStockpileName + '.png', stockpilename)
-						cv2.imwrite('Stockpiles//' + NewStockpileName + ' image.png', stockpile)
+						if menu.ImgExport.get() == 1:
+							cv2.imwrite('Stockpiles//' + NewStockpileName + ' image.png', stockpile)
 						ThisStockpileName = NewStockpileName
 				else:
 					# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
@@ -343,7 +366,8 @@ def ItemScan(screen, garbage):
 
 	print(ThisStockpileName)
 	if ThisStockpileName != "None":
-		cv2.imwrite('Stockpiles//' + ThisStockpileName + ' image.png', stockpile)
+		if menu.ImgExport.get() == 1:
+			cv2.imwrite('Stockpiles//' + ThisStockpileName + ' image.png', stockpile)
 
 		if FoundStockpileType in CrateList:
 			print("Crate Type")
@@ -352,11 +376,12 @@ def ItemScan(screen, garbage):
 			# Grab all the individual vehicles and shippables
 			StockpileImagesAppend = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data if (str(item[9]) == "7" and str(item[18]) == "0") or (str(item[9]) == "8" and str(item[18]) == "0")]
 			StockpileImages.extend(StockpileImagesAppend)
-			print(StockpileImagesAppend)
+			print("Checking for:", StockpileImages)
 		elif FoundStockpileType in SingleList:
 			print("Single Type")
 			# Grab all the individual items
 			StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data]
+			print("Checking for:", StockpileImages)
 		else:
 			print("No idea what type...")
 
@@ -444,32 +469,36 @@ def ItemScan(screen, garbage):
 		# Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
 		if ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
 			ThisStockpileName = "Public"
-		stockpilefile = open("Stockpiles//" + ThisStockpileName + ".csv", 'w')
-		stockpilefile.write(ThisStockpileName + ",\n")
-		stockpilefile.write(FoundStockpileTypeName + ",\n")
-		stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
-		stockpilefile.close()
 
-		# Writing to both csv and xlsx, only the quantity and name is written
-		# If more elements from items.data are added to stockpilecontents, they could be added to these exports as fields
-		with open("Stockpiles//" + ThisStockpileName + ".csv", 'a') as fp:
-			# fp.write('\n'.join('{},{},{}'.format(x[0],x[1],x[2]) for x in stockpilecontents))
-			############### THIS ONE DOES IN REGULAR ORDER ############
-			# fp.write('\n'.join('{},{}'.format(x[1],x[2]) for x in stockpilecontents))
-			############### THIS ONE DOES IN SORTED ORDER #############
-			fp.write('\n'.join('{},{}'.format(x[1], x[2]) for x in sortedcontents))
-		fp.close()
-		workbook = xlsxwriter.Workbook("Stockpiles//" + ThisStockpileName + ".xlsx")
-		worksheet = workbook.add_worksheet()
-		worksheet.write(0, 0, ThisStockpileName)
-		worksheet.write(1, 0, FoundStockpileTypeName)
-		worksheet.write(2, 0, str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-		row = 3
-		for col, data in enumerate(sortedcontents):
-			# print("col", col, " data", data)
-			worksheet.write(row + col, 0, data[1])
-			worksheet.write(row + col, 1, data[2])
-		workbook.close()
+		if menu.CSVExport.get() == 1:
+			stockpilefile = open("Stockpiles//" + ThisStockpileName + ".csv", 'w')
+			stockpilefile.write(ThisStockpileName + ",\n")
+			stockpilefile.write(FoundStockpileTypeName + ",\n")
+			stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
+			stockpilefile.close()
+
+			# Writing to both csv and xlsx, only the quantity and name is written
+			# If more elements from items.data are added to stockpilecontents, they could be added to these exports as fields
+			with open("Stockpiles//" + ThisStockpileName + ".csv", 'a') as fp:
+				# fp.write('\n'.join('{},{},{}'.format(x[0],x[1],x[2]) for x in stockpilecontents))
+				############### THIS ONE DOES IN REGULAR ORDER ############
+				# fp.write('\n'.join('{},{}'.format(x[1],x[2]) for x in stockpilecontents))
+				############### THIS ONE DOES IN SORTED ORDER #############
+				fp.write('\n'.join('{},{}'.format(x[1], x[2]) for x in sortedcontents))
+			fp.close()
+
+		if menu.XLSXExport.get() == 1:
+			workbook = xlsxwriter.Workbook("Stockpiles//" + ThisStockpileName + ".xlsx")
+			worksheet = workbook.add_worksheet()
+			worksheet.write(0, 0, ThisStockpileName)
+			worksheet.write(1, 0, FoundStockpileTypeName)
+			worksheet.write(2, 0, str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+			row = 3
+			for col, data in enumerate(sortedcontents):
+				# print("col", col, " data", data)
+				worksheet.write(row + col, 0, data[1])
+				worksheet.write(row + col, 1, data[2])
+			workbook.close()
 		print(datetime.datetime.now()-start)
 		print("Items Checked:",checked)
 	else:
@@ -717,25 +746,13 @@ StockpileFrame.bind(
 	)
 )
 
+# If enough items are added, then the height below will have to be modified to account for any new button rows
+# Remember to make sure the Quit button is displayed
 canvas.create_window((0, 0), window=StockpileFrame, anchor="nw", height="1675p", width="550p")
-
 canvas.configure(yscrollcommand=scrollbar.set)
-
 OuterFrame.pack()
-
 scrollbar.pack(side="right", fill="y")
 canvas.pack(side="left", fill="both", expand=1)
-
-
-class menu(object):
-	iconrow = 1
-	iconcolumn = 0
-	lastcat = 0
-	itembuttons = []
-	icons = []
-	category = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]]
-	faction = [0, 0]
-	topscroll = 0
 
 
 def SaveFilter():
@@ -744,6 +761,10 @@ def SaveFilter():
 		filterfile.write("Number,Filter\n")
 		for line in range(len(items.data)):
 			filterfile.write(str(items.data[line][0]) + "," + str(items.data[line][18]) + "\n")
+	with open("Config.txt", "w") as exportfile:
+		exportfile.write(str(menu.CSVExport.get()) + "\n")
+		exportfile.write(str(menu.XLSXExport.get()) + "\n")
+		exportfile.write(str(menu.ImgExport.get()) + "\n")
 
 
 def CreateButtons(self):
@@ -774,11 +795,23 @@ def CreateButtons(self):
 	# print("full menu", menu.icons)
 	# print("full sorted", sortedicons)
 
+	# CSVExport = IntVar()
+	# XLSXExport = IntVar()
+	# ImgExport = IntVar()
+
+	CSVCheck = ttk.Checkbutton(StockpileFrame, text="CSV?", variable=menu.CSVExport)
+	CSVCheck.grid(row=menu.iconrow, column=5)
+	XLSXCheck = ttk.Checkbutton(StockpileFrame, text="XLSX?", variable=menu.XLSXExport)
+	XLSXCheck.grid(row=menu.iconrow, column=6)
+	ImgCheck = ttk.Checkbutton(StockpileFrame, text="Image?", variable=menu.ImgExport)
+	ImgCheck.grid(row=menu.iconrow, column=7)
+
+	menu.iconrow += 1
 	SaveImg = PhotoImage(file="UI/Save.png")
 	SaveButton = ttk.Button(StockpileFrame, image=SaveImg, command=SaveFilter)
 	SaveButton.image = SaveImg
 	SaveButton.grid(row=menu.iconrow, column=7, columnspan=1, pady=5)
-	SaveButton_ttp = CreateToolTip(SaveButton, 'Save Current Item Filter Settings')
+	SaveButton_ttp = CreateToolTip(SaveButton, 'Save Current Filter and Export Settings')
 	# menu.iconrow += 1
 
 	# print(sortedicons)
@@ -937,6 +970,17 @@ def open_this(myNum,btn):
 					# print("should be enabling", items.data[item])
 		CreateButtons("blah")
 
+if os.path.exists("Config.txt"):
+	with open("Config.txt") as file:
+		content = file.readlines()
+	content = [x.strip() for x in content]
+	menu.CSVExport.set(int(content[0]))
+	menu.XLSXExport.set(int(content[1]))
+	menu.ImgExport.set(int(content[2]))
+else:
+	menu.CSVExport.set(1)
+	menu.XLSXExport.set(1)
+	menu.ImgExport.set(1)
 
 CreateButtons("")
 
