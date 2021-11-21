@@ -12,6 +12,7 @@ Current Features:
 - Ability to set a filter to ignore unwanted items
 - Toggles to turn on/off faction-specific items and entire categories of items in filter
 - Filter can be saved and is automatically loaded at launch
+- Choose which exports you want, save this setting and it will load automatically in the future
 
 # To use:
 1. Launch Foxhole and Deploy
