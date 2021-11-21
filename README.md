@@ -3,8 +3,6 @@ A Foxhole logi companion app for quickly reading and transcribing stockpile cont
 
 Stockpiler aims to simplify tracking the contents of stockpiles by automating the process and exporting a spreadsheet with the stockpile's contents.
 
-Current (arbitrary) version is .7b
-
 Constructive criticism is welcome, but keep in mind **I DO NOT CODE FOR A LIVING**.  Thanks. :)
 
 Current Features:
@@ -60,8 +58,13 @@ python -m nuitka --mingw64 --plugin-enable=tk-inter --plugin-enable=numpy --stan
 Code can also be compiled (more easily) with auto-py-to-exe
 
 auto-py-to-exe settings:
+
 Onefile - One Directory
+
 Console Window - Console Based (helpful for troubleshooting, please submit any errors you get as Issues here on GitHub)
+
 Additional Files - Add Folder - add the CheckImages, Stockpiles and UI folders
+
 Additional Files - Add Files - add the Filter.csv and ItemNumbering.csv files
+
 Advanced - collect-all - pynput
