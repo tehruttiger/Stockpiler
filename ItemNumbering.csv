@@ -88,7 +88,7 @@
 86,X,X,Soldier Supplies,Shirts,,,Both,Medical,4,5,10,80,0,0,0,0,80
 87,X,X,Diesel,Diesel,,,Both,Resource,5,1,1,,,,,,
 88,X,X,Petrol,Petrol,,,Both,Resource,5,2,1,,,,,,
-89,,X,Aluminum Alloy,,,,Both,Resource,5,3,20,,,,,,
+89,X,X,Aluminum Alloy,,,,Both,Resource,5,3,20,,,,,,
 90,X,X,Bunker Supplies,Bsups,,,Both,Resource,5,4,150,75,0,0,0,0,240
 91,X,X,Basic Materials,Bmats,,,Both,Resource,5,5,100,,,,,,
 92,X,X,Explosive Materials,Emats,,,Both,Resource,5,6,20,,,,,,
