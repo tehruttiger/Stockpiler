@@ -462,9 +462,9 @@ def ItemScan(screen, garbage):
 				pass
 				# print(len(numberlist))
 
-		print(stockpilecontents)
+		print("Stockpile Contents:", stockpilecontents)
 		sortedcontents = sorted(stockpilecontents, key=lambda x: (x[3], x[4], -x[2]))
-		print(sortedcontents)
+		print("Sorted Contents:", sortedcontents)
 		# Here's where we sort stockpilecontents by category, then number, so they spit out the same as screenshot
 		# Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
 		if ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
