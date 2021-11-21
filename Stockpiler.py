@@ -748,7 +748,7 @@ StockpileFrame.bind(
 
 # If enough items are added, then the height below will have to be modified to account for any new button rows
 # Remember to make sure the Quit button is displayed
-canvas.create_window((0, 0), window=StockpileFrame, anchor="nw", height="1675p", width="550p")
+canvas.create_window((0, 0), window=StockpileFrame, anchor="nw", height="1691p", width="550p")
 canvas.configure(yscrollcommand=scrollbar.set)
 OuterFrame.pack()
 scrollbar.pack(side="right", fill="y")
