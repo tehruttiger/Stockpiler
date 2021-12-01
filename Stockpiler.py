@@ -372,15 +372,15 @@ def ItemScan(screen, garbage):
 		if FoundStockpileType in CrateList:
 			print("Crate Type")
 			# Grab all the crate CheckImages
-			StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[18]) for item in items.data if str(item[18]) == "0"]
+			StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[17]) for item in items.data if str(item[17]) == "0"]
 			# Grab all the individual vehicles and shippables
-			StockpileImagesAppend = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data if (str(item[9]) == "7" and str(item[18]) == "0") or (str(item[9]) == "8" and str(item[18]) == "0")]
+			StockpileImagesAppend = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[17]) for item in items.data if (str(item[9]) == "7" and str(item[17]) == "0") or (str(item[9]) == "8" and str(item[17]) == "0")]
 			StockpileImages.extend(StockpileImagesAppend)
 			print("Checking for:", StockpileImages)
 		elif FoundStockpileType in SingleList:
 			print("Single Type")
 			# Grab all the individual items
-			StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data]
+			StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[17]) for item in items.data]
 			print("Checking for:", StockpileImages)
 		else:
 			print("No idea what type...")
@@ -760,7 +760,7 @@ def SaveFilter():
 	with open("Filter.csv", "w") as filterfile:
 		filterfile.write("Number,Filter\n")
 		for line in range(len(items.data)):
-			filterfile.write(str(items.data[line][0]) + "," + str(items.data[line][18]) + "\n")
+			filterfile.write(str(items.data[line][0]) + "," + str(items.data[line][17]) + "\n")
 	with open("Config.txt", "w") as exportfile:
 		exportfile.write(str(menu.CSVExport.get()) + "\n")
 		exportfile.write(str(menu.XLSXExport.get()) + "\n")
@@ -785,7 +785,7 @@ def CreateButtons(self):
 			if x[0] == str(i):
 				# print("Found",i)
 				if os.path.exists("CheckImages//" + str(i) + ".png"):
-					menu.icons.append((i, "CheckImages//" + str(i) + ".png", int(x[9]), int(x[10]), int(x[18]), str(x[3]), str(x[8])))
+					menu.icons.append((i, "CheckImages//" + str(i) + ".png", int(x[9]), int(x[10]), int(x[17]), str(x[3]), str(x[8])))
 			# filter.append((i, 0))
 			# print(x[3],x[9],x[10])
 
@@ -901,15 +901,15 @@ def open_this(myNum,btn):
 		for item in range(len(items.data)):
 			# print(item[0])
 			if str(items.data[item][0]) == str(myNum):
-				items.data[item][18] = 1
-				print(items.data[item][18])
+				items.data[item][17] = 1
+				print(items.data[item][17])
 	elif str(btn['style']) == "ManualDisabledButton.TButton":
 		btn.configure(style="EnabledButton.TButton")
 		for item in range(len(items.data)):
 			# print(item[0])
 			if str(items.data[item][0]) == str(myNum):
-				items.data[item][18] = 0
-				print(items.data[item][18])
+				items.data[item][17] = 0
+				print(items.data[item][17])
 	elif str(btn['style']) == "EnabledCategory.TButton":
 		btn.config(style="DisabledCategory.TButton")
 		menu.category[int(myNum[4:5])][1] = 1
@@ -917,13 +917,13 @@ def open_this(myNum,btn):
 		for item in range(len(items.data)):
 			# print(item[0])
 			# print(str(myNum[4:5]))
-			# print("before test", items.data[item][18])
+			# print("before test", items.data[item][17])
 			if str(items.data[item][9]) == str(myNum[4:5]):
-				if str(items.data[item][18]) == str(0):
+				if str(items.data[item][17]) == str(0):
 					# print("yes")
-					items.data[item][18] = 2
-				# print(items.data[item][18])
-			# print("after test", items.data[item][18])
+					items.data[item][17] = 2
+				# print(items.data[item][17])
+			# print("after test", items.data[item][17])
 		CreateButtons("blah")
 	elif str(btn['style']) == "DisabledCategory.TButton":
 		btn.config(style="EnabledCategory.TButton")
@@ -933,40 +933,40 @@ def open_this(myNum,btn):
 			# print(item[0])
 			# print(str(myNum[4:5]))
 			if str(items.data[item][9]) == str(myNum[4:5]):
-				if str(items.data[item][18]) == str(2):
+				if str(items.data[item][17]) == str(2):
 					# print("yes")
-					items.data[item][18] = 0
+					items.data[item][17] = 0
 		CreateButtons("blah")
 	elif myNum == str("W"):
 		if str(btn['style']) == "EnabledFaction.TButton":
 			btn.config(style="DisabledFaction.TButton")
 			menu.faction[0] = 1
 			for item in range(len(items.data)):
-				if items.data[item][7] == "Warden" and str(items.data[item][18]) == "0":
-					items.data[item][18] = 3
+				if items.data[item][7] == "Warden" and str(items.data[item][17]) == "0":
+					items.data[item][17] = 3
 		else:
 			btn.config(style="EnabledFaction.TButton")
 			menu.faction[0] = 0
 			for item in range(len(items.data)):
-				if items.data[item][7] == "Warden" and str(items.data[item][18]) == "3":
-					items.data[item][18] = 0
+				if items.data[item][7] == "Warden" and str(items.data[item][17]) == "3":
+					items.data[item][17] = 0
 		CreateButtons("blah")
 	elif myNum == str("C"):
 		if str(btn['style']) == "EnabledFaction.TButton":
 			btn.config(style="DisabledFaction.TButton")
 			menu.faction[1] = 1
 			for item in range(len(items.data)):
-				# print(items.data[item][18])
-				if items.data[item][7] == "Colonial" and str(items.data[item][18]) == "0":
-					items.data[item][18] = 3
+				# print(items.data[item][17])
+				if items.data[item][7] == "Colonial" and str(items.data[item][17]) == "0":
+					items.data[item][17] = 3
 					# print("should be disabling", items.data[item])
 		else:
 			btn.config(style="EnabledFaction.TButton")
 			menu.faction[1] = 0
 			for item in range(len(items.data)):
 				# print(items.data[item][7])
-				if items.data[item][7] == "Colonial" and str(items.data[item][18]) == "3":
-					items.data[item][18] = 0
+				if items.data[item][7] == "Colonial" and str(items.data[item][17]) == "3":
+					items.data[item][17] = 0
 					# print("should be enabling", items.data[item])
 		CreateButtons("blah")
 
