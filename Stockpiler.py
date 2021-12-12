@@ -29,6 +29,7 @@ global IconPickerWindow
 global IndOrCrateWindow
 global FilterFrame
 global LastStockpile
+global tempicon
 
 class items(object):
 	data = []
@@ -486,7 +487,10 @@ def ItemScan(screen, garbage):
 		x = 0
 
 	# COMMENT OUT IF TESTING A SPECIFIC IMAGE
-	stockpile = screen[y - 32:1080, x - 11:x + 389]
+	if y == x == 0:
+		stockpile = screen
+	else:
+		stockpile = screen[y - 32:1080, x - 11:x + 389]
 
 	# UNCOMMENT IF TESTING A SPECIFIC IMAGE
 	# stockpile = screen
@@ -1249,6 +1253,8 @@ def CreateButtons(self):
 
 def IconPicker(image):
 	global IconPickerWindow
+	global tempicon
+	tempicon = image
 	root_x = StockpilerWindow.winfo_rootx()
 	root_y = StockpilerWindow.winfo_rooty()
 	if root_x == root_y == -32000:
@@ -1278,6 +1284,7 @@ def IconPicker(image):
 	iconcolumn = 0
 	iconrow = 1
 	counter = 0
+	temptime = datetime.datetime.now()
 	for x in range(len(items.data)):
 		# print(x)
 		if os.path.exists("UI//" + str(items.data[x][0]) + ".png"):
@@ -1287,7 +1294,7 @@ def IconPicker(image):
 			counter += 1
 			btn.image = img
 			# This stuff after the lambda makes sure they're set to the individual values, if I add more, have to be blah=blah before it
-			btn["command"] = lambda x=x, btn=btn: IndividualOrCrate(items.data[x][0],btn,image)
+			btn["command"] = lambda x=x, btn=btn: IndividualOrCrate(items.data[x][0])
 			if iconcolumn < 18:
 				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
 				# print("item:", items.data[x][3], "row:", iconrow, "column:", iconcolumn)
@@ -1305,13 +1312,15 @@ def IconPicker(image):
 			itembtnttp = ("item" + str(counter) + "_ttp = CreateToolTip(btn, '" + tooltiptext + "')")
 			exec(itembtnttp)
 
-	IconPickerFrame.update()
+	# IconPickerFrame.update()
 	# IconPickerWindow.focus_force()
+	print("Took this long to make icon picker window:", datetime.datetime.now() - temptime)
 	IconPickerWindow.wait_window()
 
 
-def IndividualOrCrate(num,blah,image):
-	print(num,blah)
+def IndividualOrCrate(num):
+	global tempicon
+	print(num)
 	IconPickerWindow.destroy()
 	global IndOrCrateWindow
 	root_x = StockpilerWindow.winfo_rootx()
@@ -1335,20 +1344,20 @@ def IndividualOrCrate(num,blah,image):
 	ForLabel.grid(row=0, column=0)
 	YouSelectedLabel = ttk.Label(IndOrCrateFrame, text="You\nSelected:")
 	YouSelectedLabel.grid(row=0, column=1)
-	im = Image.fromarray(image)
+	im = Image.fromarray(tempicon)
 	tkimage = ImageTk.PhotoImage(im)
 	NewIconImage = ttk.Label(IndOrCrateFrame, image=tkimage)
-	NewIconImage.image = image
+	NewIconImage.image = tempicon
 	NewIconImage.grid(row=1, column=0)
 	UIimage = PhotoImage(file="Compare//" + str(num) + ".png")
 	SelectedImage = ttk.Label(IndOrCrateFrame, image=UIimage)
 	SelectedImage.image = UIimage
 	SelectedImage.grid(row=1, column=1)
-	IndividualButton = ttk.Button(IndOrCrateFrame, text="Individual", style="EnabledButton.TButton", command=lambda: SaveIcon(num,0,image))
+	IndividualButton = ttk.Button(IndOrCrateFrame, text="Individual", style="EnabledButton.TButton", command=lambda: SaveIcon(num,0,tempicon))
 	IndividualButton.grid(row=5, column=0)
-	CrateButton = ttk.Button(IndOrCrateFrame, text="Crate", style="EnabledButton.TButton", command=lambda: SaveIcon(num,1,image))
+	CrateButton = ttk.Button(IndOrCrateFrame, text="Crate", style="EnabledButton.TButton", command=lambda: SaveIcon(num,1,tempicon))
 	CrateButton.grid(row=5, column=1)
-	TryAgainButton = ttk.Button(IndOrCrateFrame, text="Pick a different icon?", style="EnabledButton.TButton", command=lambda: BackToPicker(image))
+	TryAgainButton = ttk.Button(IndOrCrateFrame, text="Pick a different icon?", style="EnabledButton.TButton", command=lambda: BackToPicker(tempicon))
 	TryAgainButton.grid(row=10, column=0, columnspan=2)
 	IndOrCrateWindow.wait_window()
 
@@ -1357,6 +1366,7 @@ def BackToPicker(image):
 	global IndOrCrateWindow
 	IndOrCrateWindow.destroy()
 	IconPicker(image)
+
 
 def SaveIcon(num, type, image):
 	global IndOrCrateWindow
