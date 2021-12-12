@@ -315,12 +315,12 @@ def Learn(LearnInt, image):
 	# grab whole screen and prepare for template matching
 	# COMMENT OUT THESE TWO LINES IF YOU ARE TESTING A SPECIFIC IMAGE
 	TestImage = False
-	# screen = np.array(ImageGrab.grab(bbox=None))
-	# screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+	screen = np.array(ImageGrab.grab(bbox=None))
+	screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 
 	# UNCOMMENT AND MODIFY LINE BELOW IF YOU ARE TESTING A SPECIFIC IMAGE
-	screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-110247.png")), cv2.COLOR_RGB2GRAY)
-	TestImage = True
+	# screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-110247.png")), cv2.COLOR_RGB2GRAY)
+	# TestImage = True
 
 	# WHEN USING OTHER RESOLUTIONS, GRAB THEM HERE
 	resx = 1920
@@ -438,10 +438,10 @@ def ItemScan(screen, garbage):
 	global LastStockpile
 
 	# UNCOMMENT IF TESTING A SPECIFIC IMAGE
-	screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-101723.png")), cv2.COLOR_RGB2GRAY)
+	# screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-101723.png")), cv2.COLOR_RGB2GRAY)
 
-	cv2.imshow("test", screen)
-	cv2.waitKey(0)
+	# cv2.imshow("test", screen)
+	# cv2.waitKey(0)
 
 	if menu.Set.get() == 0:
 		findshirtC = cv2.imread('CheckImages//Default//86C.png', cv2.IMREAD_GRAYSCALE)
@@ -486,10 +486,10 @@ def ItemScan(screen, garbage):
 		x = 0
 
 	# COMMENT OUT IF TESTING A SPECIFIC IMAGE
-	# stockpile = screen[y - 32:1080, x - 11:x + 389]
+	stockpile = screen[y - 32:1080, x - 11:x + 389]
 
 	# UNCOMMENT IF TESTING A SPECIFIC IMAGE
-	stockpile = screen
+	# stockpile = screen
 
 	# Grab this just in case you need to rerun the scan from Results tab
 	# LastStockpile = stockpile
