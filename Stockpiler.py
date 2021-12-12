@@ -260,8 +260,8 @@ def GrabStockpileImage():
 		findshirtC = cv2.imread('CheckImages//Default//86C.png', cv2.IMREAD_GRAYSCALE)
 		findshirt = cv2.imread('CheckImages//Default//86.png', cv2.IMREAD_GRAYSCALE)
 	else:
-		findshirtC = cv2.imread('CheckImages//Custom//86C.png', cv2.IMREAD_GRAYSCALE)
-		findshirt = cv2.imread('CheckImages//Custom//86.png', cv2.IMREAD_GRAYSCALE)
+		findshirtC = cv2.imread('CheckImages//Modded//86C.png', cv2.IMREAD_GRAYSCALE)
+		findshirt = cv2.imread('CheckImages//Modded//86.png', cv2.IMREAD_GRAYSCALE)
 	try:
 		resC = cv2.matchTemplate(screen, findshirtC, cv2.TM_CCOEFF_NORMED)
 	except:
@@ -343,7 +343,7 @@ def Learn(LearnInt, image):
 			if menu.Set.get() == 0:
 				folder = "CheckImages//Default//"
 			else:
-				folder = "CheckImages//Custom//"
+				folder = "CheckImages//Modded//"
 			Found = False
 			for imagefile in os.listdir(folder):
 				checkimage = cv2.imread(folder + imagefile, cv2.IMREAD_GRAYSCALE)
@@ -437,11 +437,11 @@ def ItemScan(screen, garbage):
 		findshirt = cv2.imread('CheckImages//Default//86.png', cv2.IMREAD_GRAYSCALE)
 	else:
 		try:
-			findshirtC = cv2.imread('CheckImages//Custom//86C.png', cv2.IMREAD_GRAYSCALE)
+			findshirtC = cv2.imread('CheckImages//Modded//86C.png', cv2.IMREAD_GRAYSCALE)
 		except:
 			print("You don't have the Shirt crate yet")
 		try:
-			findshirt = cv2.imread('CheckImages//Custom//86.png', cv2.IMREAD_GRAYSCALE)
+			findshirt = cv2.imread('CheckImages//Modded//86.png', cv2.IMREAD_GRAYSCALE)
 		except:
 			print("You don't have the individual Shirt yet")
 	try:
@@ -561,7 +561,7 @@ def ItemScan(screen, garbage):
 	if menu.Set.get() == 0:
 		folder = "CheckImages//Default//"
 	else:
-		folder = "CheckImages//Custom//"
+		folder = "CheckImages//Modded//"
 	if items.ThisStockpileName != "None":
 		if menu.ImgExport.get() == 1:
 			cv2.imwrite('Stockpiles//' + items.ThisStockpileName + ' image.png', stockpile)
@@ -806,7 +806,7 @@ def SaveIconAndDestroy(image):
 		if menu.Set.get() == 0:
 			folder = "CheckImages//Default//"
 		else:
-			folder = "CheckImages//Custom//"
+			folder = "CheckImages//Modded//"
 		cv2.imwrite(folder + IconName + '.png', image)
 	PopupWindow.destroy()
 
@@ -1098,7 +1098,7 @@ def CreateButtons(self):
 	if menu.Set.get() == 0:
 		folder = "CheckImages//Default//"
 	else:
-		folder = "CheckImages//Custom//"
+		folder = "CheckImages//Modded//"
 	# print("fresh menu", menu.icons)
 	# print("fresh sorted", sortedicons)
 	# print(items.data[1])
@@ -1131,8 +1131,8 @@ def CreateButtons(self):
 	SetLabel.grid(row=menu.iconrow, column=0)
 	DefaultRadio = ttk.Radiobutton(FilterFrame, text="Default", variable=menu.Set, value=0)
 	DefaultRadio.grid(row=menu.iconrow, column=1)
-	CustomRadio = ttk.Radiobutton(FilterFrame, text="Custom", variable=menu.Set, value=1)
-	CustomRadio.grid(row=menu.iconrow, column=2)
+	ModdedRadio = ttk.Radiobutton(FilterFrame, text="Modded", variable=menu.Set, value=1)
+	ModdedRadio.grid(row=menu.iconrow, column=2)
 	LearningCheck = ttk.Checkbutton(FilterFrame, text="Learning Mode?", variable=menu.Learning)
 	LearningCheck.grid(row=menu.iconrow, column=3, columnspan=2)
 	CSVCheck = ttk.Checkbutton(FilterFrame, text="CSV?", variable=menu.CSVExport)
@@ -1356,7 +1356,7 @@ def SaveIcon(num, type, image):
 	if menu.Set.get() == 0:
 		save = 'CheckImages//Default//' + name
 	else:
-		save = 'CheckImages//Custom//' + name
+		save = 'CheckImages//Modded//' + name
 	print("save:", save)
 	cv2.imwrite(save, image)
 
