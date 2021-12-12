@@ -26,7 +26,7 @@ Current Features:
 - Remember you can tab while hovering over a Seaport/Storage Depot where you have multiple private stockpiles
 6. Press the **F3** key
 
-If you are using modded icons and have Learning Mode on, you will get a series of popups where you are asked to identify each icon it finds.  It will learn your choices, so over time you will build your set.  Once it has run through all new icons with you, it will export the results as normal.
+If you are using modded icons and have Learning Mode on, you will get a series of popups where you are asked to identify each new icon it finds.  It will remember your choices, so over time you will build your set.  Once it has run through all new icons with you, it will export the results as normal.
 
 If the stockpile is a named stockpile that Stockpiler has never seen before:
 - Stockpiler will display an image of the stockpile name and ask you to enter the name
