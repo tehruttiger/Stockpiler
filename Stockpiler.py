@@ -1237,9 +1237,14 @@ def CreateButtons(self):
 
 def IconPicker(image):
 	global IconPickerWindow
-
-	win_x = 90
-	win_y = 90
+	root_x = StockpilerWindow.winfo_rootx()
+	root_y = StockpilerWindow.winfo_rooty()
+	if root_x == root_y == -32000:
+		win_x = 90
+		win_y = 90
+	else:
+		win_x = root_x - 20
+		win_y = root_y + 125
 
 	location = "+" + str(win_x) + "+" + str(win_y)
 	IconPickerWindow = Toplevel(StockpilerWindow)
@@ -1297,9 +1302,14 @@ def IndividualOrCrate(num,blah,image):
 	print(num,blah)
 	IconPickerWindow.destroy()
 	global IndOrCrateWindow
-
-	win_x = 100
-	win_y = 100
+	root_x = StockpilerWindow.winfo_rootx()
+	root_y = StockpilerWindow.winfo_rooty()
+	if root_x == root_y == -32000:
+		win_x = 90
+		win_y = 90
+	else:
+		win_x = root_x - 20
+		win_y = root_y + 125
 
 	location = "+" + str(win_x) + "+" + str(win_y)
 	IndOrCrateWindow = Toplevel(StockpilerWindow)
