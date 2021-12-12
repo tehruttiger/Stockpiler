@@ -75,7 +75,7 @@ for xfile in files:
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
 
-Version = "1.00b"
+Version = "1.0b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -156,6 +156,7 @@ with open('ItemNumbering.csv', 'rt') as f_input:
 	csv_input = csv.reader(f_input, delimiter=',')
 	# Skips first line
 	header = next(csv_input)
+	# Skips reserved line
 	reserved = next(csv_input)
 	for rowdata in csv_input:
 		items.data.append(rowdata)
@@ -171,13 +172,18 @@ with open('Filter.csv', 'rt') as f_input:
 		filter.append(rowdata)
 
 # Matches up filter value with appropriate items in items.data
+# for filteritem in range(len(filter)):
+for item in range(len(items.data)):
+	items.data[item].append(0)
+
 for filteritem in range(len(filter)):
 	# print(filter[filteritem])
 	try:
 		# print(filter[filteritem])
 		for item in range(len(items.data)):
 			if filter[filteritem][0] == items.data[item][0]:
-				items.data[item].extend(filter[filteritem][1])
+				items.data[item][17] = filter[filteritem][1]
+				# items.data[item].extend(filter[filteritem][1])
 	except:
 		print("failed to apply filters to items.data")
 
@@ -308,11 +314,13 @@ def Learn(LearnInt, image):
 	global LastStockpile
 	# grab whole screen and prepare for template matching
 	# COMMENT OUT THESE TWO LINES IF YOU ARE TESTING A SPECIFIC IMAGE
-	screen = np.array(ImageGrab.grab(bbox=None))
-	screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+	TestImage = False
+	# screen = np.array(ImageGrab.grab(bbox=None))
+	# screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 
 	# UNCOMMENT AND MODIFY LINE BELOW IF YOU ARE TESTING A SPECIFIC IMAGE
-	# screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-110247.png")), cv2.COLOR_RGB2GRAY)
+	screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-110247.png")), cv2.COLOR_RGB2GRAY)
+	TestImage = True
 
 	# WHEN USING OTHER RESOLUTIONS, GRAB THEM HERE
 	resx = 1920
@@ -332,7 +340,7 @@ def Learn(LearnInt, image):
 	for spot in range(len(numloc[0])):
 		# Stockpiles never displayed in upper left under State of the War area
 		# State of the War area throws false postives for icons
-		if numloc[1][spot] < (resx * .2) and numloc[0][spot] < (resy * .24):
+		if numloc[1][spot] < (resx * .2) and numloc[0][spot] < (resy * .24) and not TestImage:
 			pass
 		else:
 			print("x:", numloc[1][spot], " y:",numloc[0][spot])
@@ -430,7 +438,10 @@ def ItemScan(screen, garbage):
 	global LastStockpile
 
 	# UNCOMMENT IF TESTING A SPECIFIC IMAGE
-	# screen = cv2.cvtColor(np.array(Image.open("test.png")), cv2.COLOR_RGB2GRAY)
+	screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-101723.png")), cv2.COLOR_RGB2GRAY)
+
+	cv2.imshow("test", screen)
+	cv2.waitKey(0)
 
 	if menu.Set.get() == 0:
 		findshirtC = cv2.imread('CheckImages//Default//86C.png', cv2.IMREAD_GRAYSCALE)
@@ -475,10 +486,10 @@ def ItemScan(screen, garbage):
 		x = 0
 
 	# COMMENT OUT IF TESTING A SPECIFIC IMAGE
-	stockpile = screen[y - 32:1080, x - 11:x + 389]
+	# stockpile = screen[y - 32:1080, x - 11:x + 389]
 
 	# UNCOMMENT IF TESTING A SPECIFIC IMAGE
-	# stockpile = screen
+	stockpile = screen
 
 	# Grab this just in case you need to rerun the scan from Results tab
 	# LastStockpile = stockpile
@@ -565,7 +576,6 @@ def ItemScan(screen, garbage):
 	if items.ThisStockpileName != "None":
 		if menu.ImgExport.get() == 1:
 			cv2.imwrite('Stockpiles//' + items.ThisStockpileName + ' image.png', stockpile)
-
 		if FoundStockpileType in CrateList:
 			print("Crate Type")
 			# Grab all the crate CheckImages
@@ -577,6 +587,8 @@ def ItemScan(screen, garbage):
 		elif FoundStockpileType in SingleList:
 			print("Single Type")
 			# Grab all the individual items
+			# for item in range(len(items.data)):
+			# 	print(item)
 			StockpileImages = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[17]) for item in items.data]
 			print("Checking for:", StockpileImages)
 		else:
@@ -1252,8 +1264,8 @@ def IconPicker(image):
 	IconPickerFrame = ttk.Frame(IconPickerWindow)
 	IconPickerWindow.resizable(False, False)
 	IconPickerFrame.pack()
-	IconPickerWindow.grab_set()
-	IconPickerWindow.focus_force()
+	# IconPickerWindow.grab_set()
+	# IconPickerWindow.focus_force()
 
 	IconPickerFrame.grid_forget()
 	NewIconLabel = ttk.Label(IconPickerFrame, text="What's this?")
@@ -1294,7 +1306,7 @@ def IconPicker(image):
 			exec(itembtnttp)
 
 	IconPickerFrame.update()
-	IconPickerWindow.focus_force()
+	# IconPickerWindow.focus_force()
 	IconPickerWindow.wait_window()
 
 
@@ -1315,8 +1327,8 @@ def IndividualOrCrate(num,blah,image):
 	IndOrCrateWindow = Toplevel(StockpilerWindow)
 	IndOrCrateWindow.geometry(location)
 	IndOrCrateWindow.resizable(False, False)
-	IndOrCrateWindow.grab_set()
-	IndOrCrateWindow.focus_force()
+	# IndOrCrateWindow.grab_set()
+	# IndOrCrateWindow.focus_force()
 	IndOrCrateFrame = ttk.Frame(IndOrCrateWindow, style="TFrame")
 	IndOrCrateFrame.pack()
 	ForLabel = ttk.Label(IndOrCrateFrame, text="For:")
