@@ -14,6 +14,7 @@ from global_hotkeys import *
 import csv
 import re
 import xlsxwriter
+from tksheet import Sheet
 import threading
 
 
@@ -21,8 +22,13 @@ global stockpilename
 global PopupWindow
 global NewStockpileName
 global StockpileNameEntry
+global IconEntry
+global IconName
 global CurrentStockpileName
-
+global IconPickerWindow
+global IndOrCrateWindow
+global FilterFrame
+global LastStockpile
 
 class items(object):
 	data = []
@@ -30,6 +36,12 @@ class items(object):
 			   ('CheckImages//num3.png', "3"), ('CheckImages//num4.png', "4"), ('CheckImages//num5.png', "5"),
 			   ('CheckImages//num6.png', "6"), ('CheckImages//num7.png', "7"), ('CheckImages//num8.png', "8"),
 			   ('CheckImages//num9.png', "9"), ('CheckImages//numk.png', "k+"))
+	stockpilecontents = []
+	sortedcontents = []
+	slimcontents = []
+	ThisStockpileName = ""
+	FoundStockpileTypeName = ""
+	UIimages = []
 
 
 mouse = Controller()
@@ -63,14 +75,14 @@ for xfile in files:
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
 
-Version = "0.8b"
+Version = "1.00b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
 # Window width is based on generated UI.  If buttons change, width should change here.
 StockpilerWindow.geometry("537x600")
 # Width locked since button array doesn't adjust dynamically
-StockpilerWindow.resizable(width=False, height=True)
+StockpilerWindow.resizable(width=False, height=False)
 
 
 class menu(object):
@@ -85,6 +97,8 @@ class menu(object):
 	CSVExport = IntVar()
 	XLSXExport = IntVar()
 	ImgExport = IntVar()
+	Set = IntVar()
+	Learning = IntVar()
 
 
 s = ttk.Style()
@@ -99,13 +113,27 @@ s.configure("EnabledFaction.TButton", background="gray")
 s.configure("DisabledFaction.TButton", background="red2")
 s.configure("TScrollbar", troughcolor="grey20", arrowcolor="grey20", background="gray", bordercolor="grey15")
 s.configure("TFrame", background="black")
+s.configure("TCanvas", background="black")
 s.configure("TCheckbutton", background="black", foreground="grey75")
+s.configure("TWindow", background="black")
 s.map("TCheckbutton", foreground=[('!active', 'grey75'),('pressed', 'black'),
 								  ('active', 'black'), ('selected', 'green'), ('alternate', 'purple')],
 	  background=[ ('!active','black'),('pressed', 'grey75'), ('active', 'white'),
 				   ('selected', 'cyan'), ('alternate', 'pink')],
 	  indicatorcolor=[('!active', 'black'),('pressed', 'black'), ('selected','grey75')],
 	  indicatorbackground=[('!active', 'green'),('pressed', 'pink'), ('selected','red')])
+s.configure('TNotebook', background="grey25", foreground="grey15", borderwidth=0)
+s.map('TNotebook.Tab', foreground=[('active', 'black'), ('selected', 'black')],
+			background=[('active', 'grey80'), ('selected', 'grey65')])
+s.configure("TNotebook.Tab", background="grey40", foreground="black", borderwidth=0)
+s.configure('TRadiobutton', background='black', indicatorbackground='blue',
+			indicatorcolor='grey20', foreground='grey75', focuscolor='grey20')
+s.map("TRadiobutton", foreground=[('!active', 'grey75'),('pressed', 'black'), ('active', 'black'),
+								  ('selected', 'green'), ('alternate', 'purple')],
+	  background=[ ('!active','black'),('pressed', 'grey15'), ('active', 'white'),
+				   ('selected', 'cyan'), ('alternate', 'pink')])
+s.configure("TLabel", background="black", foreground="grey75")
+
 
 global hotkey
 global listener
@@ -128,8 +156,11 @@ with open('ItemNumbering.csv', 'rt') as f_input:
 	csv_input = csv.reader(f_input, delimiter=',')
 	# Skips first line
 	header = next(csv_input)
+	reserved = next(csv_input)
 	for rowdata in csv_input:
 		items.data.append(rowdata)
+		if os.path.exists("UI//" + str(rowdata[0]) + ".png"):
+			items.UIimages.append((rowdata[0], "UI//" + str(rowdata[0]) + ".png"))
 
 # Load filter values into new array
 with open('Filter.csv', 'rt') as f_input:
@@ -141,7 +172,7 @@ with open('Filter.csv', 'rt') as f_input:
 
 # Matches up filter value with appropriate items in items.data
 for filteritem in range(len(filter)):
-	# print(filter[item])
+	# print(filter[filteritem])
 	try:
 		# print(filter[filteritem])
 		for item in range(len(items.data)):
@@ -149,6 +180,9 @@ for filteritem in range(len(filter)):
 				items.data[item].extend(filter[filteritem][1])
 	except:
 		print("failed to apply filters to items.data")
+
+
+print(items.data[1])
 
 
 ### For troubleshooting
@@ -222,40 +256,161 @@ def GrabStockpileImage():
 	screen = np.array(ImageGrab.grab(bbox=None))
 	screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 	# Shirts are always in the same spot in every stockpile, but might be single or crates
-	findshirtC = cv2.imread('CheckImages//86C.png', cv2.IMREAD_GRAYSCALE)
-	findshirt = cv2.imread('CheckImages//86.png', cv2.IMREAD_GRAYSCALE)
-	resC = cv2.matchTemplate(screen, findshirtC, cv2.TM_CCOEFF_NORMED)
-	res = cv2.matchTemplate(screen, findshirt, cv2.TM_CCOEFF_NORMED)
-	threshold = .99
-	if np.amax(resC) > threshold:
-		print("Found Shirt Crate")
-		y, x = np.unravel_index(resC.argmax(), res.shape)
-	elif np.amax(res) > threshold:
-		print("Found Shirts")
-		y, x = np.unravel_index(res.argmax(), res.shape)
+	if menu.Set.get() == 0:
+		findshirtC = cv2.imread('CheckImages//Default//86C.png', cv2.IMREAD_GRAYSCALE)
+		findshirt = cv2.imread('CheckImages//Default//86.png', cv2.IMREAD_GRAYSCALE)
 	else:
-		print("Found NOTHING")
+		findshirtC = cv2.imread('CheckImages//Custom//86C.png', cv2.IMREAD_GRAYSCALE)
+		findshirt = cv2.imread('CheckImages//Custom//86.png', cv2.IMREAD_GRAYSCALE)
+	try:
+		resC = cv2.matchTemplate(screen, findshirtC, cv2.TM_CCOEFF_NORMED)
+	except:
+		print("Maybe you don't have the shirt crate")
+	try:
+		res = cv2.matchTemplate(screen, findshirt, cv2.TM_CCOEFF_NORMED)
+	except:
+		print("Maybe you don't have the individual shirt")
+	threshold = .99
+	FoundShirt = False
+	try:
+		if np.amax(res) > threshold:
+			print("Found Shirts")
+			y, x = np.unravel_index(res.argmax(), res.shape)
+			FoundShirt = True
+	except:
+		print("Don't have the individual shirts icon or not looking at a stockpile")
+	try:
+		if np.amax(resC) > threshold:
+			print("Found Shirt Crate")
+			y, x = np.unravel_index(resC.argmax(), res.shape)
+			FoundShirt = True
+	except:
+		print("Don't have the shirt crate icon or not looking at a stockpile")
+	if not FoundShirt:
+		print("Found nothing.  Either don't have shirt icon(s) or not looking at a stockpile")
 		y = 0
 		x = 0
 
-	stockpile = np.array(ImageGrab.grab(bbox=(x-11,y-32,x+389,1080)))
-	stockpile = cv2.cvtColor(stockpile, cv2.COLOR_BGR2RGB)
-	imagename = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
-	cv2.imwrite('test_' + imagename + '.png', stockpile)
-	# cv2.imwrite('test' + str(counter) + '.png', stockpile)
-	# cv2.imshow('shot',stockpile)
+	# If no stockpile was found, don't bother taking a screenshot
+	if x == 0 and y == 0:
+		print("Both 0's")
+		pass
+	else:
+		stockpile = np.array(ImageGrab.grab(bbox=(x-11,y-32,x+389,1080)))
+		stockpile = cv2.cvtColor(stockpile, cv2.COLOR_BGR2RGB)
+		imagename = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
+		cv2.imwrite('test_' + imagename + '.png', stockpile)
+
+
+def Learn(LearnInt, image):
+	global counter
+	global IconName
+	global LastStockpile
+	# grab whole screen and prepare for template matching
+	# COMMENT OUT THESE TWO LINES IF YOU ARE TESTING A SPECIFIC IMAGE
+	screen = np.array(ImageGrab.grab(bbox=None))
+	screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+
+	# UNCOMMENT AND MODIFY LINE BELOW IF YOU ARE TESTING A SPECIFIC IMAGE
+	# screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-110247.png")), cv2.COLOR_RGB2GRAY)
+
+	# WHEN USING OTHER RESOLUTIONS, GRAB THEM HERE
+	resx = 1920
+	resy = 1080
+
+	if LearnInt != "":
+		pass
+	else:
+		screen = LastStockpile
+
+	numbox = cv2.imread('CheckImages//NumBox.png', cv2.IMREAD_GRAYSCALE)
+	res = cv2.matchTemplate(screen, numbox, cv2.TM_CCOEFF_NORMED)
+	threshold = .99
+	numloc = np.where(res >= threshold)
+	print("found them here:", numloc)
+	print(len(numloc[0]))
+	for spot in range(len(numloc[0])):
+		# Stockpiles never displayed in upper left under State of the War area
+		# State of the War area throws false postives for icons
+		if numloc[1][spot] < (resx * .2) and numloc[0][spot] < (resy * .24):
+			pass
+		else:
+			print("x:", numloc[1][spot], " y:",numloc[0][spot])
+			# cv2.imshow('icon', screen[int(numloc[0][spot]+2):int(numloc[0][spot]+36), int(numloc[1][spot]-38):numloc[1][spot]-4])
+			# cv2.waitKey(0)
+			currenticon = screen[int(numloc[0][spot]+2):int(numloc[0][spot]+36), int(numloc[1][spot]-38):numloc[1][spot]-4]
+			print("currenticon:", currenticon.shape)
+			if menu.Set.get() == 0:
+				folder = "CheckImages//Default//"
+			else:
+				folder = "CheckImages//Custom//"
+			Found = False
+			for imagefile in os.listdir(folder):
+				checkimage = cv2.imread(folder + imagefile, cv2.IMREAD_GRAYSCALE)
+				result = cv2.matchTemplate(currenticon, checkimage, cv2.TM_CCOEFF_NORMED)
+				threshold = .99
+				if np.amax(result) > threshold:
+					print("Found:", imagefile)
+					Found = True
+					break
+			if not Found:
+				print("Not found, should launch IconPicker")
+				IconPicker(currenticon)
+	# cv2.imshow('blah', screen)
 	# cv2.waitKey(0)
-	# counter += 1
+	SearchImage(1, screen)
+	CreateButtons("blah")
 
 
-def SearchImage():
+# def WhichItem(image):
+# 	global PopupWindow
+# 	global IconEntry
+# 	root_x = StockpilerWindow.winfo_rootx()
+# 	root_y = StockpilerWindow.winfo_rooty()
+# 	if root_x == root_y == -32000:
+# 		win_x = 100
+# 		win_y = 100
+# 	else:
+# 		win_x = root_x - 20
+# 		win_y = root_y + 125
+# 	location = "+" + str(win_x) + "+" + str(win_y)
+# 	PopupWindow = Toplevel(StockpilerWindow)
+# 	PopupWindow.geometry(location)
+# 	PopupFrame = ttk.Frame(PopupWindow)
+# 	PopupWindow.resizable(False, False)
+# 	PopupFrame.pack()
+# 	PopupWindow.grab_set()
+# 	PopupWindow.focus_force()
+# 	im = Image.fromarray(image)
+# 	tkimage = ImageTk.PhotoImage(im)
+# 	NewIconLabel = ttk.Label(PopupFrame, image=tkimage, style="TLabel")
+# 	NewIconLabel.image = tkimage
+# 	NewIconLabel.grid(row=5, column=0)
+# 	WhatLabel = ttk.Label(PopupFrame, text="What is it?", style="TLabel")
+# 	WhatLabel.grid(row=7, column=0)
+# 	IconEntry = ttk.Entry(PopupFrame)
+# 	IconEntry.grid(row=8, column=0)
+# 	OKButton = ttk.Button(PopupFrame, text="OK", command=lambda: SaveIconAndDestroy(image), style="EnabledButton.TButton")
+# 	PopupWindow.bind('<Return>', lambda event, a=image: SaveIconAndDestroy(a))
+# 	IconEntry.focus()
+# 	OKButton.grid(row=10, column=0, sticky="NSEW")
+# 	PopupWindow.wait_window()
+
+
+def SearchImage(Pass, LearnImage):
 	global stockpilename
 	global NewStockpileName
 	global PopupWindow
 	global CurrentStockpileName
 	global threadnum
 
-	screen = np.array(ImageGrab.grab(bbox=None))
+	if Pass != "":
+		screen = LearnImage
+		# cv2.imshow('blah', screen)
+		# cv2.waitKey(0)
+	else:
+		screen = np.array(ImageGrab.grab(bbox=None))
+		screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 	garbage = "blah"
 	args = (screen, garbage)
 	# Threading commands are generated via text since each thread needs a distinct name, created using threadcounter
@@ -272,25 +427,63 @@ def SearchImage():
 
 
 def ItemScan(screen, garbage):
-	screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-	findshirtC = cv2.imread('CheckImages//86C.png', cv2.IMREAD_GRAYSCALE)
-	findshirt = cv2.imread('CheckImages//86.png', cv2.IMREAD_GRAYSCALE)
-	resC = cv2.matchTemplate(screen, findshirtC, cv2.TM_CCOEFF_NORMED)
-	res = cv2.matchTemplate(screen, findshirt, cv2.TM_CCOEFF_NORMED)
-	threshold = .99
-	if np.amax(resC) > threshold:
-		print("Found Shirt Crate")
-		y, x = np.unravel_index(resC.argmax(), res.shape)
-	elif np.amax(res) > threshold:
-		print("Found Shirts")
-		y, x = np.unravel_index(res.argmax(), res.shape)
+	global LastStockpile
+
+	# UNCOMMENT IF TESTING A SPECIFIC IMAGE
+	# screen = cv2.cvtColor(np.array(Image.open("test.png")), cv2.COLOR_RGB2GRAY)
+
+	if menu.Set.get() == 0:
+		findshirtC = cv2.imread('CheckImages//Default//86C.png', cv2.IMREAD_GRAYSCALE)
+		findshirt = cv2.imread('CheckImages//Default//86.png', cv2.IMREAD_GRAYSCALE)
 	else:
-		print("Found NOTHING")
+		try:
+			findshirtC = cv2.imread('CheckImages//Custom//86C.png', cv2.IMREAD_GRAYSCALE)
+		except:
+			print("You don't have the Shirt crate yet")
+		try:
+			findshirt = cv2.imread('CheckImages//Custom//86.png', cv2.IMREAD_GRAYSCALE)
+		except:
+			print("You don't have the individual Shirt yet")
+	try:
+		resC = cv2.matchTemplate(screen, findshirtC, cv2.TM_CCOEFF_NORMED)
+	except:
+		print("Looks like you're missing the shirt crate")
+	try:
+		res = cv2.matchTemplate(screen, findshirt, cv2.TM_CCOEFF_NORMED)
+	except:
+		print("Looks like you're missing the individual shirts")
+	threshold = .99
+	FoundShirt = False
+	try:
+		if np.amax(res) > threshold:
+			print("Found Shirts")
+			y, x = np.unravel_index(res.argmax(), res.shape)
+			print(y, x)
+			FoundShirt = True
+	except:
+		print("Don't have the individual shirts icon or not looking at a stockpile")
+	try:
+		if np.amax(resC) > threshold:
+			print("Found Shirt Crate")
+			y, x = np.unravel_index(resC.argmax(), res.shape)
+			FoundShirt = True
+	except:
+		print("Don't have the shirt crate icon or not looking at a stockpile")
+	if not FoundShirt:
+		print("Found nothing.  Either don't have shirt icon(s) or not looking at a stockpile")
 		y = 0
 		x = 0
 
-	stockpile = np.array(ImageGrab.grab(bbox=(x - 11, y - 32, x + 389, 1080)))
-	stockpile = cv2.cvtColor(stockpile, cv2.COLOR_BGR2GRAY)
+	# COMMENT OUT IF TESTING A SPECIFIC IMAGE
+	stockpile = screen[y - 32:1080, x - 11:x + 389]
+
+	# UNCOMMENT IF TESTING A SPECIFIC IMAGE
+	# stockpile = screen
+
+	# Grab this just in case you need to rerun the scan from Results tab
+	# LastStockpile = stockpile
+	LastStockpile = screen
+
 	# Image clips for each type of stockpile should be in this array below
 	StockpileTypes = (('CheckImages//Seaport.png', 'Seaport', 0), ('Checkimages//StorageDepot.png', 'Storage Depot', 1),
 					  ('Checkimages//Outpost.png', 'Outpost', 2), ('Checkimages//Townbase.png', 'Town Base', 3),
@@ -308,7 +501,7 @@ def ItemScan(screen, garbage):
 		if np.amax(res) > typethreshold:
 			y, x = np.unravel_index(res.argmax(), res.shape)
 			FoundStockpileType = image[2]
-			FoundStockpileTypeName = image[1]
+			items.FoundStockpileTypeName = image[1]
 			# print(image[1])
 			if image[1] == "Seaport" or image[1] == "Storage Depot":
 				findtab = cv2.imread('CheckImages//Tab.png', cv2.IMREAD_GRAYSCALE)
@@ -332,7 +525,7 @@ def ItemScan(screen, garbage):
 							if np.amax(res) > threshold:
 								# Named stockpile is one already seen
 								found = 1
-								ThisStockpileName = (image[11:(len(image) - 4)])
+								items.ThisStockpileName = (image[11:(len(image) - 4)])
 					if found != 1:
 						newstockpopup(stockpilename)
 						PopupWindow.wait_window()
@@ -341,20 +534,20 @@ def ItemScan(screen, garbage):
 						cv2.imwrite('Stockpiles//' + NewStockpileName + '.png', stockpilename)
 						if menu.ImgExport.get() == 1:
 							cv2.imwrite('Stockpiles//' + NewStockpileName + ' image.png', stockpile)
-						ThisStockpileName = NewStockpileName
+						items.ThisStockpileName = NewStockpileName
 				else:
 					# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
-					ThisStockpileName = FoundStockpileTypeName
+					items.ThisStockpileName = items.FoundStockpileTypeName
 			else:
 				# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
-				ThisStockpileName = FoundStockpileTypeName
+				items.ThisStockpileName = items.FoundStockpileTypeName
 			# StockpileName = StockpileNameEntry.get()
 			# cv2.imwrite('Stockpiles//' + StockpileName + '.png', stockpilename)
 			break
 		else:
 			# print("Didn't find",image[1])
 			FoundStockpileType = "None"
-			ThisStockpileName = "None"
+			items.ThisStockpileName = "None"
 			pass
 
 	# These stockpile types allow for crates (ie: Seaport)
@@ -364,23 +557,27 @@ def ItemScan(screen, garbage):
 
 	start = datetime.datetime.now()
 
-	print(ThisStockpileName)
-	if ThisStockpileName != "None":
+	print(items.ThisStockpileName)
+	if menu.Set.get() == 0:
+		folder = "CheckImages//Default//"
+	else:
+		folder = "CheckImages//Custom//"
+	if items.ThisStockpileName != "None":
 		if menu.ImgExport.get() == 1:
-			cv2.imwrite('Stockpiles//' + ThisStockpileName + ' image.png', stockpile)
+			cv2.imwrite('Stockpiles//' + items.ThisStockpileName + ' image.png', stockpile)
 
 		if FoundStockpileType in CrateList:
 			print("Crate Type")
 			# Grab all the crate CheckImages
-			StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[18]) for item in items.data if str(item[18]) == "0"]
+			StockpileImages = [(str(item[0]), folder + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[17]) for item in items.data if str(item[17]) == "0"]
 			# Grab all the individual vehicles and shippables
-			StockpileImagesAppend = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data if (str(item[9]) == "7" and str(item[18]) == "0") or (str(item[9]) == "8" and str(item[18]) == "0")]
+			StockpileImagesAppend = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[17]) for item in items.data if (str(item[9]) == "7" and str(item[17]) == "0") or (str(item[9]) == "8" and str(item[17]) == "0")]
 			StockpileImages.extend(StockpileImagesAppend)
 			print("Checking for:", StockpileImages)
 		elif FoundStockpileType in SingleList:
 			print("Single Type")
 			# Grab all the individual items
-			StockpileImages = [(str(item[0]),"CheckImages//" + str(item[0]) + ".png", item[3], item[8], item[18]) for item in items.data]
+			StockpileImages = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[17]) for item in items.data]
 			print("Checking for:", StockpileImages)
 		else:
 			print("No idea what type...")
@@ -454,56 +651,59 @@ def ItemScan(screen, garbage):
 					else:
 						itemsort = 15
 					if image[1][(len(image[1])-5):(len(image[1])-4)] == "C":
-						stockpilecontents.append(tuple((image[0], image[2], quantity, itemsort, 1)))
+						stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 1)))
 					else:
-						stockpilecontents.append(tuple((image[0], image[2], quantity, itemsort, 0)))
+						stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 0)))
 			except:
 				# print("Exception for some reason")
 				pass
 				# print(len(numberlist))
 
 		print("Stockpile Contents:", stockpilecontents)
-		sortedcontents = sorted(stockpilecontents, key=lambda x: (x[3], x[4], -x[2]))
-		print("Sorted Contents:", sortedcontents)
+		items.sortedcontents = list(sorted(stockpilecontents, key=lambda x: (x[3], x[4], -x[2])))
+		print("Sorted Contents:", items.sortedcontents)
 		# Here's where we sort stockpilecontents by category, then number, so they spit out the same as screenshot
 		# Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
-		if ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
-			ThisStockpileName = "Public"
+		if items.ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
+			items.ThisStockpileName = "Public"
 
 		if menu.CSVExport.get() == 1:
-			stockpilefile = open("Stockpiles//" + ThisStockpileName + ".csv", 'w')
-			stockpilefile.write(ThisStockpileName + ",\n")
-			stockpilefile.write(FoundStockpileTypeName + ",\n")
+			stockpilefile = open("Stockpiles//" + items.ThisStockpileName + ".csv", 'w')
+			stockpilefile.write(items.ThisStockpileName + ",\n")
+			stockpilefile.write(items.FoundStockpileTypeName + ",\n")
 			stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
 			stockpilefile.close()
 
 			# Writing to both csv and xlsx, only the quantity and name is written
 			# If more elements from items.data are added to stockpilecontents, they could be added to these exports as fields
-			with open("Stockpiles//" + ThisStockpileName + ".csv", 'a') as fp:
+			with open("Stockpiles//" + items.ThisStockpileName + ".csv", 'a') as fp:
 				# fp.write('\n'.join('{},{},{}'.format(x[0],x[1],x[2]) for x in stockpilecontents))
 				############### THIS ONE DOES IN REGULAR ORDER ############
 				# fp.write('\n'.join('{},{}'.format(x[1],x[2]) for x in stockpilecontents))
 				############### THIS ONE DOES IN SORTED ORDER #############
-				fp.write('\n'.join('{},{}'.format(x[1], x[2]) for x in sortedcontents))
+				fp.write('\n'.join('{},{}'.format(x[1], x[2]) for x in items.sortedcontents))
 			fp.close()
 
 		if menu.XLSXExport.get() == 1:
-			workbook = xlsxwriter.Workbook("Stockpiles//" + ThisStockpileName + ".xlsx")
+			workbook = xlsxwriter.Workbook("Stockpiles//" + items.ThisStockpileName + ".xlsx")
 			worksheet = workbook.add_worksheet()
-			worksheet.write(0, 0, ThisStockpileName)
-			worksheet.write(1, 0, FoundStockpileTypeName)
+			worksheet.write(0, 0, items.ThisStockpileName)
+			worksheet.write(1, 0, items.FoundStockpileTypeName)
 			worksheet.write(2, 0, str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 			row = 3
-			for col, data in enumerate(sortedcontents):
+			for col, data in enumerate(items.sortedcontents):
 				# print("col", col, " data", data)
 				worksheet.write(row + col, 0, data[1])
 				worksheet.write(row + col, 1, data[2])
 			workbook.close()
 		print(datetime.datetime.now()-start)
 		print("Items Checked:",checked)
+		items.slimcontents = items.sortedcontents
+		for sublist in items.slimcontents:
+			del sublist[3:5]
+		ResultSheet.set_sheet_data(data=items.slimcontents)
 	else:
 		popup("NoStockpile")
-
 
 
 def on_activate():
@@ -513,7 +713,14 @@ def on_activate():
 
 def on_activate_two():
 	# print("Second Button Hit")
-	SearchImage()
+	LearnOrNot()
+
+
+def LearnOrNot():
+	if menu.Learning.get() == 0:
+		SearchImage("", "")
+	else:
+		Learn(0, "img")
 
 
 def newstockpopup(image):
@@ -538,12 +745,12 @@ def newstockpopup(image):
 	PopupWindow.focus_force()
 	im = Image.fromarray(image)
 	tkimage = ImageTk.PhotoImage(im)
-	NewStockpileLabel = ttk.Label(PopupFrame, text="Looks like a new stockpile.")
+	NewStockpileLabel = ttk.Label(PopupFrame, text="Looks like a new stockpile.", style="TLabel")
 	NewStockpileLabel.grid(row=2, column=0)
-	StockpileNameImage = ttk.Label(PopupFrame, image=tkimage)
+	StockpileNameImage = ttk.Label(PopupFrame, image=tkimage, style="TLabel")
 	StockpileNameImage.image = tkimage
 	StockpileNameImage.grid(row=5, column=0)
-	StockpileNameLabel = ttk.Label(PopupFrame, text="What is the name of the stockpile?")
+	StockpileNameLabel = ttk.Label(PopupFrame, text="What is the name of the stockpile?", style="TLabel")
 	StockpileNameLabel.grid(row=7, column=0)
 	StockpileNameEntry = ttk.Entry(PopupFrame)
 	StockpileNameEntry.grid(row=8, column=0)
@@ -572,10 +779,10 @@ def popup(type):
 	PopupWindow.grab_set()
 	PopupWindow.focus_force()
 	if type == "NoFox":
-		NoFoxholeLabel = ttk.Label(PopupFrame, text="Foxhole isn't running.\nLaunch Foxhole and retry.")
+		NoFoxholeLabel = ttk.Label(PopupFrame, text="Foxhole isn't running.\nLaunch Foxhole and retry.", style="TLabel")
 		NoFoxholeLabel.grid(row=2, column=0)
 	elif type == "NoStockpile":
-		NoStockpileLabel = ttk.Label(PopupFrame, text="Didn't detect stockpile.\nHover over a stockpile on the map and retry.")
+		NoStockpileLabel = ttk.Label(PopupFrame, text="Didn't detect stockpile.\nHover over a stockpile on the map and retry.", style="TLabel")
 		NoStockpileLabel.grid(row=2, column=0)
 	OKButton = ttk.Button(PopupFrame, text="OK", command=lambda: Destroy("blah"))
 	PopupWindow.bind('<Return>', Destroy)
@@ -590,9 +797,61 @@ def NameAndDestroy(event):
 	PopupWindow.destroy()
 
 
+def SaveIconAndDestroy(image):
+	global PopupWindow
+	global IconEntry
+	global IconName
+	IconName = IconEntry.get()
+	if IconName != "":
+		if menu.Set.get() == 0:
+			folder = "CheckImages//Default//"
+		else:
+			folder = "CheckImages//Custom//"
+		cv2.imwrite(folder + IconName + '.png', image)
+	PopupWindow.destroy()
+
+
+def CancelIcon(event):
+	global PopupWindow
+
+
 def Destroy(event):
 	global PopupWindow
 	PopupWindow.destroy()
+
+
+def CSVExport():
+	if items.stockpilecontents != []:
+		stockpilefile = open("Stockpiles//" + items.ThisStockpileName + ".csv", 'w')
+		stockpilefile.write(items.ThisStockpileName + ",\n")
+		stockpilefile.write(items.FoundStockpileTypeName + ",\n")
+		stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
+		stockpilefile.close()
+
+		# Writing to both csv and xlsx, only the quantity and name is written
+		# If more elements from items.data are added to stockpilecontents, they could be added to these exports as fields
+		with open("Stockpiles//" + items.ThisStockpileName + ".csv", 'a') as fp:
+			# fp.write('\n'.join('{},{},{}'.format(x[0],x[1],x[2]) for x in stockpilecontents))
+			############### THIS ONE DOES IN REGULAR ORDER ############
+			# fp.write('\n'.join('{},{}'.format(x[1],x[2]) for x in stockpilecontents))
+			############### THIS ONE DOES IN SORTED ORDER #############
+			fp.write('\n'.join('{},{}'.format(x[1], x[2]) for x in items.sortedcontents))
+		fp.close()
+
+
+def XLSXExport():
+	if items.stockpilecontents != []:
+		workbook = xlsxwriter.Workbook("Stockpiles//" + items.ThisStockpileName + ".xlsx")
+		worksheet = workbook.add_worksheet()
+		worksheet.write(0, 0, items.ThisStockpileName)
+		worksheet.write(1, 0, items.FoundStockpileTypeName)
+		worksheet.write(2, 0, str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+		row = 3
+		for col, data in enumerate(items.sortedcontents):
+			# print("col", col, " data", data)
+			worksheet.write(row + col, 0, data[1])
+			worksheet.write(row + col, 1, data[2])
+		workbook.close()
 
 
 # Created this function in order to test changing the hotkey while the program is running
@@ -727,48 +986,108 @@ def Destroy(event):
 
 
 def _on_mousewheel(event):
-	canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+	FilterCanvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
+
+# OuterFrame = ttk.Frame(StockpilerWindow)
+# OuterFrame.pack(fill=BOTH, expand=1)
+# canvas = Canvas(OuterFrame)
+# canvas.bind_all("<MouseWheel>", _on_mousewheel)
+# canvas.pack()
+# scrollbar = ttk.Scrollbar(OuterFrame, orient="vertical", command=canvas.yview)
+# StockpileFrame = ttk.Frame(canvas, style="TFrame")
 
 OuterFrame = ttk.Frame(StockpilerWindow)
 OuterFrame.pack(fill=BOTH, expand=1)
-canvas = Canvas(OuterFrame)
-canvas.bind_all("<MouseWheel>", _on_mousewheel)
-canvas.pack()
-scrollbar = ttk.Scrollbar(OuterFrame, orient="vertical", command=canvas.yview)
-StockpileFrame = ttk.Frame(canvas, style="TFrame")
+TabControl = ttk.Notebook(OuterFrame)
+FilterTab = ttk.Frame(TabControl)
+TabControl.add(FilterTab, text="Filter")
+TableTab = ttk.Frame(TabControl)
+TabControl.add(TableTab, text="Results")
+TabControl.pack(expand=1, fill=BOTH)
 
+FilterCanvas = Canvas(FilterTab)
+TableCanvas = Canvas(TableTab)
 
-StockpileFrame.bind(
-	"<Configure>",
-	lambda e: canvas.configure(
-		scrollregion=canvas.bbox("all")
-	)
-)
+FilterCanvas.bind_all("<MouseWheel>", _on_mousewheel)
+scrollbar = ttk.Scrollbar(FilterTab, orient=VERTICAL, command=FilterCanvas.yview)
+scrollbar.pack(side="right", fill="y")
+# StockpileFrame = ttk.Frame(FilterCanvas, style="TFrame")
+
+FilterCanvas.configure(scrollregion=FilterCanvas.bbox('all'), yscrollcommand=scrollbar.set)
+FilterCanvas.bind('<Configure>', lambda e: FilterCanvas.configure(scrollregion=FilterCanvas.bbox('all')))
+
 
 # If enough items are added, then the height below will have to be modified to account for any new button rows
 # Remember to make sure the Quit button is displayed
-canvas.create_window((0, 0), window=StockpileFrame, anchor="nw", height="1691p", width="550p")
-canvas.configure(yscrollcommand=scrollbar.set)
-OuterFrame.pack()
-scrollbar.pack(side="right", fill="y")
-canvas.pack(side="left", fill="both", expand=1)
+# FilterCanvas.create_window((0, 0), window=StockpileFrame, anchor="nw", height="1691p", width="550p")
+# FilterCanvas.configure(yscrollcommand=scrollbar.set)
+# OuterFrame.pack()
+# scrollbar.pack(side="right", fill="y")
+# FilterCanvas.pack(side="left", fill="both", expand=1)
 
+
+FilterCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+TableCanvas.pack(side=TOP, fill=BOTH, expand=1)
+
+FilterFrame = ttk.Frame(FilterCanvas)
+TableFrame = ttk.Frame(TableCanvas)
+
+FilterCanvas.create_window((0, 0), window=FilterFrame, anchor="nw", height="1837p", width="550p")
+# TableCanvas.create_window((0, 0), window=TableFrame, anchor="nw", height="432", width="402p")
+TableCanvas.create_window((0, 0), window=TableFrame, anchor="nw", height="410p", width="402p")
+
+FilterFrame.bind(
+	"<Configure>",
+	lambda e: FilterCanvas.configure(
+		scrollregion=FilterCanvas.bbox("all")
+	)
+)
+
+fillerdata = (0)
+TableBottom = ttk.Frame(TableCanvas)
+TableBottom.columnconfigure(0, weight=1)
+TableBottom.columnconfigure(1, weight=1)
+TableBottom.columnconfigure(2, weight=1)
+CSVButton = ttk.Button(TableBottom, text="Re-Export CSV", command=CSVExport, style="EnabledButton.TButton")
+CSVButton.grid(row=0, column=0, pady=5, sticky=NSEW)
+XSLXButton = ttk.Button(TableBottom, text="Re-Export XLSX", command=XLSXExport, style="EnabledButton.TButton")
+XSLXButton.grid(row=0, column=1, pady=5, sticky=NSEW)
+ReRunLearn = ttk.Button(TableBottom, text="Re-Run w/ Learn", command=lambda: Learn(1, LastStockpile))
+ReRunLearn.grid(row=0, column=2, pady=5, sticky=NSEW)
+
+
+# TableBottom.pack(expand=True, fill='x', side=BOTTOM)
+TableBottom.pack(fill='x', side=BOTTOM)
+
+
+ResultSheet = Sheet(TableFrame, data=fillerdata)
+ResultSheet.enable_bindings()
+ResultSheet.pack(expand=True, fill='both')
+ResultSheet.set_options(table_bg="grey75", header_bg="grey55", index_bg="grey55", top_left_bg="grey15", frame_bg="grey15")
 
 def SaveFilter():
 	os.remove("Filter.csv")
 	with open("Filter.csv", "w") as filterfile:
 		filterfile.write("Number,Filter\n")
 		for line in range(len(items.data)):
-			filterfile.write(str(items.data[line][0]) + "," + str(items.data[line][18]) + "\n")
+			try:
+				filterfile.write(str(items.data[line][0]) + "," + str(items.data[line][17]) + "\n")
+			except:
+				print("Fail", line)
 	with open("Config.txt", "w") as exportfile:
 		exportfile.write(str(menu.CSVExport.get()) + "\n")
 		exportfile.write(str(menu.XLSXExport.get()) + "\n")
 		exportfile.write(str(menu.ImgExport.get()) + "\n")
+		exportfile.write(str(menu.Set.get()) + "\n")
+		exportfile.write(str(menu.Learning.get()) + "\n")
+	CreateButtons("")
 
 
 def CreateButtons(self):
-	StockpileFrame.grid_forget()
+	global FilterFrame
+	for widgets in FilterFrame.winfo_children():
+		widgets.destroy()
 	menu.iconrow = 1
 	menu.iconcolumn = 0
 	menu.lastcat = 0
@@ -776,16 +1095,25 @@ def CreateButtons(self):
 	menu.icons = []
 	sortedicons = []
 	counter = 0
+	if menu.Set.get() == 0:
+		folder = "CheckImages//Default//"
+	else:
+		folder = "CheckImages//Custom//"
 	# print("fresh menu", menu.icons)
 	# print("fresh sorted", sortedicons)
+	# print(items.data[1])
 	for i in range(len(items.data)):
 		# print("i",i)
 		for x in items.data:
 			# print("x",x)
 			if x[0] == str(i):
 				# print("Found",i)
-				if os.path.exists("CheckImages//" + str(i) + ".png"):
-					menu.icons.append((i, "CheckImages//" + str(i) + ".png", int(x[9]), int(x[10]), int(x[18]), str(x[3]), str(x[8])))
+				if os.path.exists(folder + str(i) + ".png") or os.path.exists(folder + str(i) + "C.png"):
+					try:
+						menu.icons.append((i, folder + str(i) + ".png", int(x[9]), int(x[10]), int(x[17]), str(x[3]), str(x[8])))
+					except:
+						print(x[17])
+						print("oops", i)
 			# filter.append((i, 0))
 			# print(x[3],x[9],x[10])
 
@@ -799,16 +1127,24 @@ def CreateButtons(self):
 	# XLSXExport = IntVar()
 	# ImgExport = IntVar()
 
-	CSVCheck = ttk.Checkbutton(StockpileFrame, text="CSV?", variable=menu.CSVExport)
+	SetLabel = ttk.Label(FilterFrame, text="Icon set?", style="TLabel")
+	SetLabel.grid(row=menu.iconrow, column=0)
+	DefaultRadio = ttk.Radiobutton(FilterFrame, text="Default", variable=menu.Set, value=0)
+	DefaultRadio.grid(row=menu.iconrow, column=1)
+	CustomRadio = ttk.Radiobutton(FilterFrame, text="Custom", variable=menu.Set, value=1)
+	CustomRadio.grid(row=menu.iconrow, column=2)
+	LearningCheck = ttk.Checkbutton(FilterFrame, text="Learning Mode?", variable=menu.Learning)
+	LearningCheck.grid(row=menu.iconrow, column=3, columnspan=2)
+	CSVCheck = ttk.Checkbutton(FilterFrame, text="CSV?", variable=menu.CSVExport)
 	CSVCheck.grid(row=menu.iconrow, column=5)
-	XLSXCheck = ttk.Checkbutton(StockpileFrame, text="XLSX?", variable=menu.XLSXExport)
+	XLSXCheck = ttk.Checkbutton(FilterFrame, text="XLSX?", variable=menu.XLSXExport)
 	XLSXCheck.grid(row=menu.iconrow, column=6)
-	ImgCheck = ttk.Checkbutton(StockpileFrame, text="Image?", variable=menu.ImgExport)
+	ImgCheck = ttk.Checkbutton(FilterFrame, text="Image?", variable=menu.ImgExport)
 	ImgCheck.grid(row=menu.iconrow, column=7)
 
 	menu.iconrow += 1
 	SaveImg = PhotoImage(file="UI/Save.png")
-	SaveButton = ttk.Button(StockpileFrame, image=SaveImg, command=SaveFilter)
+	SaveButton = ttk.Button(FilterFrame, image=SaveImg, command=SaveFilter)
 	SaveButton.image = SaveImg
 	SaveButton.grid(row=menu.iconrow, column=7, columnspan=1, pady=5)
 	SaveButton_ttp = CreateToolTip(SaveButton, 'Save Current Filter and Export Settings')
@@ -817,22 +1153,22 @@ def CreateButtons(self):
 	# print(sortedicons)
 	if menu.faction[0] == 0:
 		Wimg = PhotoImage(file="UI//W0.png")
-		WardenButton = ttk.Button(StockpileFrame, image=Wimg, style="EnabledFaction.TButton")
+		WardenButton = ttk.Button(FilterFrame, image=Wimg, style="EnabledFaction.TButton")
 		WardenButton.image = Wimg
 	else:
 		Wimg = PhotoImage(file="UI//W1.png")
-		WardenButton = ttk.Button(StockpileFrame, image=Wimg, style="DisabledFaction.TButton")
+		WardenButton = ttk.Button(FilterFrame, image=Wimg, style="DisabledFaction.TButton")
 		WardenButton.image = Wimg
 	WardenButton["command"] = lambda WardenButton=WardenButton: open_this("W", WardenButton)
 	WardenButton.grid(row=menu.iconrow, column=0, columnspan=1, pady=5)
 	WardenButton_ttp = CreateToolTip(WardenButton, 'Enable/Disable Warden-only Items')
 	if menu.faction[1] == 0:
 		Cimg = PhotoImage(file="UI//C0.png")
-		ColonialButton = ttk.Button(StockpileFrame, image=Cimg, style="EnabledFaction.TButton")
+		ColonialButton = ttk.Button(FilterFrame, image=Cimg, style="EnabledFaction.TButton")
 		ColonialButton.image = Cimg
 	else:
 		Cimg = PhotoImage(file="UI//C1.png")
-		ColonialButton = ttk.Button(StockpileFrame, image=Cimg, style="DisabledFaction.TButton")
+		ColonialButton = ttk.Button(FilterFrame, image=Cimg, style="DisabledFaction.TButton")
 		ColonialButton.image = Cimg
 	ColonialButton["command"] = lambda ColonialButton=ColonialButton: open_this("C", ColonialButton)
 	ColonialButton.grid(row=menu.iconrow, column=1, columnspan=1, pady=5)
@@ -841,17 +1177,17 @@ def CreateButtons(self):
 	for i in range(len(sortedicons)):
 		# print("comparison", str(icons[i][2]), str(menu.lastcat))
 		if str(sortedicons[i][2]) != str(menu.lastcat):
-			menu.lastcat += 1
+			menu.lastcat = int(sortedicons[i][2])
 			menu.iconrow += 1
 			try:
-				catsep = ttk.Separator(StockpileFrame, orient=HORIZONTAL)
+				catsep = ttk.Separator(FilterFrame, orient=HORIZONTAL)
 				catsep.grid(row=menu.iconrow, columnspan=8, sticky="ew", pady=10)
 				menu.iconrow += 1
 				catimg = PhotoImage(file="UI//cat" + str(menu.lastcat) + ".png")
 				if menu.category[menu.lastcat][1] == 0:
-					catbtn = ttk.Button(StockpileFrame, image=catimg, style="EnabledCategory.TButton")
+					catbtn = ttk.Button(FilterFrame, image=catimg, style="EnabledCategory.TButton")
 				else:
-					catbtn = ttk.Button(StockpileFrame, image=catimg, style="DisabledCategory.TButton")
+					catbtn = ttk.Button(FilterFrame, image=catimg, style="DisabledCategory.TButton")
 				catbtn.image = catimg
 				counter += 1
 				catbtn["command"] = lambda i=i, catbtn=catbtn: open_this(str("cat-" + str(sortedicons[i][2])), catbtn)
@@ -866,11 +1202,11 @@ def CreateButtons(self):
 		if os.path.exists("UI//" + str(sortedicons[i][0]) + ".png"):
 			img = PhotoImage(file="UI//" + str(sortedicons[i][0]) + ".png")
 			if sortedicons[i][4] == 0:
-				btn = ttk.Button(StockpileFrame, image=img, style="EnabledButton.TButton")
+				btn = ttk.Button(FilterFrame, image=img, style="EnabledButton.TButton")
 			elif sortedicons[i][4] == 1:
-				btn = ttk.Button(StockpileFrame, image=img, style="ManualDisabledButton.TButton")
+				btn = ttk.Button(FilterFrame, image=img, style="ManualDisabledButton.TButton")
 			else:
-				btn = ttk.Button(StockpileFrame, image=img, style="DisabledButton.TButton")
+				btn = ttk.Button(FilterFrame, image=img, style="DisabledButton.TButton")
 			counter += 1
 
 
@@ -890,6 +1226,129 @@ def CreateButtons(self):
 			itembtnttp = ("item" + str(counter) + "_ttp = CreateToolTip(btn, '" + tooltiptext + "')")
 			exec(itembtnttp)
 			menu.itembuttons.extend((btn, sortedicons[i][0], sortedicons[i][2]))
+	QuitButton = ttk.Button(FilterFrame, text="Quit", style="EnabledButton.TButton", command=lambda: StockpilerWindow.quit())
+	QuitButton.grid(row=500, column=0, columnspan=10, sticky="NSEW")
+	FilterFrame.update()
+	try:
+		print("create_window height for Filter canvas should be roughly:", str(btn.winfo_y()-505))
+	except:
+		print("Might not be any buttons")
+
+
+def IconPicker(image):
+	global IconPickerWindow
+
+	win_x = 90
+	win_y = 90
+
+	location = "+" + str(win_x) + "+" + str(win_y)
+	IconPickerWindow = Toplevel(StockpilerWindow)
+	IconPickerWindow.geometry(location)
+	IconPickerFrame = ttk.Frame(IconPickerWindow)
+	IconPickerWindow.resizable(False, False)
+	IconPickerFrame.pack()
+	IconPickerWindow.grab_set()
+	IconPickerWindow.focus_force()
+
+	IconPickerFrame.grid_forget()
+	NewIconLabel = ttk.Label(IconPickerFrame, text="What's this?")
+	NewIconLabel.grid(row=0, column=0, columnspan=2)
+	im = Image.fromarray(image)
+	tkimage = ImageTk.PhotoImage(im)
+	NewIconImage = ttk.Label(IconPickerFrame, image=tkimage)
+	NewIconImage.image = image
+	NewIconImage.grid(row=0, column=2)
+	iconcolumn = 0
+	iconrow = 1
+	counter = 0
+	for x in range(len(items.data)):
+		# print(x)
+		if os.path.exists("UI//" + str(items.data[x][0]) + ".png"):
+			img = PhotoImage(file="UI//" + str(items.data[x][0]) + ".png")
+			btn = ttk.Button(IconPickerFrame, image=img, style="EnabledButton.TButton")
+			# btn = ttk.Button(IconPickerFrame, text=str(items.data[x][3]))
+			counter += 1
+			btn.image = img
+			# This stuff after the lambda makes sure they're set to the individual values, if I add more, have to be blah=blah before it
+			btn["command"] = lambda x=x, btn=btn: IndividualOrCrate(items.data[x][0],btn,image)
+			if iconcolumn < 18:
+				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
+				# print("item:", items.data[x][3], "row:", iconrow, "column:", iconcolumn)
+				iconcolumn += 1
+			else:
+				iconrow += 1
+				iconcolumn = 0
+				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
+				# print("item:", items.data[x][3], "row:", iconrow, "column:", iconcolumn)
+				iconcolumn += 1
+				# print(items.data[x][3])
+			# print(btn, sortedicons[i][2])
+			tooltiptext = re.sub('\'', '', items.data[x][3])
+			# itembtnttp = ("item" + str(counter) + "_ttp = CreateToolTip(btn, '" + str(sortedicons[i][5]) + "')")
+			itembtnttp = ("item" + str(counter) + "_ttp = CreateToolTip(btn, '" + tooltiptext + "')")
+			exec(itembtnttp)
+
+	IconPickerFrame.update()
+	IconPickerWindow.focus_force()
+	IconPickerWindow.wait_window()
+
+
+def IndividualOrCrate(num,blah,image):
+	print(num,blah)
+	IconPickerWindow.destroy()
+	global IndOrCrateWindow
+
+	win_x = 100
+	win_y = 100
+
+	location = "+" + str(win_x) + "+" + str(win_y)
+	IndOrCrateWindow = Toplevel(StockpilerWindow)
+	IndOrCrateWindow.geometry(location)
+	IndOrCrateWindow.resizable(False, False)
+	IndOrCrateWindow.grab_set()
+	IndOrCrateWindow.focus_force()
+	IndOrCrateFrame = ttk.Frame(IndOrCrateWindow, style="TFrame")
+	IndOrCrateFrame.pack()
+	ForLabel = ttk.Label(IndOrCrateFrame, text="For:")
+	ForLabel.grid(row=0, column=0)
+	YouSelectedLabel = ttk.Label(IndOrCrateFrame, text="You\nSelected:")
+	YouSelectedLabel.grid(row=0, column=1)
+	im = Image.fromarray(image)
+	tkimage = ImageTk.PhotoImage(im)
+	NewIconImage = ttk.Label(IndOrCrateFrame, image=tkimage)
+	NewIconImage.image = image
+	NewIconImage.grid(row=1, column=0)
+	UIimage = PhotoImage(file="Compare//" + str(num) + ".png")
+	SelectedImage = ttk.Label(IndOrCrateFrame, image=UIimage)
+	SelectedImage.image = UIimage
+	SelectedImage.grid(row=1, column=1)
+	IndividualButton = ttk.Button(IndOrCrateFrame, text="Individual", style="EnabledButton.TButton", command=lambda: SaveIcon(num,0,image))
+	IndividualButton.grid(row=5, column=0)
+	CrateButton = ttk.Button(IndOrCrateFrame, text="Crate", style="EnabledButton.TButton", command=lambda: SaveIcon(num,1,image))
+	CrateButton.grid(row=5, column=1)
+	TryAgainButton = ttk.Button(IndOrCrateFrame, text="Pick a different icon?", style="EnabledButton.TButton", command=lambda: BackToPicker(image))
+	TryAgainButton.grid(row=10, column=0, columnspan=2)
+	IndOrCrateWindow.wait_window()
+
+
+def BackToPicker(image):
+	global IndOrCrateWindow
+	IndOrCrateWindow.destroy()
+	IconPicker(image)
+
+def SaveIcon(num, type, image):
+	global IndOrCrateWindow
+	IndOrCrateWindow.destroy()
+	if type == 0:
+		name = str(num) + ".png"
+	else:
+		name = str(num) + "C.png"
+	if menu.Set.get() == 0:
+		save = 'CheckImages//Default//' + name
+	else:
+		save = 'CheckImages//Custom//' + name
+	print("save:", save)
+	cv2.imwrite(save, image)
 
 
 def open_this(myNum,btn):
@@ -901,15 +1360,15 @@ def open_this(myNum,btn):
 		for item in range(len(items.data)):
 			# print(item[0])
 			if str(items.data[item][0]) == str(myNum):
-				items.data[item][18] = 1
-				print(items.data[item][18])
+				items.data[item][17] = 1
+				print(items.data[item][17])
 	elif str(btn['style']) == "ManualDisabledButton.TButton":
 		btn.configure(style="EnabledButton.TButton")
 		for item in range(len(items.data)):
 			# print(item[0])
 			if str(items.data[item][0]) == str(myNum):
-				items.data[item][18] = 0
-				print(items.data[item][18])
+				items.data[item][17] = 0
+				print(items.data[item][17])
 	elif str(btn['style']) == "EnabledCategory.TButton":
 		btn.config(style="DisabledCategory.TButton")
 		menu.category[int(myNum[4:5])][1] = 1
@@ -917,13 +1376,13 @@ def open_this(myNum,btn):
 		for item in range(len(items.data)):
 			# print(item[0])
 			# print(str(myNum[4:5]))
-			# print("before test", items.data[item][18])
+			# print("before test", items.data[item][17])
 			if str(items.data[item][9]) == str(myNum[4:5]):
-				if str(items.data[item][18]) == str(0):
+				if str(items.data[item][17]) == str(0):
 					# print("yes")
-					items.data[item][18] = 2
-				# print(items.data[item][18])
-			# print("after test", items.data[item][18])
+					items.data[item][17] = 2
+				# print(items.data[item][17])
+			# print("after test", items.data[item][17])
 		CreateButtons("blah")
 	elif str(btn['style']) == "DisabledCategory.TButton":
 		btn.config(style="EnabledCategory.TButton")
@@ -933,40 +1392,40 @@ def open_this(myNum,btn):
 			# print(item[0])
 			# print(str(myNum[4:5]))
 			if str(items.data[item][9]) == str(myNum[4:5]):
-				if str(items.data[item][18]) == str(2):
+				if str(items.data[item][17]) == str(2):
 					# print("yes")
-					items.data[item][18] = 0
+					items.data[item][17] = 0
 		CreateButtons("blah")
 	elif myNum == str("W"):
 		if str(btn['style']) == "EnabledFaction.TButton":
 			btn.config(style="DisabledFaction.TButton")
 			menu.faction[0] = 1
 			for item in range(len(items.data)):
-				if items.data[item][7] == "Warden" and str(items.data[item][18]) == "0":
-					items.data[item][18] = 3
+				if items.data[item][7] == "Warden" and str(items.data[item][17]) == "0":
+					items.data[item][17] = 3
 		else:
 			btn.config(style="EnabledFaction.TButton")
 			menu.faction[0] = 0
 			for item in range(len(items.data)):
-				if items.data[item][7] == "Warden" and str(items.data[item][18]) == "3":
-					items.data[item][18] = 0
+				if items.data[item][7] == "Warden" and str(items.data[item][17]) == "3":
+					items.data[item][17] = 0
 		CreateButtons("blah")
 	elif myNum == str("C"):
 		if str(btn['style']) == "EnabledFaction.TButton":
 			btn.config(style="DisabledFaction.TButton")
 			menu.faction[1] = 1
 			for item in range(len(items.data)):
-				# print(items.data[item][18])
-				if items.data[item][7] == "Colonial" and str(items.data[item][18]) == "0":
-					items.data[item][18] = 3
+				# print(items.data[item][17])
+				if items.data[item][7] == "Colonial" and str(items.data[item][17]) == "0":
+					items.data[item][17] = 3
 					# print("should be disabling", items.data[item])
 		else:
 			btn.config(style="EnabledFaction.TButton")
 			menu.faction[1] = 0
 			for item in range(len(items.data)):
 				# print(items.data[item][7])
-				if items.data[item][7] == "Colonial" and str(items.data[item][18]) == "3":
-					items.data[item][18] = 0
+				if items.data[item][7] == "Colonial" and str(items.data[item][17]) == "3":
+					items.data[item][17] = 0
 					# print("should be enabling", items.data[item])
 		CreateButtons("blah")
 
@@ -974,19 +1433,28 @@ if os.path.exists("Config.txt"):
 	with open("Config.txt") as file:
 		content = file.readlines()
 	content = [x.strip() for x in content]
-	menu.CSVExport.set(int(content[0]))
-	menu.XLSXExport.set(int(content[1]))
-	menu.ImgExport.set(int(content[2]))
+	try:
+		logging.info(str(datetime.datetime.now()) + ' Attempting to load from config.txt')
+		menu.CSVExport.set(int(content[0]))
+		menu.XLSXExport.set(int(content[1]))
+		menu.ImgExport.set(int(content[2]))
+		menu.Set.set(int(content[3]))
+		menu.Learning.set(int(content[4]))
+	except:
+		logging.info(str(datetime.datetime.now()) + ' Loading from config.txt failed, setting defaults')
+		menu.CSVExport.set(1)
+		menu.XLSXExport.set(1)
+		menu.ImgExport.set(1)
+		menu.Set.set(0)
+		menu.Learning.set(1)
 else:
 	menu.CSVExport.set(1)
 	menu.XLSXExport.set(1)
 	menu.ImgExport.set(1)
+	menu.Set.set(0)
+	menu.Learning.set(1)
 
 CreateButtons("")
-
-QuitButton = ttk.Button(StockpileFrame, text="Quit", command=lambda: StockpilerWindow.quit())
-QuitButton.grid(row=500, column=0, columnspan=10, sticky="NSEW")
-
 
 # hotkey = keyboard.HotKey(keyboard.HotKey.parse(ArtyLocHotkey), on_activate)
 # hotkeytwo = keyboard.HotKey(keyboard.HotKey.parse(TargetLocHotkey), on_activate_two)

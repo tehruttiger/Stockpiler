@@ -1,24 +1,3 @@
 #,I,C,Name,Nickname,SubType,Ammo,Faction,StockpileCategory,CategorySort,InCategorySort,perCrate,Bmats,Emats,Rmats,Hemats,Relicmats
-134,X,,Noble Widow MK. XIV,,Destroyer Tank,,Warden,Vehicle,7,15,3,,,,,
-137,X,,Collins Cannon 68mm,,Field AT Gun,,Warden,Vehicle,7,18,3,,,,,
-157,X,,Mulloy APC,,Landing APC,,Warden,Vehicle,7,38,3,,,,,
-159,X,,Devitt-Caine Mk. IV MMR,,Light Tank,,Warden,Vehicle,7,40,3,,,,,
-162,X,,"H-8 ""Kraneska""",,Light Tank,,Colonial,Vehicle,7,43,3,,,,,
-178,X,,King Spire Mk. I,,Scout Tank,,Warden,Vehicle,7,59,3,,,,,
-199,X,,Huber Exalt 150mm,,,,Warden,Shippables,8,5,3,,,,,
-48,,X,Mounted Bonesaw MK.3,,Anti-Tank RPG,A.T.R.P.G. Indirect Shell,Warden,Heavy Weapons,2,14,5,200,0,0,0,0
-169,,X,Silverhand Chieftain - Mk. VI,,Assault Tank,,Warden,Vehicle,7,50,3,,,,,
-7,,,Malone MK.2,Malone,Machine Gun,12.7mm,Warden,Small Weapons,1,7,10,0,0,30,0,0
 9,,,PT-815 Smoke Grenade,Smoke,Smoke Grenade,,Both,Small Weapons,1,9,10,120,0,0,0,0
 62,,,75mm Round,,,75mm,Both,Heavy Weapons,2,28,20,,,,,
-124,,,O'Brien v.121 Highlander,,Armoured Car,,Warden,Vehicle,7,5,3,,,,,
-126,,,O'Brien v.101 Freeman,,Armoured Car,,Warden,Vehicle,7,7,3,,,,,
-147,,,74c-2 Ronan Meteora Gunship,,Gunboat,,Warden,Vehicle,7,28,3,,,,,
-148,,,74b-1 Ronan Gunship,,Gunboat,,Warden,Vehicle,7,29,3,,,,,
-152,,,Niska Mk. II Blinder,,Half-Track,,Warden,Vehicle,7,33,3,,,,,
-161,,,Devitt Ironhide Mk. IV,,Light Tank,,Warden,Vehicle,7,42,3,,,,,
-164,,,Devitt Mk. III,,Light Tank,,Warden,Vehicle,7,45,3,,,,,
-177,,,King Gallant Mk. II,,Scout Tank,,Warden,Vehicle,7,58,3,,,,,
-183,,,Drummond Loscann 55c,,Light Utility Vehicle,,Warden,Vehicle,7,64,3,,,,,
-212,,,Culter Foebreaker,,,,Warden,Heavy Weapons,2,34,5,,,,,
-214,,,Malone Ratcatcher Mk. 1,,,,Warden,Heavy Weapons,2,35,5,,,,,
