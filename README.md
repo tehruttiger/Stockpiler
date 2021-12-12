@@ -7,6 +7,9 @@ Constructive criticism is welcome, but keep in mind **I DO NOT CODE FOR A LIVING
 
 Current Features:
 - Hotkey (F3) to read and transcribe contents of any stockpile/BB/Town Base/etc from the Map.
+- Hotkey (F2) to screenshot a stockpile without reading it
+- Results tab displaying a spreadsheet of the results, from which you can copy to paste elsewhere
+- Learning mode for creating a custom icon set for those that use Mods
 - App is threaded, so you can initiate a new scan while previous scan(s) are still processing.
 - Most items can be read, other than those with missing icons as noted in Missing.csv
 - Ability to set a filter to ignore unwanted items
@@ -43,7 +46,7 @@ Stockpiler runs each stockpile "grab" as a separate thread, so you do not have t
 Currently, pressing the F2 key will grab an image of the stockpile/BB/Relic Base contents you are hovering over and save it to the root folder.  If you are willing to help contribute missing items so that Stockpiler can properly tally them, these are the images that are needed.  Please message me on Discord if you're interested in helping get the remaining missing item images added.
 My Discord is ruttiger#6198
 
-Special thanks to **Catalinuru** and **AceAstra** for their help testing and hunting down missing icons.
+Special thanks to **Catalinuru**, **AceAstra** and **Drougavis** for their help testing and hunting down missing icons.
 
 Compiled versions compiled to EXE using Nuitka
 
