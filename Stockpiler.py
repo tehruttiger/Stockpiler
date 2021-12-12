@@ -289,7 +289,7 @@ def GrabStockpileImage():
 	try:
 		if np.amax(resC) > threshold:
 			print("Found Shirt Crate")
-			y, x = np.unravel_index(resC.argmax(), res.shape)
+			y, x = np.unravel_index(resC.argmax(), resC.shape)
 			FoundShirt = True
 	except:
 		print("Don't have the shirt crate icon or not looking at a stockpile")
@@ -470,14 +470,13 @@ def ItemScan(screen, garbage):
 		if np.amax(res) > threshold:
 			print("Found Shirts")
 			y, x = np.unravel_index(res.argmax(), res.shape)
-			print(y, x)
 			FoundShirt = True
 	except:
 		print("Don't have the individual shirts icon or not looking at a stockpile")
 	try:
 		if np.amax(resC) > threshold:
 			print("Found Shirt Crate")
-			y, x = np.unravel_index(resC.argmax(), res.shape)
+			y, x = np.unravel_index(resC.argmax(), resC.shape)
 			FoundShirt = True
 	except:
 		print("Don't have the shirt crate icon or not looking at a stockpile")
