@@ -20,10 +20,13 @@ Current Features:
 # To use:
 1. Launch Foxhole and Deploy
 2. Launch Stockpiler
-3. Open your Map
-4. Hover your cursor over the Stockpile/Bunker Base/Town Hall/etc you wish to transcribe **on the map**
+3. If you're using modded icons, set your icon set to Modded in the upper left and make sure Learning Mode is checked
+4. Open your Map
+5. Hover your cursor over the Stockpile/Bunker Base/Town Hall/etc you wish to transcribe **on the map**
 - Remember you can tab while hovering over a Seaport/Storage Depot where you have multiple private stockpiles
-5. Press the **F3** key
+6. Press the **F3** key
+
+If you are using modded icons and have Learning Mode on, you will get a series of popups where you are asked to identify each icon it finds.  It will learn your choices, so over time you will build your set.  Once it has run through all new icons with you, it will export the results as normal.
 
 If the stockpile is a named stockpile that Stockpiler has never seen before:
 - Stockpiler will display an image of the stockpile name and ask you to enter the name
