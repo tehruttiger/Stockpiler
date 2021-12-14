@@ -364,7 +364,7 @@ def Learn(LearnInt, image):
 				result = cv2.matchTemplate(currenticon, checkimage, cv2.TM_CCOEFF_NORMED)
 				threshold = .99
 				if np.amax(result) > threshold:
-					print("Found:", imagefile)
+					#print("Found:", imagefile)
 					Found = True
 					break
 			if not Found:
@@ -679,9 +679,9 @@ def ItemScan(screen, garbage):
 				pass
 				# print(len(numberlist))
 
-		print("Stockpile Contents:", stockpilecontents)
+		#print("Stockpile Contents:", stockpilecontents)
 		items.sortedcontents = list(sorted(stockpilecontents, key=lambda x: (x[3], x[4], -x[2])))
-		print("Sorted Contents:", items.sortedcontents)
+		#print("Sorted Contents:", items.sortedcontents)
 		# Here's where we sort stockpilecontents by category, then number, so they spit out the same as screenshot
 		# Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
 		if items.ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
@@ -704,7 +704,7 @@ def ItemScan(screen, garbage):
 				fp.write('\n'.join('{},{}'.format(x[1], x[2]) for x in items.sortedcontents))
 			fp.close()
 		
-		print("HELLO")
+
 		if menu.updateBot.get() == 1:
 			requestObj = {
 				"password": menu.BotPassword.get(),
@@ -715,12 +715,18 @@ def ItemScan(screen, garbage):
 				data.append([x[1], x[0]])
 			requestObj["data"] = data
 
-			r = requests.post(menu.BotHost.get(), json=requestObj)
-			response = r.json().json
+			try:
+				r = requests.post(menu.BotHost.get(), json=requestObj)
+				response = r.json()
+				print(response)
 
-			if (response["success"]): print("Sent to server successfully")
-			elif (response["error"] == "invalid-password"): print("Invalid password, check that the Bot Password is correct.")
-			else: print("An unhandled error occured: " + response["error"])
+				if (response["success"]): print("Sent to server successfully")
+				elif (response["error"] == "empty-stockpile-name"): print("Stockpile name is invalid. Perhaps the stockpile name was not detected.")
+				elif (response["error"] == "invalid-password"): print("Invalid password, check that the Bot Password is correct.")
+				else: print("An unhandled error occured: " + response["error"])
+			except Exception as e:
+				print("There was an error connecting to the Bot")
+				print(e)
 
 
 		if menu.XLSXExport.get() == 1:
