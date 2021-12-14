@@ -712,13 +712,12 @@ def ItemScan(screen, garbage):
 			}
 			data = []
 			for x in items.sortedcontents:
-				data.append([x[1], x[0]])
+				data.append([x[1], x[2]])
 			requestObj["data"] = data
 
 			try:
 				r = requests.post(menu.BotHost.get(), json=requestObj)
 				response = r.json()
-				print(response)
 
 				if (response["success"]): print("Sent to server successfully")
 				elif (response["error"] == "empty-stockpile-name"): print("Stockpile name is invalid. Perhaps the stockpile name was not detected.")
