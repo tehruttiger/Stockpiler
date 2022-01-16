@@ -263,7 +263,7 @@ class CreateToolTip(object):
 
 def winEnumHandler( hwnd, ctx ):
 	if win32gui.IsWindowVisible( hwnd ):
-		print (hex(hwnd), win32gui.GetWindowText( hwnd ))
+		# print (hex(hwnd), win32gui.GetWindowText( hwnd ))
 	if win32gui.GetWindowText(hwnd) == "War  ":
 		print("Found Foxhole")
 		rect = win32gui.GetWindowRect(hwnd)
