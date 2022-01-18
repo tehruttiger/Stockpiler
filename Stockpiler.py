@@ -3,6 +3,8 @@ import os.path
 import time
 from tkinter import *
 from tkinter import ttk
+
+import numpy
 from PIL import ImageTk, ImageGrab, Image
 import logging
 import datetime
@@ -16,9 +18,9 @@ import re
 from requests.sessions import Request
 import xlsxwriter
 from tksheet import Sheet
+import win32gui
 import requests
 import threading
-
 
 global stockpilename
 global PopupWindow
@@ -105,6 +107,10 @@ class menu(object):
 	ImgExport = IntVar()
 	Set = IntVar()
 	Learning = IntVar()
+	FoxWinX = 0
+	FoxWinY = 0
+	FoxWinW = 0
+	FoxWinH = 0
 
 
 s = ttk.Style()
@@ -260,13 +266,53 @@ class CreateToolTip(object):
 			tw.destroy()
 
 
+def winEnumHandler( hwnd, ctx ):
+	if win32gui.IsWindowVisible( hwnd ):
+		# print (hex(hwnd), win32gui.GetWindowText( hwnd ))
+	if win32gui.GetWindowText(hwnd) == "War  ":
+		print("Found Foxhole")
+		rect = win32gui.GetWindowRect(hwnd)
+		menu.FoxWinX = rect[0]
+		menu.FoxWinY = rect[1]
+		menu.FoxWinW = rect[2] - menu.FoxWinX
+		menu.FoxWinH = rect[3] - menu.FoxWinY
+		print(menu.FoxWinX, menu.FoxWinY, menu.FoxWinW, menu.FoxWinH)
+		if menu.FoxWinX < 0:
+			menu.FoxWinX = 0
+			# menu.FoxWinW = 1
+		if menu.FoxWinY < 0:
+			menu.FoxWinY = 0
+			# menu.FoxWinH = 1
+
+
 # Function used simply for grabbing cropped stockpile images
 # Helpful for grabbing test images for assembling missing icons or new sets of icons (for modded icons)
 def GrabStockpileImage():
 	global counter
+	win32gui.EnumWindows(winEnumHandler, None)
+	######### Remove if multi-monitor works as expected #########
 	# grab whole screen and prepare for template matching
-	screen = np.array(ImageGrab.grab(bbox=None))
+	# screen = np.array(ImageGrab.grab(bbox=None))
+	# screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+
+	# OKAY, so you'll have to grab the whole screen, detect that thing in the upper left, then use that as a basis
+	# for cropping that full screenshot down to just the foxhole window
+
+	screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
 	screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+
+	numbox = cv2.imread('CheckImages//StateOf.png', cv2.IMREAD_GRAYSCALE)
+	res = cv2.matchTemplate(screen, numbox, cv2.TM_CCOEFF_NORMED)
+	threshold = .95
+	stateloc = np.where(res >= threshold)
+	statey = stateloc[0].astype(int) - 35
+	statex = stateloc[1].astype(int) - 35
+
+	screen = screen[statey:statey + menu.FoxWinH, statex:statex + menu.FoxWinW]
+
+	# cv2.imshow("asdf", screen)
+	# cv2.waitKey(0)
+
 	# Shirts are always in the same spot in every stockpile, but might be single or crates
 	if menu.Set.get() == 0:
 		findshirtC = cv2.imread('CheckImages//Default//86C.png', cv2.IMREAD_GRAYSCALE)
