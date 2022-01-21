@@ -80,12 +80,12 @@ for xfile in files:
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
 
-Version = "1.01b"
+Version = "1.1b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
 # Window width is based on generated UI.  If buttons change, width should change here.
-StockpilerWindow.geometry("570x600")
+StockpilerWindow.geometry("537x600")
 # Width locked since button array doesn't adjust dynamically
 StockpilerWindow.resizable(width=False, height=False)
 
@@ -1094,10 +1094,13 @@ FilterTab = ttk.Frame(TabControl)
 TabControl.add(FilterTab, text="Filter")
 TableTab = ttk.Frame(TabControl)
 TabControl.add(TableTab, text="Results")
+SettingsTab = ttk.Frame(TabControl)
+TabControl.add(SettingsTab, text="Settings")
 TabControl.pack(expand=1, fill=BOTH)
 
 FilterCanvas = Canvas(FilterTab)
 TableCanvas = Canvas(TableTab)
+SettingsCanvas = Canvas(SettingsTab)
 
 FilterCanvas.bind_all("<MouseWheel>", _on_mousewheel)
 scrollbar = ttk.Scrollbar(FilterTab, orient=VERTICAL, command=FilterCanvas.yview)
@@ -1119,13 +1122,15 @@ FilterCanvas.bind('<Configure>', lambda e: FilterCanvas.configure(scrollregion=F
 
 FilterCanvas.pack(side=LEFT, fill=BOTH, expand=1)
 TableCanvas.pack(side=TOP, fill=BOTH, expand=1)
+SettingsCanvas.pack(side=TOP, fill=BOTH, expand=1)
 
 FilterFrame = ttk.Frame(FilterCanvas)
 TableFrame = ttk.Frame(TableCanvas)
+SettingsFrame = ttk.Frame(SettingsCanvas)
 
 FilterCanvas.create_window((0, 0), window=FilterFrame, anchor="nw", height="1837p", width="550p")
-# TableCanvas.create_window((0, 0), window=TableFrame, anchor="nw", height="432", width="402p")
 TableCanvas.create_window((0, 0), window=TableFrame, anchor="nw", height="410p", width="402p")
+SettingsCanvas.create_window((0, 0), window=SettingsFrame, anchor="nw", height="500p", width="402p")
 
 FilterFrame.bind(
 	"<Configure>",
@@ -1196,7 +1201,7 @@ def CreateButtons(self):
 	# print("fresh menu", menu.icons)
 	# print("fresh sorted", sortedicons)
 	# print(items.data[1])
-	for i in range(len(items.data)):
+	for i in range(len(items.data)+1):
 		# print("i",i)
 		for x in items.data:
 			# print("x",x)
@@ -1211,7 +1216,7 @@ def CreateButtons(self):
 			# filter.append((i, 0))
 			# print(x[3],x[9],x[10])
 
-	# print("icons",icons)
+	# print("icons", menu.icons)
 	sortedicons = sorted(menu.icons, key=lambda x: (x[2], x[3]))
 
 	# print("full menu", menu.icons)
@@ -1221,37 +1226,52 @@ def CreateButtons(self):
 	# XLSXExport = IntVar()
 	# ImgExport = IntVar()
 
-	SetLabel = ttk.Label(FilterFrame, text="Icon set?", style="TLabel")
+	SettingsFrame.columnconfigure(0, weight=1)
+	SettingsFrame.columnconfigure(7, weight=1)
+	SetLabel = ttk.Label(SettingsFrame, text="Icon set?", style="TLabel")
 	SetLabel.grid(row=menu.iconrow, column=0)
-	DefaultRadio = ttk.Radiobutton(FilterFrame, text="Default", variable=menu.Set, value=0)
+	DefaultRadio = ttk.Radiobutton(SettingsFrame, text="Default", variable=menu.Set, value=0)
 	DefaultRadio.grid(row=menu.iconrow, column=1)
-	ModdedRadio = ttk.Radiobutton(FilterFrame, text="Modded", variable=menu.Set, value=1)
+	ModdedRadio = ttk.Radiobutton(SettingsFrame, text="Modded", variable=menu.Set, value=1)
 	ModdedRadio.grid(row=menu.iconrow, column=2)
-	LearningCheck = ttk.Checkbutton(FilterFrame, text="Learning Mode?", variable=menu.Learning)
-	LearningCheck.grid(row=menu.iconrow, column=3, columnspan=2)
-	CSVCheck = ttk.Checkbutton(FilterFrame, text="CSV?", variable=menu.CSVExport)
-	CSVCheck.grid(row=menu.iconrow, column=5)
-	XLSXCheck = ttk.Checkbutton(FilterFrame, text="XLSX?", variable=menu.XLSXExport)
-	XLSXCheck.grid(row=menu.iconrow, column=6)
-	ImgCheck = ttk.Checkbutton(FilterFrame, text="Image?", variable=menu.ImgExport)
-	ImgCheck.grid(row=menu.iconrow, column=7)
-	
-
 	menu.iconrow += 1
-	SendBotCheck = ttk.Checkbutton(FilterFrame, text="Send To Bot?", variable=menu.updateBot)
-	SendBotCheck.grid(row=menu.iconrow, column=4, rowspan=2)
-
-	BotHostLabel = ttk.Label(FilterFrame, text="Bot Host:")
-	BotHostLabel.grid(row=menu.iconrow, column=5)
-	BotHost = ttk.Entry(FilterFrame, textvariable=menu.BotHost)
-	BotHost.grid(row=menu.iconrow, column=6, columnspan=2)
+	catsep = ttk.Separator(SettingsFrame, orient=HORIZONTAL)
+	catsep.grid(row=menu.iconrow, columnspan=8, sticky="ew", pady=10)
 	menu.iconrow += 1
-	BotPasswordLabel = ttk.Label(FilterFrame, text="Password:")
-	BotPasswordLabel.grid(row=menu.iconrow, column=5)
-	BotPassword = ttk.Entry(FilterFrame, textvariable=menu.BotPassword)
-	BotPassword.grid(row=menu.iconrow, column=6, columnspan=2)
+	LearningCheck = ttk.Checkbutton(SettingsFrame, text="Learning Mode?", variable=menu.Learning)
+	LearningCheck.grid(row=menu.iconrow, column=0, columnspan=2)
+	menu.iconrow += 1
+	catsep = ttk.Separator(SettingsFrame, orient=HORIZONTAL)
+	catsep.grid(row=menu.iconrow, columnspan=8, sticky="ew", pady=10)
+	menu.iconrow += 1
+	CSVCheck = ttk.Checkbutton(SettingsFrame, text="CSV?", variable=menu.CSVExport)
+	CSVCheck.grid(row=menu.iconrow, column=0)
+	XLSXCheck = ttk.Checkbutton(SettingsFrame, text="XLSX?", variable=menu.XLSXExport)
+	XLSXCheck.grid(row=menu.iconrow, column=1)
+	ImgCheck = ttk.Checkbutton(SettingsFrame, text="Image?", variable=menu.ImgExport)
+	ImgCheck.grid(row=menu.iconrow, column=2)
+	menu.iconrow += 1
+	catsep = ttk.Separator(SettingsFrame, orient=HORIZONTAL)
+	catsep.grid(row=menu.iconrow, columnspan=8, sticky="ew", pady=10)
+	menu.iconrow += 1
+	SendBotCheck = ttk.Checkbutton(SettingsFrame, text="Send To Bot?", variable=menu.updateBot)
+	SendBotCheck.grid(row=menu.iconrow, column=0, rowspan=2, padx=5)
+	SendBotCheck_ttp = CreateToolTip(SendBotCheck, 'Send results to Storeman-Bot Discord Bot?')
+	BotHostLabel = ttk.Label(SettingsFrame, text="Bot Host:")
+	BotHostLabel.grid(row=menu.iconrow, column=2)
+	BotHost = ttk.Entry(SettingsFrame, textvariable=menu.BotHost)
+	BotHost.grid(row=menu.iconrow, column=3, columnspan=2)
+	BotHost_ttp = CreateToolTip(BotHost, 'Host is http://<your Storeman-Bot server IP>:8090')
+	menu.iconrow += 1
+	BotPasswordLabel = ttk.Label(SettingsFrame, text="Password:")
+	BotPasswordLabel.grid(row=menu.iconrow, column=2)
+	BotPassword = ttk.Entry(SettingsFrame, textvariable=menu.BotPassword)
+	BotPassword.grid(row=menu.iconrow, column=3, columnspan=2)
 	BotPassword.config(show="*")
-
+	BotPassword_ttp = CreateToolTip(BotPassword, 'Password is set with bot using /spsetpassword command in Discord')
+	menu.iconrow += 1
+	catsep = ttk.Separator(SettingsFrame, orient=HORIZONTAL)
+	catsep.grid(row=menu.iconrow, columnspan=8, sticky="ew", pady=10)
 	menu.iconrow += 3
 	SaveImg = PhotoImage(file="UI/Save.png")
 	SaveButton = ttk.Button(FilterFrame, image=SaveImg, command=SaveFilter)
@@ -1259,9 +1279,15 @@ def CreateButtons(self):
 	SaveButton.image = SaveImg
 	SaveButton.grid(row=menu.iconrow, column=7, columnspan=1, pady=5)
 	SaveButton_ttp = CreateToolTip(SaveButton, 'Save Current Filter and Export Settings')
+
+	SaveImg2 = PhotoImage(file="UI/Save.png")
+	SaveButton2 = ttk.Button(SettingsFrame, image=SaveImg2, command=SaveFilter)
+
+	SaveButton2.image = SaveImg2
+	SaveButton2.grid(row=menu.iconrow, column=0, columnspan=8, pady=5)
+	SaveButton_ttp2 = CreateToolTip(SaveButton2, 'Save Current Filter and Export Settings')
 	# menu.iconrow += 1
 
-	# print(sortedicons)
 	if menu.faction[0] == 0:
 		Wimg = PhotoImage(file="UI//W0.png")
 		WardenButton = ttk.Button(FilterFrame, image=Wimg, style="EnabledFaction.TButton")
@@ -1331,6 +1357,7 @@ def CreateButtons(self):
 				menu.iconrow += 1
 				menu.iconcolumn = 0
 				btn.grid(row=menu.iconrow, column=menu.iconcolumn, sticky="W", padx=2, pady=2)
+				menu.iconcolumn += 1
 			# print(btn, sortedicons[i][2])
 			tooltiptext = re.sub('\'', '', sortedicons[i][5])
 			# itembtnttp = ("item" + str(counter) + "_ttp = CreateToolTip(btn, '" + str(sortedicons[i][5]) + "')")
