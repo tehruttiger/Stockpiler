@@ -15,9 +15,11 @@ import numpy as np
 from global_hotkeys import *
 import csv
 import re
+from requests.sessions import Request
 import xlsxwriter
 from tksheet import Sheet
 import win32gui
+import requests
 import threading
 
 global stockpilename
@@ -83,7 +85,7 @@ Version = "1.01b"
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
 # Window width is based on generated UI.  If buttons change, width should change here.
-StockpilerWindow.geometry("537x600")
+StockpilerWindow.geometry("570x600")
 # Width locked since button array doesn't adjust dynamically
 StockpilerWindow.resizable(width=False, height=False)
 
@@ -97,7 +99,10 @@ class menu(object):
 	category = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]]
 	faction = [0, 0]
 	topscroll = 0
+	BotHost = StringVar()
+	BotPassword = StringVar()
 	CSVExport = IntVar()
+	updateBot = IntVar()
 	XLSXExport = IntVar()
 	ImgExport = IntVar()
 	Set = IntVar()
@@ -405,7 +410,7 @@ def Learn(LearnInt, image):
 				result = cv2.matchTemplate(currenticon, checkimage, cv2.TM_CCOEFF_NORMED)
 				threshold = .99
 				if np.amax(result) > threshold:
-					print("Found:", imagefile)
+					#print("Found:", imagefile)
 					Found = True
 					break
 			if not Found:
@@ -632,21 +637,21 @@ def ItemScan(screen, garbage):
 			# Grab all the individual vehicles and shippables
 			StockpileImagesAppend = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[17]) for item in items.data if (str(item[9]) == "7" and str(item[17]) == "0") or (str(item[9]) == "8" and str(item[17]) == "0")]
 			StockpileImages.extend(StockpileImagesAppend)
-			print("Checking for:", StockpileImages)
+			#print("Checking for:", StockpileImages)
 		elif FoundStockpileType in SingleList:
 			print("Single Type")
 			# Grab all the individual items
 			# for item in range(len(items.data)):
 			# 	print(item)
 			StockpileImages = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[17]) for item in items.data]
-			print("Checking for:", StockpileImages)
+			#print("Checking for:", StockpileImages)
 		else:
 			print("No idea what type...")
 
 
 		stockpilecontents = []
 		checked = 0
-		print("StockpileImages", StockpileImages)
+		#print("StockpileImages", StockpileImages)
 		for image in StockpileImages:
 			checked += 1
 			try:
@@ -720,9 +725,9 @@ def ItemScan(screen, garbage):
 				pass
 				# print(len(numberlist))
 
-		print("Stockpile Contents:", stockpilecontents)
+		#print("Stockpile Contents:", stockpilecontents)
 		items.sortedcontents = list(sorted(stockpilecontents, key=lambda x: (x[3], x[4], -x[2])))
-		print("Sorted Contents:", items.sortedcontents)
+		#print("Sorted Contents:", items.sortedcontents)
 		# Here's where we sort stockpilecontents by category, then number, so they spit out the same as screenshot
 		# Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
 		if items.ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
@@ -744,6 +749,30 @@ def ItemScan(screen, garbage):
 				############### THIS ONE DOES IN SORTED ORDER #############
 				fp.write('\n'.join('{},{}'.format(x[1], x[2]) for x in items.sortedcontents))
 			fp.close()
+		
+
+		if menu.updateBot.get() == 1:
+			requestObj = {
+				"password": menu.BotPassword.get(),
+				"name": items.ThisStockpileName
+			}
+			data = []
+			for x in items.sortedcontents:
+				data.append([x[1], x[2]])
+			requestObj["data"] = data
+
+			try:
+				r = requests.post(menu.BotHost.get(), json=requestObj)
+				response = r.json()
+
+				if (response["success"]): print("Sent to server successfully")
+				elif (response["error"] == "empty-stockpile-name"): print("Stockpile name is invalid. Perhaps the stockpile name was not detected.")
+				elif (response["error"] == "invalid-password"): print("Invalid password, check that the Bot Password is correct.")
+				else: print("An unhandled error occured: " + response["error"])
+			except Exception as e:
+				print("There was an error connecting to the Bot")
+				print(e)
+
 
 		if menu.XLSXExport.get() == 1:
 			workbook = xlsxwriter.Workbook("Stockpiles//" + items.ThisStockpileName + ".xlsx")
@@ -1142,11 +1171,15 @@ def SaveFilter():
 		exportfile.write(str(menu.ImgExport.get()) + "\n")
 		exportfile.write(str(menu.Set.get()) + "\n")
 		exportfile.write(str(menu.Learning.get()) + "\n")
+		exportfile.write(str(menu.updateBot.get()) + "\n")
+		exportfile.write(str(menu.BotHost.get()) + "\n")
+		exportfile.write(str(menu.BotPassword.get()) + "\n")
 	CreateButtons("")
 
 
 def CreateButtons(self):
 	global FilterFrame
+
 	for widgets in FilterFrame.winfo_children():
 		widgets.destroy()
 	menu.iconrow = 1
@@ -1202,10 +1235,27 @@ def CreateButtons(self):
 	XLSXCheck.grid(row=menu.iconrow, column=6)
 	ImgCheck = ttk.Checkbutton(FilterFrame, text="Image?", variable=menu.ImgExport)
 	ImgCheck.grid(row=menu.iconrow, column=7)
+	
 
 	menu.iconrow += 1
+	SendBotCheck = ttk.Checkbutton(FilterFrame, text="Send To Bot?", variable=menu.updateBot)
+	SendBotCheck.grid(row=menu.iconrow, column=4, rowspan=2)
+
+	BotHostLabel = ttk.Label(FilterFrame, text="Bot Host:")
+	BotHostLabel.grid(row=menu.iconrow, column=5)
+	BotHost = ttk.Entry(FilterFrame, textvariable=menu.BotHost)
+	BotHost.grid(row=menu.iconrow, column=6, columnspan=2)
+	menu.iconrow += 1
+	BotPasswordLabel = ttk.Label(FilterFrame, text="Password:")
+	BotPasswordLabel.grid(row=menu.iconrow, column=5)
+	BotPassword = ttk.Entry(FilterFrame, textvariable=menu.BotPassword)
+	BotPassword.grid(row=menu.iconrow, column=6, columnspan=2)
+	BotPassword.config(show="*")
+
+	menu.iconrow += 3
 	SaveImg = PhotoImage(file="UI/Save.png")
 	SaveButton = ttk.Button(FilterFrame, image=SaveImg, command=SaveFilter)
+	
 	SaveButton.image = SaveImg
 	SaveButton.grid(row=menu.iconrow, column=7, columnspan=1, pady=5)
 	SaveButton_ttp = CreateToolTip(SaveButton, 'Save Current Filter and Export Settings')
@@ -1517,6 +1567,9 @@ if os.path.exists("Config.txt"):
 		menu.ImgExport.set(int(content[2]))
 		menu.Set.set(int(content[3]))
 		menu.Learning.set(int(content[4]))
+		menu.updateBot.set(int(content[5]))
+		menu.BotHost.set(content[6])
+		menu.BotPassword.set(content[7])
 	except:
 		logging.info(str(datetime.datetime.now()) + ' Loading from config.txt failed, setting defaults')
 		menu.CSVExport.set(1)
