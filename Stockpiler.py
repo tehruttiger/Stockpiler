@@ -1409,6 +1409,9 @@ def IconPicker(image):
 	if root_x == root_y == -32000:
 		win_x = 90
 		win_y = 90
+	elif root_x < 20:
+		win_x = 90
+		win_y = 90
 	else:
 		win_x = root_x - 20
 		win_y = root_y + 125
