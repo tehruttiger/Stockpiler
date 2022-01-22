@@ -308,7 +308,7 @@ def GrabStockpileImage():
 	statey = stateloc[0].astype(int) - 35
 	statex = stateloc[1].astype(int) - 35
 
-	screen = screen[statey:statey + menu.FoxWinH, statex:statex + menu.FoxWinW]
+	screen = screen[int(statey):int(statey) + menu.FoxWinH, int(statex):int(statex) + menu.FoxWinW]
 
 	# cv2.imshow("asdf", screen)
 	# cv2.waitKey(0)
@@ -381,7 +381,7 @@ def Learn(LearnInt, image):
 	statey = stateloc[0].astype(int) - 35
 	statex = stateloc[1].astype(int) - 35
 
-	screen = screen[statey:statey + menu.FoxWinH, statex:statex + menu.FoxWinW]
+	screen = screen[int(statey):int(statey) + menu.FoxWinH, int(statex):int(statex) + menu.FoxWinW]
 
 	# UNCOMMENT AND MODIFY LINE BELOW IF YOU ARE TESTING A SPECIFIC IMAGE
 	# screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-110247.png")), cv2.COLOR_RGB2GRAY)
@@ -482,8 +482,22 @@ def SearchImage(Pass, LearnImage):
 		# cv2.imshow('blah', screen)
 		# cv2.waitKey(0)
 	else:
-		screen = np.array(ImageGrab.grab(bbox=None))
+		win32gui.EnumWindows(winEnumHandler, None)
+
+		# OKAY, so you'll have to grab the whole screen, detect that thing in the upper left, then use that as a basis
+		# for cropping that full screenshot down to just the foxhole window
+		screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
 		screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+
+		numbox = cv2.imread('CheckImages//StateOf.png', cv2.IMREAD_GRAYSCALE)
+		res = cv2.matchTemplate(screen, numbox, cv2.TM_CCOEFF_NORMED)
+		threshold = .95
+		stateloc = np.where(res >= threshold)
+		statey = stateloc[0].astype(int) - 35
+		statex = stateloc[1].astype(int) - 35
+		print(statey, statex)
+
+		screen = screen[int(statey):int(statey) + menu.FoxWinH, int(statex):int(statex) + menu.FoxWinW]
 	garbage = "blah"
 	args = (screen, garbage)
 	# Threading commands are generated via text since each thread needs a distinct name, created using threadcounter
