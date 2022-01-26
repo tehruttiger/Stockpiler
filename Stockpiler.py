@@ -942,7 +942,7 @@ def CSVExport():
 	if items.stockpilecontents != []:
 		stockpilefile = open("Stockpiles//" + items.ThisStockpileName + ".csv", 'w')
 		stockpilefile.write(items.ThisStockpileName + ",\n")
-		stockpilefile.write(items.FoundStockpileTypeNamenmnmw + ",\n")
+		stockpilefile.write(items.FoundStockpileTypeName + ",\n")
 		stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
 		stockpilefile.close()
 
