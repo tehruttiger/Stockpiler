@@ -593,7 +593,7 @@ def ItemScan(screen, garbage):
 		if np.amax(res) > typethreshold:
 			y, x = np.unravel_index(res.argmax(), res.shape)
 			FoundStockpileType = image[2]
-			items.FoundStockpileTypeName = image[1]
+			FoundStockpileTypeName = image[1]
 			# print(image[1])
 			if image[1] == "Seaport" or image[1] == "Storage Depot":
 				findtab = cv2.imread('CheckImages//Tab.png', cv2.IMREAD_GRAYSCALE)
@@ -617,7 +617,7 @@ def ItemScan(screen, garbage):
 							if np.amax(res) > threshold:
 								# Named stockpile is one already seen
 								found = 1
-								items.ThisStockpileName = (image[11:(len(image) - 4)])
+								ThisStockpileName = (image[11:(len(image) - 4)])
 					if found != 1:
 						newstockpopup(stockpilename)
 						PopupWindow.wait_window()
@@ -626,20 +626,20 @@ def ItemScan(screen, garbage):
 						cv2.imwrite('Stockpiles//' + NewStockpileName + '.png', stockpilename)
 						if menu.ImgExport.get() == 1:
 							cv2.imwrite('Stockpiles//' + NewStockpileName + ' image.png', stockpile)
-						items.ThisStockpileName = NewStockpileName
+						ThisStockpileName = NewStockpileName
 				else:
 					# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
-					items.ThisStockpileName = items.FoundStockpileTypeName
+					ThisStockpileName = FoundStockpileTypeName
 			else:
 				# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
-				items.ThisStockpileName = items.FoundStockpileTypeName
+				ThisStockpileName = FoundStockpileTypeName
 			# StockpileName = StockpileNameEntry.get()
 			# cv2.imwrite('Stockpiles//' + StockpileName + '.png', stockpilename)
 			break
 		else:
 			# print("Didn't find",image[1])
 			FoundStockpileType = "None"
-			items.ThisStockpileName = "None"
+			ThisStockpileName = "None"
 			pass
 
 	# These stockpile types allow for crates (ie: Seaport)
@@ -649,14 +649,14 @@ def ItemScan(screen, garbage):
 
 	start = datetime.datetime.now()
 
-	print(items.ThisStockpileName)
+	print(ThisStockpileName)
 	if menu.Set.get() == 0:
 		folder = "CheckImages//Default//"
 	else:
 		folder = "CheckImages//Modded//"
-	if items.ThisStockpileName != "None":
+	if ThisStockpileName != "None":
 		if menu.ImgExport.get() == 1:
-			cv2.imwrite('Stockpiles//' + items.ThisStockpileName + ' image.png', stockpile)
+			cv2.imwrite('Stockpiles//' + ThisStockpileName + ' image.png', stockpile)
 		if FoundStockpileType in CrateList:
 			print("Crate Type")
 			# Grab all the crate CheckImages
@@ -757,19 +757,19 @@ def ItemScan(screen, garbage):
 		#print("Sorted Contents:", items.sortedcontents)
 		# Here's where we sort stockpilecontents by category, then number, so they spit out the same as screenshot
 		# Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
-		if items.ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
-			items.ThisStockpileName = "Public"
+		if ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
+			ThisStockpileName = "Public"
 
 		if menu.CSVExport.get() == 1:
-			stockpilefile = open("Stockpiles//" + items.ThisStockpileName + ".csv", 'w')
-			stockpilefile.write(items.ThisStockpileName + ",\n")
-			stockpilefile.write(items.FoundStockpileTypeName + ",\n")
+			stockpilefile = open("Stockpiles//" + ThisStockpileName + ".csv", 'w')
+			stockpilefile.write(ThisStockpileName + ",\n")
+			stockpilefile.write(FoundStockpileTypeName + ",\n")
 			stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
 			stockpilefile.close()
 
 			# Writing to both csv and xlsx, only the quantity and name is written
 			# If more elements from items.data are added to stockpilecontents, they could be added to these exports as fields
-			with open("Stockpiles//" + items.ThisStockpileName + ".csv", 'a') as fp:
+			with open("Stockpiles//" + ThisStockpileName + ".csv", 'a') as fp:
 				# fp.write('\n'.join('{},{},{}'.format(x[0],x[1],x[2]) for x in stockpilecontents))
 				############### THIS ONE DOES IN REGULAR ORDER ############
 				# fp.write('\n'.join('{},{}'.format(x[1],x[2]) for x in stockpilecontents))
@@ -778,10 +778,10 @@ def ItemScan(screen, garbage):
 			fp.close()
 		
 
-		if menu.updateBot.get() == 1:
+		if menu.updateBot.get() == 1 and ThisStockpileName != "Public":
 			requestObj = {
 				"password": menu.BotPassword.get(),
-				"name": items.ThisStockpileName
+				"name": ThisStockpileName
 			}
 			data = []
 			for x in items.sortedcontents:
@@ -802,10 +802,10 @@ def ItemScan(screen, garbage):
 
 
 		if menu.XLSXExport.get() == 1:
-			workbook = xlsxwriter.Workbook("Stockpiles//" + items.ThisStockpileName + ".xlsx")
+			workbook = xlsxwriter.Workbook("Stockpiles//" + ThisStockpileName + ".xlsx")
 			worksheet = workbook.add_worksheet()
-			worksheet.write(0, 0, items.ThisStockpileName)
-			worksheet.write(1, 0, items.FoundStockpileTypeName)
+			worksheet.write(0, 0, ThisStockpileName)
+			worksheet.write(1, 0, FoundStockpileTypeName)
 			worksheet.write(2, 0, str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 			row = 3
 			for col, data in enumerate(items.sortedcontents):
@@ -914,6 +914,7 @@ def NameAndDestroy(event):
 	PopupWindow.destroy()
 
 
+
 def SaveIconAndDestroy(image):
 	global PopupWindow
 	global IconEntry
@@ -941,7 +942,7 @@ def CSVExport():
 	if items.stockpilecontents != []:
 		stockpilefile = open("Stockpiles//" + items.ThisStockpileName + ".csv", 'w')
 		stockpilefile.write(items.ThisStockpileName + ",\n")
-		stockpilefile.write(items.FoundStockpileTypeName + ",\n")
+		stockpilefile.write(items.FoundStockpileTypeNamenmnmw + ",\n")
 		stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
 		stockpilefile.close()
 
@@ -1171,12 +1172,13 @@ TableBottom = ttk.Frame(TableCanvas)
 TableBottom.columnconfigure(0, weight=1)
 TableBottom.columnconfigure(1, weight=1)
 TableBottom.columnconfigure(2, weight=1)
-CSVButton = ttk.Button(TableBottom, text="Re-Export CSV", command=CSVExport, style="EnabledButton.TButton")
-CSVButton.grid(row=0, column=0, pady=5, sticky=NSEW)
-XSLXButton = ttk.Button(TableBottom, text="Re-Export XLSX", command=XLSXExport, style="EnabledButton.TButton")
-XSLXButton.grid(row=0, column=1, pady=5, sticky=NSEW)
-ReRunLearn = ttk.Button(TableBottom, text="Re-Run w/ Learn", command=lambda: Learn(1, LastStockpile))
-ReRunLearn.grid(row=0, column=2, pady=5, sticky=NSEW)
+# REMOVED TO FIX BUG WITH THREADING FOR NOW
+# CSVButton = ttk.Button(TableBottom, text="Re-Export CSV", command=CSVExport, style="EnabledButton.TButton")
+# CSVButton.grid(row=0, column=0, pady=5, sticky=NSEW)
+# XSLXButton = ttk.Button(TableBottom, text="Re-Export XLSX", command=XLSXExport, style="EnabledButton.TButton")
+# XSLXButton.grid(row=0, column=1, pady=5, sticky=NSEW)
+# ReRunLearn = ttk.Button(TableBottom, text="Re-Run w/ Learn", command=lambda: Learn(1, LastStockpile))
+# ReRunLearn.grid(row=0, column=2, pady=5, sticky=NSEW)
 
 
 # TableBottom.pack(expand=True, fill='x', side=BOTTOM)
