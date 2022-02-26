@@ -101,6 +101,7 @@ class menu(object):
 	topscroll = 0
 	BotHost = StringVar()
 	BotPassword = StringVar()
+	BotGuildID = StringVar()
 	CSVExport = IntVar()
 	updateBot = IntVar()
 	XLSXExport = IntVar()
@@ -784,7 +785,8 @@ def ItemScan(screen, garbage):
 		if menu.updateBot.get() == 1 and ThisStockpileName != "Public":
 			requestObj = {
 				"password": menu.BotPassword.get(),
-				"name": ThisStockpileName
+				"name": ThisStockpileName,
+				"guildID": menu.BotGuildID.get()
 			}
 			data = []
 			for x in items.sortedcontents:
@@ -795,10 +797,12 @@ def ItemScan(screen, garbage):
 				r = requests.post(menu.BotHost.get(), json=requestObj)
 				response = r.json()
 
-				if (response["success"]): print("Sent to server successfully")
-				elif (response["error"] == "empty-stockpile-name"): print("Stockpile name is invalid. Perhaps the stockpile name was not detected.")
-				elif (response["error"] == "invalid-password"): print("Invalid password, check that the Bot Password is correct.")
-				else: print("An unhandled error occured: " + response["error"])
+				storemanBotPrefix = "[Storeman Bot Link]: "
+				if (response["success"]): print(storemanBotPrefix + "Sent to server successfully")
+				elif (response["error"] == "empty-stockpile-name"): print(storemanBotPrefix + "Stockpile name is invalid. Perhaps the stockpile name was not detected or empty.")
+				elif (response["error"] == "invalid-password"): print(storemanBotPrefix + "Invalid password, check that the Bot Password is correct.")
+				elif (response["error"] == "invalid-guild-id"): print(storemanBotPrefix + "The Guild ID entered was not found on the Storeman Bot server. Please check that it is correct.")
+				else: print(storemanBotPrefix + "An unhandled error occured: " + response["error"])
 			except Exception as e:
 				print("There was an error connecting to the Bot")
 				print(e)
@@ -1211,6 +1215,7 @@ def SaveFilter():
 		exportfile.write(str(menu.updateBot.get()) + "\n")
 		exportfile.write(str(menu.BotHost.get()) + "\n")
 		exportfile.write(str(menu.BotPassword.get()) + "\n")
+		exportfile.write(str(menu.BotGuildID.get()) + "\n")
 	CreateButtons("")
 
 
@@ -1301,6 +1306,12 @@ def CreateButtons(self):
 	BotPassword.grid(row=menu.iconrow, column=3, columnspan=2)
 	BotPassword.config(show="*")
 	BotPassword_ttp = CreateToolTip(BotPassword, 'Password is set with bot using /spsetpassword command in Discord')
+	menu.iconrow += 1
+	BotGuildIDLabel = ttk.Label(SettingsFrame, text="GuildID (if you are using a multi-server instance):")
+	BotGuildIDLabel.grid(row=menu.iconrow, column=2)
+	BotGuildID = ttk.Entry(SettingsFrame, textvariable=menu.BotGuildID)
+	BotGuildID.grid(row=menu.iconrow, column=3, columnspan=2)
+	BotGuildID_ttp = CreateToolTip(BotGuildID, 'If you are using a public instance of Storeman Bot, this is your Discord\'s "Guild ID"')
 	menu.iconrow += 1
 	catsep = ttk.Separator(SettingsFrame, orient=HORIZONTAL)
 	catsep.grid(row=menu.iconrow, columnspan=8, sticky="ew", pady=10)
@@ -1632,6 +1643,7 @@ if os.path.exists("Config.txt"):
 		menu.updateBot.set(int(content[5]))
 		menu.BotHost.set(content[6])
 		menu.BotPassword.set(content[7])
+		menu.BotGuildID.set(content[8])
 	except:
 		logging.info(str(datetime.datetime.now()) + ' Loading from config.txt failed, setting defaults')
 		menu.CSVExport.set(1)
