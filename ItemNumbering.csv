@@ -8,7 +8,7 @@
 6,X,X,KRN886-127 Gast Machine Gun,,Machine Gun,12.7mm,Colonial,Small Weapons,1,6,10,0,0,30,0,0
 7,X,X,Malone MK.2,Malone,Machine Gun,12.7mm,Warden,Small Weapons,1,7,10,0,0,30,0,0
 8,X,X,12.7mm,,,12.7mm,Both,Small Weapons,1,8,20,100,0,0,0,0
-9,,,PT-815 Smoke Grenade,Smoke,Smoke Grenade,,Both,Small Weapons,1,9,10,120,0,0,0,0
+9,X,X,PT-815 Smoke Grenade,Smoke,Smoke Grenade,,Both,Small Weapons,1,9,10,120,0,0,0,0
 10,-,-,Ferro 879,,Pistol,8mm,Both,Small Weapons,1,10,20,-,-,-,-,-
 11,X,X,Cascadier 873,,Pistol,8mm,Warden,Small Weapons,1,11,20,60,0,0,0,0
 12,-,-,8mm,,,8mm,Both,Small Weapons,1,12,40,40,0,0,0,0
@@ -218,3 +218,10 @@
 216,X,X,Copper Alloy,,,,Both,Resource,5,20,,,,,,
 217,,,O'Brien V.113 Gravekeeper,,Armoured Car,,Warden,Vehicle,7,9,5,,,,,
 218,X,X,"T8 ""Gemini""",,Armoured Car,,Colonial,Vehicle,7,10,5,,,,,
+219,X,X,KLG901-2 Lunaire F,,Grenade Launcher,,Colonial,Heavy Weapons,2,32,10,50,,5,,
+220,X,X,The Ospreay,,Grenade Launcher,,Warden,Utility,3,1,20,85,,10,,
+221,X,X,Tremola Grenade GPb-1,,Explosive Grenade,,Both,Heavy Weapons,2,33,15,150,10,,,
+222,X,X,Velian Flak Vest,,Armour Uniform,,Colonial,Uniforms,6,16,5,100,,,,
+223,X,X,Gunner's Breastplate,,Armour Uniform,,Warden,Uniforms,6,17,3,100,,,,
+224,X,X,Officialis' Attire,,Officer Uniform,,Warden,Uniforms,6,18,3,100,,,,
+225,X,X,Officer's Regalia,,Officer Uniform,,Colonial,Uniforms,6,19,3,100,,,,
