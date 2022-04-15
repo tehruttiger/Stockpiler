@@ -588,59 +588,67 @@ def ItemScan(screen, garbage):
 					  ('Checkimages//SafeHouse.png', 'Safe House', 7))
 	# Check cropped stockpile image for each location type image
 	for image in StockpileTypes:
-		findtype = cv2.imread(image[0], cv2.IMREAD_GRAYSCALE)
-		res = cv2.matchTemplate(stockpile, findtype, cv2.TM_CCOEFF_NORMED)
-		# Threshold is a bit lower for types as they are slightly see-thru
-		typethreshold = .95
-		# print("Checking:", image[1])
-		if np.amax(res) > typethreshold:
-			y, x = np.unravel_index(res.argmax(), res.shape)
-			FoundStockpileType = image[2]
-			FoundStockpileTypeName = image[1]
-			# print(image[1])
-			if image[1] == "Seaport" or image[1] == "Storage Depot":
-				findtab = cv2.imread('CheckImages//Tab.png', cv2.IMREAD_GRAYSCALE)
-				res = cv2.matchTemplate(stockpile, findtab, cv2.TM_CCOEFF_NORMED)
-				tabthreshold = .99
-				if np.amax(res) > tabthreshold:
-					print("Found the Tab")
-					y, x = np.unravel_index(res.argmax(), res.shape)
-					# Seaports and Storage Depots have the potential to have named stockpiles, so grab the name
-					stockpilename = stockpile[y - 5:y + 17, x - 150:x - 8]
-					# Make a list of all current stockpile name images
-					currentstockpiles = glob.glob("Stockpiles/*.png")
-					# print(currentstockpiles)
-					found = 0
-					for image in currentstockpiles:
-						stockpilelabel = cv2.imread(image, cv2.IMREAD_GRAYSCALE)
-						if not image.endswith("image.png"):
-							res = cv2.matchTemplate(stockpilename, stockpilelabel, cv2.TM_CCOEFF_NORMED)
-							threshold = .99
-							flag = False
-							if np.amax(res) > threshold:
-								# Named stockpile is one already seen
-								found = 1
-								ThisStockpileName = (image[11:(len(image) - 4)])
-					if found != 1:
-						newstockpopup(stockpilename)
-						PopupWindow.wait_window()
-						# NewStockpileFilename = 'Stockpiles//' + NewStockpileName + '.png'
-						# It's a new stockpile, so save an images of the name as well as the cropped stockpile itself
-						cv2.imwrite('Stockpiles//' + NewStockpileName + '.png', stockpilename)
-						if menu.ImgExport.get() == 1:
-							cv2.imwrite('Stockpiles//' + NewStockpileName + ' image.png', stockpile)
-						ThisStockpileName = NewStockpileName
+		try:
+			findtype = cv2.imread(image[0], cv2.IMREAD_GRAYSCALE)
+			cv2.imshow("asdf",findtype)
+			cv2.waitkey(0)
+			res = cv2.matchTemplate(stockpile, findtype, cv2.TM_CCOEFF_NORMED)
+			# Threshold is a bit lower for types as they are slightly see-thru
+			typethreshold = .95
+			# print("Checking:", image[1])
+			if np.amax(res) > typethreshold:
+				y, x = np.unravel_index(res.argmax(), res.shape)
+				FoundStockpileType = image[2]
+				FoundStockpileTypeName = image[1]
+				# print(image[1])
+				if image[1] == "Seaport" or image[1] == "Storage Depot":
+					findtab = cv2.imread('CheckImages//Tab.png', cv2.IMREAD_GRAYSCALE)
+					res = cv2.matchTemplate(stockpile, findtab, cv2.TM_CCOEFF_NORMED)
+					tabthreshold = .99
+					if np.amax(res) > tabthreshold:
+						print("Found the Tab")
+						y, x = np.unravel_index(res.argmax(), res.shape)
+						# Seaports and Storage Depots have the potential to have named stockpiles, so grab the name
+						stockpilename = stockpile[y - 5:y + 17, x - 150:x - 8]
+						# Make a list of all current stockpile name images
+						currentstockpiles = glob.glob("Stockpiles/*.png")
+						# print(currentstockpiles)
+						found = 0
+						for image in currentstockpiles:
+							stockpilelabel = cv2.imread(image, cv2.IMREAD_GRAYSCALE)
+							if not image.endswith("image.png"):
+								res = cv2.matchTemplate(stockpilename, stockpilelabel, cv2.TM_CCOEFF_NORMED)
+								threshold = .99
+								flag = False
+								if np.amax(res) > threshold:
+									# Named stockpile is one already seen
+									found = 1
+									ThisStockpileName = (image[11:(len(image) - 4)])
+						if found != 1:
+							newstockpopup(stockpilename)
+							PopupWindow.wait_window()
+							# NewStockpileFilename = 'Stockpiles//' + NewStockpileName + '.png'
+							# It's a new stockpile, so save an images of the name as well as the cropped stockpile itself
+							cv2.imwrite('Stockpiles//' + NewStockpileName + '.png', stockpilename)
+							if menu.ImgExport.get() == 1:
+								cv2.imwrite('Stockpiles//' + NewStockpileName + ' image.png', stockpile)
+							ThisStockpileName = NewStockpileName
+					else:
+						# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
+						ThisStockpileName = FoundStockpileTypeName
 				else:
 					# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
 					ThisStockpileName = FoundStockpileTypeName
+				# StockpileName = StockpileNameEntry.get()
+				# cv2.imwrite('Stockpiles//' + StockpileName + '.png', stockpilename)
+				break
 			else:
-				# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
-				ThisStockpileName = FoundStockpileTypeName
-			# StockpileName = StockpileNameEntry.get()
-			# cv2.imwrite('Stockpiles//' + StockpileName + '.png', stockpilename)
-			break
-		else:
-			# print("Didn't find",image[1])
+				# print("Didn't find",image[1])
+				FoundStockpileType = "None"
+				ThisStockpileName = "None"
+				pass
+		except:
+			print("Probably not looking at a stockpile or don't have the game open")
 			FoundStockpileType = "None"
 			ThisStockpileName = "None"
 			pass
