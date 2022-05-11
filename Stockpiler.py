@@ -591,8 +591,8 @@ def ItemScan(screen, garbage):
 	for image in StockpileTypes:
 		try:
 			findtype = cv2.imread(image[0], cv2.IMREAD_GRAYSCALE)
-			cv2.imshow("asdf",findtype)
-			cv2.waitkey(0)
+			# cv2.imshow("asdf",findtype)
+			# cv2.waitKey(0)
 			res = cv2.matchTemplate(stockpile, findtype, cv2.TM_CCOEFF_NORMED)
 			# Threshold is a bit lower for types as they are slightly see-thru
 			typethreshold = .95
