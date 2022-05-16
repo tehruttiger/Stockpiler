@@ -80,7 +80,7 @@ for xfile in files:
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
 
-Version = "1.2.1b"
+Version = "1.2.2b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -421,6 +421,7 @@ def Learn(LearnInt, image):
 			Found = False
 			for imagefile in os.listdir(folder):
 				checkimage = cv2.imread(folder + imagefile, cv2.IMREAD_GRAYSCALE)
+				print("Checking for ", str(imagefile))
 				result = cv2.matchTemplate(currenticon, checkimage, cv2.TM_CCOEFF_NORMED)
 				threshold = .99
 				if np.amax(result) > threshold:
@@ -1171,7 +1172,7 @@ FilterFrame = ttk.Frame(FilterCanvas)
 TableFrame = ttk.Frame(TableCanvas)
 SettingsFrame = ttk.Frame(SettingsCanvas)
 
-FilterCanvas.create_window((0, 0), window=FilterFrame, anchor="nw", height="1837p", width="550p")
+FilterCanvas.create_window((0, 0), window=FilterFrame, anchor="nw", height="1970p", width="550p")
 TableCanvas.create_window((0, 0), window=TableFrame, anchor="nw", height="410p", width="402p")
 SettingsCanvas.create_window((0, 0), window=SettingsFrame, anchor="nw", height="500p", width="402p")
 
