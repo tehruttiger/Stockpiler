@@ -80,7 +80,7 @@ for xfile in files:
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
 
-Version = "1.2.2b"
+Version = "1.2.3b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -106,6 +106,7 @@ class menu(object):
 	updateBot = IntVar()
 	XLSXExport = IntVar()
 	ImgExport = IntVar()
+	debug = IntVar()
 	Set = IntVar()
 	Learning = IntVar()
 	FoxWinX = 0
@@ -113,6 +114,7 @@ class menu(object):
 	FoxWinW = 0
 	FoxWinH = 0
 
+menu.debug.set(0)
 
 s = ttk.Style()
 s.theme_use('alt')
@@ -368,21 +370,36 @@ def Learn(LearnInt, image):
 	# grab whole screen and prepare for template matching
 	# COMMENT OUT THESE TWO LINES IF YOU ARE TESTING A SPECIFIC IMAGE
 	TestImage = False
-	win32gui.EnumWindows(winEnumHandler, None)
 
-	# OKAY, so you'll have to grab the whole screen, detect that thing in the upper left, then use that as a basis
-	# for cropping that full screenshot down to just the foxhole window
-	screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
-	screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+	try:
+		win32gui.EnumWindows(winEnumHandler, None)
 
-	numbox = cv2.imread('CheckImages//StateOf.png', cv2.IMREAD_GRAYSCALE)
-	res = cv2.matchTemplate(screen, numbox, cv2.TM_CCOEFF_NORMED)
-	threshold = .95
-	stateloc = np.where(res >= threshold)
-	statey = stateloc[0].astype(int) - 35
-	statex = stateloc[1].astype(int) - 35
+		# OKAY, so you'll have to grab the whole screen, detect that thing in the upper left, then use that as a basis
+		# for cropping that full screenshot down to just the foxhole window
+		screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
+		screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 
-	screen = screen[int(statey):int(statey) + menu.FoxWinH, int(statex):int(statex) + menu.FoxWinW]
+		numbox = cv2.imread('CheckImages//StateOf.png', cv2.IMREAD_GRAYSCALE)
+		res = cv2.matchTemplate(screen, numbox, cv2.TM_CCOEFF_NORMED)
+		threshold = .95
+		stateloc = np.where(res >= threshold)
+		statey = stateloc[0].astype(int) - 35
+		statex = stateloc[1].astype(int) - 35
+		# print(statey, statex)
+
+		screen = screen[int(statey):int(statey) + menu.FoxWinH, int(statex):int(statex) + menu.FoxWinW]
+		print("It thinks it found the window position and is grabbing location: ", str(int(statey)), ":",
+			  str(int(statey) + menu.FoxWinH), " ", str(int(statex)), ":", str(int(statex) + menu.FoxWinW))
+		if menu.debug.get() == 1:
+			cv2.imshow('Grabbed', screen)
+			cv2.waitKey(0)
+	except:
+		screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
+		screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+		print("Failed to get window position from win32gui, grabbing whole screen")
+		if menu.debug.get() == 1:
+			cv2.imshow('Grabbed', screen)
+			cv2.waitKey(0)
 
 	# UNCOMMENT AND MODIFY LINE BELOW IF YOU ARE TESTING A SPECIFIC IMAGE
 	# screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-110247.png")), cv2.COLOR_RGB2GRAY)
@@ -405,7 +422,7 @@ def Learn(LearnInt, image):
 	print(len(numloc[0]))
 	for spot in range(len(numloc[0])):
 		# Stockpiles never displayed in upper left under State of the War area
-		# State of the War area throws false postives for icons
+		# State of the War area throws false positives for icons
 		if numloc[1][spot] < (resx * .2) and numloc[0][spot] < (resy * .24) and not TestImage:
 			pass
 		else:
@@ -498,11 +515,19 @@ def SearchImage(Pass, LearnImage):
 			stateloc = np.where(res >= threshold)
 			statey = stateloc[0].astype(int) - 35
 			statex = stateloc[1].astype(int) - 35
-			print(statey, statex)
+			# print(statey, statex)
 
 			screen = screen[int(statey):int(statey) + menu.FoxWinH, int(statex):int(statex) + menu.FoxWinW]
+			print("It thinks it found the window position and is grabbing location: ", str(int(statey)), ":", str(int(statey) + menu.FoxWinH), " ", str(int(statex)), ":", str(int(statex) + menu.FoxWinW))
+			if menu.debug.get() == 1:
+				cv2.imshow('Grabbed', screen)
+				cv2.waitKey(0)
 		except:
 			screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
+			print("Failed to get window position from win32gui, grabbing whole screen")
+			if menu.debug.get() == 1:
+				cv2.imshow('Grabbed', screen)
+				cv2.waitKey(0)
 	garbage = "blah"
 	args = (screen, garbage)
 	# Threading commands are generated via text since each thread needs a distinct name, created using threadcounter
@@ -574,6 +599,9 @@ def ItemScan(screen, garbage):
 	else:
 		stockpile = screen[y - 32:1080, x - 11:x + 389]
 
+	if menu.debug.get() == 1:
+		cv2.imshow('Stockpile in this image?', stockpile)
+		cv2.waitKey(0)
 	# UNCOMMENT IF TESTING A SPECIFIC IMAGE
 	# stockpile = screen
 
@@ -592,8 +620,9 @@ def ItemScan(screen, garbage):
 	for image in StockpileTypes:
 		try:
 			findtype = cv2.imread(image[0], cv2.IMREAD_GRAYSCALE)
-			# cv2.imshow("asdf",findtype)
-			# cv2.waitKey(0)
+			# if menu.debug.get() == 1:
+			# 	cv2.imshow("Looking for this",findtype)
+			# 	cv2.waitKey(0)
 			res = cv2.matchTemplate(stockpile, findtype, cv2.TM_CCOEFF_NORMED)
 			# Threshold is a bit lower for types as they are slightly see-thru
 			typethreshold = .95
@@ -650,7 +679,7 @@ def ItemScan(screen, garbage):
 				ThisStockpileName = "None"
 				pass
 		except:
-			print("Probably not looking at a stockpile or don't have the game open")
+			print("Probably not looking at a stockpile or don't have the game open.  Looked for: ", str(image))
 			FoundStockpileType = "None"
 			ThisStockpileName = "None"
 			pass
@@ -1316,14 +1345,18 @@ def CreateButtons(self):
 	BotPassword.config(show="*")
 	BotPassword_ttp = CreateToolTip(BotPassword, 'Password is set with bot using /spsetpassword command in Discord')
 	menu.iconrow += 1
-	BotGuildIDLabel = ttk.Label(SettingsFrame, text="GuildID (if you are using a multi-server instance):")
+	BotGuildIDLabel = ttk.Label(SettingsFrame, text="GuildID:")
 	BotGuildIDLabel.grid(row=menu.iconrow, column=2)
+	BotGuildIDLabel_ttp = CreateToolTip(BotGuildIDLabel, 'Only use if you are using a multi-server instance.  If you are using a public instance of Storeman Bot, this is your Discord\'s "Guild ID"')
 	BotGuildID = ttk.Entry(SettingsFrame, textvariable=menu.BotGuildID)
 	BotGuildID.grid(row=menu.iconrow, column=3, columnspan=2)
-	BotGuildID_ttp = CreateToolTip(BotGuildID, 'If you are using a public instance of Storeman Bot, this is your Discord\'s "Guild ID"')
+	BotGuildID_ttp = CreateToolTip(BotGuildID, 'Only use if you are using a multi-server instance.  If you are using a public instance of Storeman Bot, this is your Discord\'s "Guild ID"')
 	menu.iconrow += 1
 	catsep = ttk.Separator(SettingsFrame, orient=HORIZONTAL)
 	catsep.grid(row=menu.iconrow, columnspan=8, sticky="ew", pady=10)
+	menu.iconrow += 1
+	ObnoxiousCheck = ttk.Checkbutton(SettingsFrame, text="  Obnoxious\ndebug mode?", variable=menu.debug)
+	ObnoxiousCheck.grid(row=menu.iconrow, column=0, rowspan=2, padx=5)
 	menu.iconrow += 3
 	SaveImg = PhotoImage(file="UI/Save.png")
 	SaveButton = ttk.Button(FilterFrame, image=SaveImg, command=SaveFilter)
