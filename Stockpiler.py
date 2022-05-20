@@ -107,6 +107,8 @@ class menu(object):
 	debug = IntVar()
 	Set = IntVar()
 	Learning = IntVar()
+	PickerX = -1
+	PickerY = -1
 
 
 menu.debug.set(0)
@@ -616,12 +618,16 @@ def ItemScan(screen, garbage):
 						if found != 1:
 							newstockpopup(stockpilename)
 							PopupWindow.wait_window()
-							# NewStockpileFilename = 'Stockpiles//' + NewStockpileName + '.png'
-							# It's a new stockpile, so save an images of the name as well as the cropped stockpile itself
-							cv2.imwrite('Stockpiles//' + NewStockpileName + '.png', stockpilename)
-							if menu.ImgExport.get() == 1:
-								cv2.imwrite('Stockpiles//' + NewStockpileName + ' image.png', stockpile)
-							ThisStockpileName = NewStockpileName
+							if NewStockpileName == "" or NewStockpileName.lower() == "public":
+								popup("BlankName")
+								ThisStockpileName = "TheyLeftTheStockpileNameBlank"
+							else:
+								# NewStockpileFilename = 'Stockpiles//' + NewStockpileName + '.png'
+								# It's a new stockpile, so save an images of the name as well as the cropped stockpile itself
+								cv2.imwrite('Stockpiles//' + NewStockpileName + '.png', stockpilename)
+								if menu.ImgExport.get() == 1:
+									cv2.imwrite('Stockpiles//' + NewStockpileName + ' image.png', stockpile)
+								ThisStockpileName = NewStockpileName
 					else:
 						# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
 						ThisStockpileName = FoundStockpileTypeName
@@ -653,188 +659,193 @@ def ItemScan(screen, garbage):
 	start = datetime.datetime.now()
 
 	print(ThisStockpileName)
-	if menu.Set.get() == 0:
-		folder = "CheckImages//Default//"
+	if ThisStockpileName == "TheyLeftTheStockpileNameBlank":
+		pass
 	else:
-		folder = "CheckImages//Modded//"
-	if ThisStockpileName != "None":
-		if menu.ImgExport.get() == 1:
-			cv2.imwrite('Stockpiles//' + ThisStockpileName + ' image.png', stockpile)
-		if FoundStockpileType in CrateList:
-			print("Crate Type")
-			# Grab all the crate CheckImages
-			print(item)
-			StockpileImages = [(str(item[0]), folder + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[12]) for item in items.data if str(item[19]) == "0"]
-			# Grab all the individual vehicles and shippables
-			StockpileImagesAppend = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[11]) for item in items.data if (str(item[9]) == "7" and str(item[19]) == "0") or (str(item[9]) == "8" and str(item[19]) == "0")]
-			StockpileImages.extend(StockpileImagesAppend)
-			#print("Checking for:", StockpileImages)
-		elif FoundStockpileType in SingleList:
-			print("Single Type")
-			# Grab all the individual items
-			# for item in range(len(items.data)):
-			# 	print(item)
-			StockpileImages = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[11]) for item in items.data]
-			#print("Checking for:", StockpileImages)
+		if menu.Set.get() == 0:
+			folder = "CheckImages//Default//"
 		else:
-			print("No idea what type...")
-
-
-		stockpilecontents = []
-		checked = 0
-		#print("StockpileImages", StockpileImages)
-		for image in StockpileImages:
-			checked += 1
-			if str(image[4]) == '1':
-				try:
-					findimage = cv2.imread(image[1], cv2.IMREAD_GRAYSCALE)
-					res = cv2.matchTemplate(stockpile, findimage, cv2.TM_CCOEFF_NORMED)
-					threshold = .99
-					flag = False
-					if np.amax(res) > threshold:
-						flag = True
-						y, x = np.unravel_index(res.argmax(), res.shape)
-						# Found a thing, now find amount
-						numberlist = []
-						for number in items.numbers:
-							findnum = cv2.imread(number[0], cv2.IMREAD_GRAYSCALE)
-							# Clip the area where the stock number will be
-							numberarea = stockpile[y+8:y+28, x+45:x+87]
-							resnum = cv2.matchTemplate(numberarea, findnum, cv2.TM_CCOEFF_NORMED)
-							threshold = .90
-							numloc = np.where(resnum >= threshold)
-							# It only looks for up to 3 of each number for each item, since after that it would be a "k+" scenario, which never happens in stockpiles
-							# This will need to be changed to allow for more digits whenever it does in-person looks at BB stockpiles and such, where it will show up to 5 digits
-							if len(numloc[1]) > 0:
-								numberlist.append(tuple([numloc[1][0],number[1]]))
-							if len(numloc[1]) > 1:
-								numberlist.append(tuple([numloc[1][1],number[1]]))
-							if len(numloc[1]) > 2:
-								numberlist.append(tuple([numloc[1][2],number[1]]))
-							# Sort the list of numbers by position closest to the left, putting the numbers in order by extension
-							numberlist.sort(key=lambda y: y[0])
-
-						# If the number ends in a K, it just adds 000 since you don't know if that's 1001 or 1999
-						# k+ never happens in stockpiles, so this only affects town halls, bunker bases, etc
-						if len(numberlist) == 1:
-							quantity = int(str(numberlist[0][1]))
-						elif len(numberlist) == 2:
-							if numberlist[1][1] == "k+":
-								quantity = int(str(numberlist[0][1]) + "000")
-							else:
-								quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])))
-						elif len(numberlist) == 3:
-							if numberlist[2][1] == "k+":
-								quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + "000")
-							else:
-								quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]))
-						elif len(numberlist) == 4:
-							if numberlist[3][1] == "k+":
-								quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + "000")
-							else:
-								quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + str(numberlist[3][1]))
-						# place shirts first, since they're always at the top of every stockpile
-						if image[0] == "86":
-							itemsort = 0
-						# bunker supplies next
-						elif image[0] == "93":
-							itemsort = 1
-						# garrison supplies last
-						elif image[0] == "90":
-							itemsort = 2
-						elif image[3] != "Vehicle" and image[3] != "Shippables":
-							itemsort = 5
-						elif image[3] == "Vehicle":
-							itemsort = 10
-						else:
-							itemsort = 15
-						if image[1][(len(image[1])-5):(len(image[1])-4)] == "C":
-							stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 1)))
-						else:
-							stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 0)))
-				except Exception as e:
-					print("Exception: ", e)
-					print(image)
-					print("Failed while looking for: ", str(image[2]), " Icon is likely missing.")
-					logging.info(str(datetime.datetime.now()) + "Failed while looking for (missing?): ", str(image[2]) + str(e))
-					pass
+			folder = "CheckImages//Modded//"
+		if ThisStockpileName != "None":
+			if menu.ImgExport.get() == 1:
+				cv2.imwrite('Stockpiles//' + ThisStockpileName + ' image.png', stockpile)
+			if FoundStockpileType in CrateList:
+				print("Crate Type")
+				# Grab all the crate CheckImages
+				print(item)
+				StockpileImages = [(str(item[0]), folder + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[12]) for item in items.data if str(item[19]) == "0"]
+				# Grab all the individual vehicles and shippables
+				StockpileImagesAppend = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[11]) for item in items.data if (str(item[9]) == "7" and str(item[19]) == "0") or (str(item[9]) == "8" and str(item[19]) == "0")]
+				StockpileImages.extend(StockpileImagesAppend)
+				#print("Checking for:", StockpileImages)
+			elif FoundStockpileType in SingleList:
+				print("Single Type")
+				# Grab all the individual items
+				# for item in range(len(items.data)):
+				# 	print(item)
+				StockpileImages = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[11]) for item in items.data]
+				#print("Checking for:", StockpileImages)
 			else:
-				if menu.debug.get() == 1:
-					print("Skipping icon: ", str(image[2]), "because ItemNumbering.csv lists it as impossible/never displayed in stockpile images (like pistol ammo and crates of warheads)", image[4])
-				pass
-
-		#print("Stockpile Contents:", stockpilecontents)
-		items.sortedcontents = list(sorted(stockpilecontents, key=lambda x: (x[3], x[4], -x[2])))
-		#print("Sorted Contents:", items.sortedcontents)
-		# Here's where we sort stockpilecontents by category, then number, so they spit out the same as screenshot
-		# Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
-		if ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
-			ThisStockpileName = "Public"
-
-		if menu.CSVExport.get() == 1:
-			stockpilefile = open("Stockpiles//" + ThisStockpileName + ".csv", 'w')
-			stockpilefile.write(ThisStockpileName + ",\n")
-			stockpilefile.write(FoundStockpileTypeName + ",\n")
-			stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
-			stockpilefile.close()
-
-			# Writing to both csv and xlsx, only the quantity and name is written
-			# If more elements from items.data are added to stockpilecontents, they could be added to these exports as fields
-			with open("Stockpiles//" + ThisStockpileName + ".csv", 'a') as fp:
-				# fp.write('\n'.join('{},{},{}'.format(x[0],x[1],x[2]) for x in stockpilecontents))
-				############### THIS ONE DOES IN REGULAR ORDER ############
-				# fp.write('\n'.join('{},{}'.format(x[1],x[2]) for x in stockpilecontents))
-				############### THIS ONE DOES IN SORTED ORDER #############
-				fp.write('\n'.join('{},{}'.format(x[1], x[2]) for x in items.sortedcontents))
-			fp.close()
-		
-
-		if menu.updateBot.get() == 1 and ThisStockpileName != "Public":
-			requestObj = {
-				"password": menu.BotPassword.get(),
-				"name": ThisStockpileName,
-				"guildID": menu.BotGuildID.get()
-			}
-			data = []
-			for x in items.sortedcontents:
-				data.append([x[1], x[2]])
-			requestObj["data"] = data
-
-			try:
-				r = requests.post(menu.BotHost.get(), json=requestObj)
-				response = r.json()
-
-				storemanBotPrefix = "[Storeman Bot Link]: "
-				if (response["success"]): print(storemanBotPrefix + "Sent to server successfully")
-				elif (response["error"] == "empty-stockpile-name"): print(storemanBotPrefix + "Stockpile name is invalid. Perhaps the stockpile name was not detected or empty.")
-				elif (response["error"] == "invalid-password"): print(storemanBotPrefix + "Invalid password, check that the Bot Password is correct.")
-				elif (response["error"] == "invalid-guild-id"): print(storemanBotPrefix + "The Guild ID entered was not found on the Storeman Bot server. Please check that it is correct.")
-				else: print(storemanBotPrefix + "An unhandled error occured: " + response["error"])
-			except Exception as e:
-				print("There was an error connecting to the Bot")
-				print("Exception: ", e)
+				print("No idea what type...")
 
 
-		if menu.XLSXExport.get() == 1:
-			workbook = xlsxwriter.Workbook("Stockpiles//" + ThisStockpileName + ".xlsx")
-			worksheet = workbook.add_worksheet()
-			worksheet.write(0, 0, ThisStockpileName)
-			worksheet.write(1, 0, FoundStockpileTypeName)
-			worksheet.write(2, 0, str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-			row = 3
-			for col, data in enumerate(items.sortedcontents):
-				# print("col", col, " data", data)
-				worksheet.write(row + col, 0, data[1])
-				worksheet.write(row + col, 1, data[2])
-			workbook.close()
-		print(datetime.datetime.now()-start)
-		print("Items Checked:",checked)
-		items.slimcontents = items.sortedcontents
-		for sublist in items.slimcontents:
-			del sublist[3:5]
-		ResultSheet.set_sheet_data(data=items.slimcontents)
-	else:
-		popup("NoStockpile")
+			stockpilecontents = []
+			checked = 0
+			#print("StockpileImages", StockpileImages)
+			for image in StockpileImages:
+				checked += 1
+				if str(image[4]) == '1':
+					if os.path.exists(image[1]):
+						try:
+							findimage = cv2.imread(image[1], cv2.IMREAD_GRAYSCALE)
+							res = cv2.matchTemplate(stockpile, findimage, cv2.TM_CCOEFF_NORMED)
+							threshold = .99
+							flag = False
+							if np.amax(res) > threshold:
+								flag = True
+								y, x = np.unravel_index(res.argmax(), res.shape)
+								# Found a thing, now find amount
+								numberlist = []
+								for number in items.numbers:
+									findnum = cv2.imread(number[0], cv2.IMREAD_GRAYSCALE)
+									# Clip the area where the stock number will be
+									numberarea = stockpile[y+8:y+28, x+45:x+87]
+									resnum = cv2.matchTemplate(numberarea, findnum, cv2.TM_CCOEFF_NORMED)
+									threshold = .90
+									numloc = np.where(resnum >= threshold)
+									# It only looks for up to 3 of each number for each item, since after that it would be a "k+" scenario, which never happens in stockpiles
+									# This will need to be changed to allow for more digits whenever it does in-person looks at BB stockpiles and such, where it will show up to 5 digits
+									if len(numloc[1]) > 0:
+										numberlist.append(tuple([numloc[1][0],number[1]]))
+									if len(numloc[1]) > 1:
+										numberlist.append(tuple([numloc[1][1],number[1]]))
+									if len(numloc[1]) > 2:
+										numberlist.append(tuple([numloc[1][2],number[1]]))
+									# Sort the list of numbers by position closest to the left, putting the numbers in order by extension
+									numberlist.sort(key=lambda y: y[0])
+
+								# If the number ends in a K, it just adds 000 since you don't know if that's 1001 or 1999
+								# k+ never happens in stockpiles, so this only affects town halls, bunker bases, etc
+								if len(numberlist) == 1:
+									quantity = int(str(numberlist[0][1]))
+								elif len(numberlist) == 2:
+									if numberlist[1][1] == "k+":
+										quantity = int(str(numberlist[0][1]) + "000")
+									else:
+										quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])))
+								elif len(numberlist) == 3:
+									if numberlist[2][1] == "k+":
+										quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + "000")
+									else:
+										quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]))
+								elif len(numberlist) == 4:
+									if numberlist[3][1] == "k+":
+										quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + "000")
+									else:
+										quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + str(numberlist[3][1]))
+								# place shirts first, since they're always at the top of every stockpile
+								if image[0] == "86":
+									itemsort = 0
+								# bunker supplies next
+								elif image[0] == "93":
+									itemsort = 1
+								# garrison supplies last
+								elif image[0] == "90":
+									itemsort = 2
+								elif image[3] != "Vehicle" and image[3] != "Shippables":
+									itemsort = 5
+								elif image[3] == "Vehicle":
+									itemsort = 10
+								else:
+									itemsort = 15
+								if image[1][(len(image[1])-5):(len(image[1])-4)] == "C":
+									stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 1)))
+								else:
+									stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 0)))
+						except Exception as e:
+							print("Exception: ", e)
+							print("Failed while looking for: ", str(image[2]), " Icon is likely missing.")
+							logging.info(str(datetime.datetime.now()) + "Failed while looking for (missing?): ", str(image[2]) + str(e))
+							pass
+					else:
+						print("File missing:",str(image[1]), str(image[2]))
+				else:
+					if menu.debug.get() == 1:
+						print("Skipping icon: ", str(image[2]), "because ItemNumbering.csv lists it as impossible/never displayed in stockpile images (like pistol ammo and crates of warheads)", image[4])
+					pass
+
+			#print("Stockpile Contents:", stockpilecontents)
+			items.sortedcontents = list(sorted(stockpilecontents, key=lambda x: (x[3], x[4], -x[2])))
+			#print("Sorted Contents:", items.sortedcontents)
+			# Here's where we sort stockpilecontents by category, then number, so they spit out the same as screenshot
+			# Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
+			if ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
+				ThisStockpileName = "Public"
+
+			if menu.CSVExport.get() == 1:
+				stockpilefile = open("Stockpiles//" + ThisStockpileName + ".csv", 'w')
+				stockpilefile.write(ThisStockpileName + ",\n")
+				stockpilefile.write(FoundStockpileTypeName + ",\n")
+				stockpilefile.write(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ",\n")
+				stockpilefile.close()
+
+				# Writing to both csv and xlsx, only the quantity and name is written
+				# If more elements from items.data are added to stockpilecontents, they could be added to these exports as fields
+				with open("Stockpiles//" + ThisStockpileName + ".csv", 'a') as fp:
+					# fp.write('\n'.join('{},{},{}'.format(x[0],x[1],x[2]) for x in stockpilecontents))
+					############### THIS ONE DOES IN REGULAR ORDER ############
+					# fp.write('\n'.join('{},{}'.format(x[1],x[2]) for x in stockpilecontents))
+					############### THIS ONE DOES IN SORTED ORDER #############
+					fp.write('\n'.join('{},{}'.format(x[1], x[2]) for x in items.sortedcontents))
+				fp.close()
+
+
+			if menu.updateBot.get() == 1 and ThisStockpileName != "Public":
+				requestObj = {
+					"password": menu.BotPassword.get(),
+					"name": ThisStockpileName,
+					"guildID": menu.BotGuildID.get()
+				}
+				data = []
+				for x in items.sortedcontents:
+					data.append([x[1], x[2]])
+				requestObj["data"] = data
+
+				try:
+					r = requests.post(menu.BotHost.get(), json=requestObj)
+					response = r.json()
+
+					storemanBotPrefix = "[Storeman Bot Link]: "
+					if (response["success"]): print(storemanBotPrefix + "Sent to server successfully")
+					elif (response["error"] == "empty-stockpile-name"): print(storemanBotPrefix + "Stockpile name is invalid. Perhaps the stockpile name was not detected or empty.")
+					elif (response["error"] == "invalid-password"): print(storemanBotPrefix + "Invalid password, check that the Bot Password is correct.")
+					elif (response["error"] == "invalid-guild-id"): print(storemanBotPrefix + "The Guild ID entered was not found on the Storeman Bot server. Please check that it is correct.")
+					else: print(storemanBotPrefix + "An unhandled error occured: " + response["error"])
+				except Exception as e:
+					print("There was an error connecting to the Bot")
+					print("Exception: ", e)
+
+
+			if menu.XLSXExport.get() == 1:
+				workbook = xlsxwriter.Workbook("Stockpiles//" + ThisStockpileName + ".xlsx")
+				worksheet = workbook.add_worksheet()
+				worksheet.write(0, 0, ThisStockpileName)
+				worksheet.write(1, 0, FoundStockpileTypeName)
+				worksheet.write(2, 0, str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+				row = 3
+				for col, data in enumerate(items.sortedcontents):
+					# print("col", col, " data", data)
+					worksheet.write(row + col, 0, data[1])
+					worksheet.write(row + col, 1, data[2])
+				workbook.close()
+			print(datetime.datetime.now()-start)
+			print("Items Checked:",checked)
+			items.slimcontents = items.sortedcontents
+			for sublist in items.slimcontents:
+				del sublist[3:5]
+			ResultSheet.set_sheet_data(data=items.slimcontents)
+		else:
+			popup("NoStockpile")
 
 
 def on_activate():
@@ -915,6 +926,9 @@ def popup(type):
 	elif type == "NoStockpile":
 		NoStockpileLabel = ttk.Label(PopupFrame, text="Didn't detect stockpile.\nHover over a stockpile on the map and retry.", style="TLabel")
 		NoStockpileLabel.grid(row=2, column=0)
+	elif type == "BlankName":
+		BlankorPublicLabel = ttk.Label(PopupFrame, text="You must type in the name (which cannot be Public).\nThis field cannot be left blank.\nYou'll need to rescan it.", style="TLabel")
+		BlankorPublicLabel.grid(row=2, column=0)
 	OKButton = ttk.Button(PopupFrame, text="OK", command=lambda: Destroy("blah"))
 	PopupWindow.bind('<Return>', Destroy)
 	OKButton.grid(row=10, column=0, sticky="NSEW")
@@ -1042,9 +1056,7 @@ TableBottom.columnconfigure(0, weight=1)
 TableBottom.columnconfigure(1, weight=1)
 TableBottom.columnconfigure(2, weight=1)
 
-
 TableBottom.pack(fill='x', side=BOTTOM)
-
 
 ResultSheet = Sheet(TableFrame, data=fillerdata)
 ResultSheet.enable_bindings()
@@ -1267,21 +1279,30 @@ def CreateButtons(self):
 		logging.info(str(datetime.datetime.now()) + " No buttons? " + str(e))
 
 
+def SavePickerPosition(x, y):
+	menu.PickerX = x
+	menu.PickerY = y
+
+
 def IconPicker(image):
 	global IconPickerWindow
 	global tempicon
 	tempicon = image
 	root_x = StockpilerWindow.winfo_rootx()
 	root_y = StockpilerWindow.winfo_rooty()
-	if root_x == root_y == -32000:
-		win_x = 90
-		win_y = 90
+	if menu.PickerX != -1:
+		win_x = menu.PickerX
+		win_y = menu.PickerY
+	elif root_x == root_y == -32000:
+		win_x = 20
+		win_y = 20
 	elif root_x < 20:
-		win_x = 90
-		win_y = 90
+		win_x = 20
+		win_y = 20
 	else:
+		# This window is so big in its current form that it just needs to be further in the corner
 		win_x = root_x - 20
-		win_y = root_y + 125
+		win_y = root_y - 20
 
 	location = "+" + str(win_x) + "+" + str(win_y)
 	IconPickerWindow = Toplevel(StockpilerWindow)
@@ -1298,6 +1319,8 @@ def IconPicker(image):
 	NewIconImage = ttk.Label(IconPickerFrame, image=tkimage)
 	NewIconImage.image = image
 	NewIconImage.grid(row=0, column=2)
+	SavePositionBtn = ttk.Button(IconPickerFrame, text="Save Window Position", style="EnabledButton.TButton", command=lambda: SavePickerPosition(IconPickerWindow.winfo_x(), IconPickerWindow.winfo_y()))
+	SavePositionBtn.grid(row=0, column=5, columnspan=5)
 	iconcolumn = 0
 	iconrow = 1
 	counter = 0
