@@ -18,7 +18,6 @@ import re
 from requests.sessions import Request
 import xlsxwriter
 from tksheet import Sheet
-import win32gui
 import requests
 import threading
 
@@ -79,8 +78,7 @@ for xfile in files:
 			os.remove(str(file_path) + xfile)
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
-
-Version = "1.2.3b"
+Version = "1.3.1b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -109,10 +107,7 @@ class menu(object):
 	debug = IntVar()
 	Set = IntVar()
 	Learning = IntVar()
-	FoxWinX = 0
-	FoxWinY = 0
-	FoxWinW = 0
-	FoxWinH = 0
+
 
 menu.debug.set(0)
 
@@ -197,9 +192,10 @@ for filteritem in range(len(filter)):
 		# print(filter[filteritem])
 		for item in range(len(items.data)):
 			if filter[filteritem][0] == items.data[item][0]:
-				items.data[item][17] = filter[filteritem][1]
+				items.data[item][19] = filter[filteritem][1]
 				# items.data[item].extend(filter[filteritem][1])
-	except:
+	except Exception as e:
+		print("Exception: ", e)
 		print("failed to apply filters to items.data")
 
 
@@ -269,98 +265,86 @@ class CreateToolTip(object):
 			tw.destroy()
 
 
-def winEnumHandler( hwnd, ctx ):
-	# if win32gui.IsWindowVisible( hwnd ):
-	# 	print (hex(hwnd), win32gui.GetWindowText( hwnd ))
-	if win32gui.GetWindowText(hwnd) == "War  ":
-		print("Found Foxhole")
-		rect = win32gui.GetWindowRect(hwnd)
-		menu.FoxWinX = rect[0]
-		menu.FoxWinY = rect[1]
-		menu.FoxWinW = rect[2] - menu.FoxWinX
-		menu.FoxWinH = rect[3] - menu.FoxWinY
-		print(menu.FoxWinX, menu.FoxWinY, menu.FoxWinW, menu.FoxWinH)
-		if menu.FoxWinX < 0:
-			menu.FoxWinX = 0
-			# menu.FoxWinW = 1
-		if menu.FoxWinY < 0:
-			menu.FoxWinY = 0
-			# menu.FoxWinH = 1
-
-
 # Function used simply for grabbing cropped stockpile images
 # Helpful for grabbing test images for assembling missing icons or new sets of icons (for modded icons)
 def GrabStockpileImage():
 	global counter
-	win32gui.EnumWindows(winEnumHandler, None)
-	######### Remove if multi-monitor works as expected #########
-	# grab whole screen and prepare for template matching
-	# screen = np.array(ImageGrab.grab(bbox=None))
-	# screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-
 	# OKAY, so you'll have to grab the whole screen, detect that thing in the upper left, then use that as a basis
 	# for cropping that full screenshot down to just the foxhole window
 
 	screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
-	screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+	greyscreen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 
 	numbox = cv2.imread('CheckImages//StateOf.png', cv2.IMREAD_GRAYSCALE)
-	res = cv2.matchTemplate(screen, numbox, cv2.TM_CCOEFF_NORMED)
+	res = cv2.matchTemplate(greyscreen, numbox, cv2.TM_CCOEFF_NORMED)
 	threshold = .95
-	stateloc = np.where(res >= threshold)
-	statey = stateloc[0].astype(int) - 35
-	statex = stateloc[1].astype(int) - 35
+	if np.amax(res) > threshold:
+		stateloc = np.where(res >= threshold)
+		print(stateloc)
+		statey = stateloc[0].astype(int) - 35
+		statex = stateloc[1].astype(int) - 35
+		greyscreen = greyscreen[int(statey):int(statey) + 1079, int(statex):int(statex) + 1919]
+		if menu.debug.get() == 1:
+			cv2.imshow("Grabbed in image GrabStockpileImage", screen)
+			cv2.waitKey(0)
+		if menu.Set.get() == 0:
+			findshirtC = cv2.imread('CheckImages//Default//86C.png', cv2.IMREAD_GRAYSCALE)
+			findshirt = cv2.imread('CheckImages//Default//86.png', cv2.IMREAD_GRAYSCALE)
+		else:
+			findshirtC = cv2.imread('CheckImages//Modded//86C.png', cv2.IMREAD_GRAYSCALE)
+			findshirt = cv2.imread('CheckImages//Modded//86.png', cv2.IMREAD_GRAYSCALE)
 
-	screen = screen[int(statey):int(statey) + menu.FoxWinH, int(statex):int(statex) + menu.FoxWinW]
-
-	# cv2.imshow("asdf", screen)
-	# cv2.waitKey(0)
-
-	# Shirts are always in the same spot in every stockpile, but might be single or crates
-	if menu.Set.get() == 0:
-		findshirtC = cv2.imread('CheckImages//Default//86C.png', cv2.IMREAD_GRAYSCALE)
-		findshirt = cv2.imread('CheckImages//Default//86.png', cv2.IMREAD_GRAYSCALE)
+		# Shirts are always in the same spot in every stockpile, but might be single or crates
+		try:
+			resC = cv2.matchTemplate(greyscreen, findshirtC, cv2.TM_CCOEFF_NORMED)
+		except Exception as e:
+			print("Exception: ", e)
+			print("Maybe you don't have the shirt crate")
+			logging.info(str(datetime.datetime.now()) + " Exception loading shirt crate icon in GrabStockpileImage " + str(e))
+		try:
+			res = cv2.matchTemplate(greyscreen, findshirt, cv2.TM_CCOEFF_NORMED)
+		except Exception as e:
+			print("Exception: ", e)
+			print("Maybe you don't have the individual shirt")
+			logging.info(str(datetime.datetime.now()) + " Exception loading individual shirt icon in GrabStockpileImage " + str(e))
+		threshold = .99
+		FoundShirt = False
+		try:
+			if np.amax(res) > threshold:
+				print("Found Shirts")
+				y, x = np.unravel_index(res.argmax(), res.shape)
+				FoundShirt = True
+		except Exception as e:
+			print("Exception: ", e)
+			print("Don't have the individual shirts icon or not looking at a stockpile")
+			logging.info(str(datetime.datetime.now()) + " Exception finding individual shirt icon in GrabStockpileImage " + str(e))
+		try:
+			if np.amax(resC) > threshold:
+				print("Found Shirt Crate")
+				y, x = np.unravel_index(resC.argmax(), resC.shape)
+				FoundShirt = True
+		except Exception as e:
+			print("Exception: ", e)
+			print("Don't have the shirt crate icon or not looking at a stockpile")
+			logging.info(str(datetime.datetime.now()) + " Exception finding shirt crate icon in GrabStockpileImage " + str(e))
+		if not FoundShirt:
+			print("Found nothing.  Either don't have shirt icon(s) or not looking at a stockpile")
+			y = 0
+			x = 0
+		# If no stockpile was found, don't bother taking a screenshot, else crop based on where shirts were found
+		if x == 0 and y == 0:
+			print("Both 0's")
+			pass
+		else:
+			stockpile = cv2.cvtColor(screen, cv2.COLOR_BGR2RGB)
+			stockpile = stockpile[int(y) - 32:int(y) + 1080, int(x) - 11:int(x) + 389]
+			imagename = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
+			fullimagename = 'test_' + imagename + '.png'
+			cv2.imwrite(fullimagename, stockpile)
+			logging.info(str(datetime.datetime.now()) + " Saved image with GrabStockpileImage named " + fullimagename)
 	else:
-		findshirtC = cv2.imread('CheckImages//Modded//86C.png', cv2.IMREAD_GRAYSCALE)
-		findshirt = cv2.imread('CheckImages//Modded//86.png', cv2.IMREAD_GRAYSCALE)
-	try:
-		resC = cv2.matchTemplate(screen, findshirtC, cv2.TM_CCOEFF_NORMED)
-	except:
-		print("Maybe you don't have the shirt crate")
-	try:
-		res = cv2.matchTemplate(screen, findshirt, cv2.TM_CCOEFF_NORMED)
-	except:
-		print("Maybe you don't have the individual shirt")
-	threshold = .99
-	FoundShirt = False
-	try:
-		if np.amax(res) > threshold:
-			print("Found Shirts")
-			y, x = np.unravel_index(res.argmax(), res.shape)
-			FoundShirt = True
-	except:
-		print("Don't have the individual shirts icon or not looking at a stockpile")
-	try:
-		if np.amax(resC) > threshold:
-			print("Found Shirt Crate")
-			y, x = np.unravel_index(resC.argmax(), resC.shape)
-			FoundShirt = True
-	except:
-		print("Don't have the shirt crate icon or not looking at a stockpile")
-	if not FoundShirt:
-		print("Found nothing.  Either don't have shirt icon(s) or not looking at a stockpile")
-		y = 0
-		x = 0
-
-	# If no stockpile was found, don't bother taking a screenshot
-	if x == 0 and y == 0:
-		print("Both 0's")
-		pass
-	else:
-		stockpile = np.array(ImageGrab.grab(bbox=(x-11,y-32,x+389,1080)))
-		stockpile = cv2.cvtColor(stockpile, cv2.COLOR_BGR2RGB)
-		imagename = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
-		cv2.imwrite('test_' + imagename + '.png', stockpile)
+		print("No State of the War detected in top left corner.  Either it is covered by something (Stockpiler maybe?)"
+			  " or the map is not open")
 
 
 def Learn(LearnInt, image):
@@ -371,9 +355,11 @@ def Learn(LearnInt, image):
 	# COMMENT OUT THESE TWO LINES IF YOU ARE TESTING A SPECIFIC IMAGE
 	TestImage = False
 
-	try:
-		win32gui.EnumWindows(winEnumHandler, None)
+	# WHEN USING OTHER RESOLUTIONS, GRAB THEM HERE
+	resx = 1920
+	resy = 1080
 
+	try:
 		# OKAY, so you'll have to grab the whole screen, detect that thing in the upper left, then use that as a basis
 		# for cropping that full screenshot down to just the foxhole window
 		screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
@@ -382,32 +368,29 @@ def Learn(LearnInt, image):
 		numbox = cv2.imread('CheckImages//StateOf.png', cv2.IMREAD_GRAYSCALE)
 		res = cv2.matchTemplate(screen, numbox, cv2.TM_CCOEFF_NORMED)
 		threshold = .95
-		stateloc = np.where(res >= threshold)
-		statey = stateloc[0].astype(int) - 35
-		statex = stateloc[1].astype(int) - 35
-		# print(statey, statex)
-
-		screen = screen[int(statey):int(statey) + menu.FoxWinH, int(statex):int(statex) + menu.FoxWinW]
-		print("It thinks it found the window position and is grabbing location: ", str(int(statey)), ":",
-			  str(int(statey) + menu.FoxWinH), " ", str(int(statex)), ":", str(int(statex) + menu.FoxWinW))
-		if menu.debug.get() == 1:
-			cv2.imshow('Grabbed', screen)
-			cv2.waitKey(0)
-	except:
-		screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
-		screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-		print("Failed to get window position from win32gui, grabbing whole screen")
-		if menu.debug.get() == 1:
-			cv2.imshow('Grabbed', screen)
-			cv2.waitKey(0)
+		if np.amax(res) > threshold:
+			stateloc = np.where(res >= threshold)
+			statey = stateloc[0].astype(int) - 35
+			statex = stateloc[1].astype(int) - 35
+			# If/when it moves to multiple resolutions, these hardcoded sizes will need to be variables
+			screen = screen[int(statey):int(statey) + resy, int(statex):int(statex) + resx]
+			print("It thinks it found the window position in Learn and is grabbing location: X:", str(statex), " Y:", str(statey))
+			if menu.debug.get() == 1:
+				cv2.imshow('Grabbed in Learn, found State of War', screen)
+				cv2.waitKey(0)
+		else:
+			print("State of the War not found in Learn.  It may be covered up or you're not on the map.")
+			if menu.debug.get() == 1:
+				cv2.imshow('Grabbed in Learn, did NOT find State of War', screen)
+				cv2.waitKey(0)
+	except Exception as e:
+		print("Exception: ", e)
+		print("Failed to grab the screen in Learn")
+		logging.info(str(datetime.datetime.now()) + " Failed Grabbing the screen in Learn " + str(e))
 
 	# UNCOMMENT AND MODIFY LINE BELOW IF YOU ARE TESTING A SPECIFIC IMAGE
 	# screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-110247.png")), cv2.COLOR_RGB2GRAY)
 	# TestImage = True
-
-	# WHEN USING OTHER RESOLUTIONS, GRAB THEM HERE
-	resx = 1920
-	resy = 1080
 
 	if LearnInt != "":
 		pass
@@ -417,76 +400,45 @@ def Learn(LearnInt, image):
 	numbox = cv2.imread('CheckImages//NumBox.png', cv2.IMREAD_GRAYSCALE)
 	res = cv2.matchTemplate(screen, numbox, cv2.TM_CCOEFF_NORMED)
 	threshold = .99
-	numloc = np.where(res >= threshold)
-	print("found them here:", numloc)
-	print(len(numloc[0]))
-	for spot in range(len(numloc[0])):
-		# Stockpiles never displayed in upper left under State of the War area
-		# State of the War area throws false positives for icons
-		if numloc[1][spot] < (resx * .2) and numloc[0][spot] < (resy * .24) and not TestImage:
-			pass
-		else:
-			print("x:", numloc[1][spot], " y:",numloc[0][spot])
-			# cv2.imshow('icon', screen[int(numloc[0][spot]+2):int(numloc[0][spot]+36), int(numloc[1][spot]-38):numloc[1][spot]-4])
-			# cv2.waitKey(0)
-			currenticon = screen[int(numloc[0][spot]+2):int(numloc[0][spot]+36), int(numloc[1][spot]-38):numloc[1][spot]-4]
-			print("currenticon:", currenticon.shape)
-			if menu.Set.get() == 0:
-				folder = "CheckImages//Default//"
+	if np.amax(res) > threshold:
+		numloc = np.where(res >= threshold)
+		print("found them here:", numloc)
+		print(len(numloc[0]))
+		for spot in range(len(numloc[0])):
+			# Stockpiles never displayed in upper left under State of the War area
+			# State of the War area throws false positives for icons
+			if numloc[1][spot] < (resx * .2) and numloc[0][spot] < (resy * .24) and not TestImage:
+				pass
 			else:
-				folder = "CheckImages//Modded//"
-			Found = False
-			for imagefile in os.listdir(folder):
-				checkimage = cv2.imread(folder + imagefile, cv2.IMREAD_GRAYSCALE)
-				print("Checking for ", str(imagefile))
-				result = cv2.matchTemplate(currenticon, checkimage, cv2.TM_CCOEFF_NORMED)
-				threshold = .99
-				if np.amax(result) > threshold:
-					#print("Found:", imagefile)
-					Found = True
-					break
-			if not Found:
-				print("Not found, should launch IconPicker")
-				IconPicker(currenticon)
-	# cv2.imshow('blah', screen)
-	# cv2.waitKey(0)
-	SearchImage(1, screen)
-	CreateButtons("blah")
-
-
-# def WhichItem(image):
-# 	global PopupWindow
-# 	global IconEntry
-# 	root_x = StockpilerWindow.winfo_rootx()
-# 	root_y = StockpilerWindow.winfo_rooty()
-# 	if root_x == root_y == -32000:
-# 		win_x = 100
-# 		win_y = 100
-# 	else:
-# 		win_x = root_x - 20
-# 		win_y = root_y + 125
-# 	location = "+" + str(win_x) + "+" + str(win_y)
-# 	PopupWindow = Toplevel(StockpilerWindow)
-# 	PopupWindow.geometry(location)
-# 	PopupFrame = ttk.Frame(PopupWindow)
-# 	PopupWindow.resizable(False, False)
-# 	PopupFrame.pack()
-# 	PopupWindow.grab_set()
-# 	PopupWindow.focus_force()
-# 	im = Image.fromarray(image)
-# 	tkimage = ImageTk.PhotoImage(im)
-# 	NewIconLabel = ttk.Label(PopupFrame, image=tkimage, style="TLabel")
-# 	NewIconLabel.image = tkimage
-# 	NewIconLabel.grid(row=5, column=0)
-# 	WhatLabel = ttk.Label(PopupFrame, text="What is it?", style="TLabel")
-# 	WhatLabel.grid(row=7, column=0)
-# 	IconEntry = ttk.Entry(PopupFrame)
-# 	IconEntry.grid(row=8, column=0)
-# 	OKButton = ttk.Button(PopupFrame, text="OK", command=lambda: SaveIconAndDestroy(image), style="EnabledButton.TButton")
-# 	PopupWindow.bind('<Return>', lambda event, a=image: SaveIconAndDestroy(a))
-# 	IconEntry.focus()
-# 	OKButton.grid(row=10, column=0, sticky="NSEW")
-# 	PopupWindow.wait_window()
+				print("x:", numloc[1][spot], " y:",numloc[0][spot])
+				# cv2.imshow('icon', screen[int(numloc[0][spot]+2):int(numloc[0][spot]+36), int(numloc[1][spot]-38):numloc[1][spot]-4])
+				# cv2.waitKey(0)
+				currenticon = screen[int(numloc[0][spot]+2):int(numloc[0][spot]+36), int(numloc[1][spot]-38):numloc[1][spot]-4]
+				print("currenticon:", currenticon.shape)
+				if menu.Set.get() == 0:
+					folder = "CheckImages//Default//"
+				else:
+					folder = "CheckImages//Modded//"
+				Found = False
+				for imagefile in os.listdir(folder):
+					checkimage = cv2.imread(folder + imagefile, cv2.IMREAD_GRAYSCALE)
+					print("Checking for ", str(imagefile))
+					result = cv2.matchTemplate(currenticon, checkimage, cv2.TM_CCOEFF_NORMED)
+					threshold = .99
+					if np.amax(result) > threshold:
+						#print("Found:", imagefile)
+						Found = True
+						break
+				if not Found:
+					print("Not found, should launch IconPicker")
+					IconPicker(currenticon)
+		SearchImage(1, screen)
+		CreateButtons("blah")
+	else:
+		print("Found no numboxes, which is very strange")
+		if menu.debug.get() == 1:
+			cv2.imshow("No numboxes?", screen)
+			cv2.waitKey(0)
 
 
 def SearchImage(Pass, LearnImage):
@@ -498,12 +450,8 @@ def SearchImage(Pass, LearnImage):
 
 	if Pass != "":
 		screen = LearnImage
-		# cv2.imshow('blah', screen)
-		# cv2.waitKey(0)
 	else:
 		try:
-			win32gui.EnumWindows(winEnumHandler, None)
-
 			# OKAY, so you'll have to grab the whole screen, detect that thing in the upper left, then use that as a basis
 			# for cropping that full screenshot down to just the foxhole window
 			screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
@@ -512,27 +460,32 @@ def SearchImage(Pass, LearnImage):
 			numbox = cv2.imread('CheckImages//StateOf.png', cv2.IMREAD_GRAYSCALE)
 			res = cv2.matchTemplate(screen, numbox, cv2.TM_CCOEFF_NORMED)
 			threshold = .95
-			stateloc = np.where(res >= threshold)
-			statey = stateloc[0].astype(int) - 35
-			statex = stateloc[1].astype(int) - 35
-			# print(statey, statex)
+			if np.amax(res) > threshold:
+				stateloc = np.where(res >= threshold)
+				statey = stateloc[0].astype(int) - 35
+				statex = stateloc[1].astype(int) - 35
 
-			screen = screen[int(statey):int(statey) + menu.FoxWinH, int(statex):int(statex) + menu.FoxWinW]
-			print("It thinks it found the window position and is grabbing location: ", str(int(statey)), ":", str(int(statey) + menu.FoxWinH), " ", str(int(statex)), ":", str(int(statex) + menu.FoxWinW))
-			if menu.debug.get() == 1:
-				cv2.imshow('Grabbed', screen)
-				cv2.waitKey(0)
-		except:
-			screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
-			print("Failed to get window position from win32gui, grabbing whole screen")
-			if menu.debug.get() == 1:
-				cv2.imshow('Grabbed', screen)
-				cv2.waitKey(0)
+				screen = screen[int(statey):int(statey) + 1079, int(statex):int(statex) + 1919]
+				print("It thinks it found the window position in SearchImage and is grabbing location: X:", str(statex),
+					  " Y:", str(statey))
+				if menu.debug.get() == 1:
+					cv2.imshow('Grabbed in SearchImage', screen)
+					cv2.waitKey(0)
+			else:
+				print("State of the War not found in SearchImage.  It may be covered up or you're not on the map.")
+				if menu.debug.get() == 1:
+					cv2.imshow('Grabbed in SearchImage, did NOT find State of War', screen)
+					cv2.waitKey(0)
+		except Exception as e:
+			print("Exception: ", e)
+			print("Failed to grab the screen in SearchImage")
+			logging.info(str(datetime.datetime.now()) + " Failed Grabbing the screen in SearchImage " + str(e))
 	garbage = "blah"
 	args = (screen, garbage)
 	# Threading commands are generated via text since each thread needs a distinct name, created using threadcounter
 	threadcounter = "t" + str(threadnum)
 	# print(threadcounter)
+	logging.info(str(datetime.datetime.now()) + " Starting scan thread: " + str(threadcounter))
 	threadingthread = threadcounter + " = threading.Thread(target = ItemScan, args = args)"
 	threadingdaemon = threadcounter + ".daemon = True"
 	threadingstart = threadcounter + ".start()"
@@ -545,33 +498,34 @@ def SearchImage(Pass, LearnImage):
 
 def ItemScan(screen, garbage):
 	global LastStockpile
-
-	# UNCOMMENT IF TESTING A SPECIFIC IMAGE
-	# screen = cv2.cvtColor(np.array(Image.open("test_2021-11-25-101723.png")), cv2.COLOR_RGB2GRAY)
-
-	# cv2.imshow("test", screen)
-	# cv2.waitKey(0)
-
 	if menu.Set.get() == 0:
 		findshirtC = cv2.imread('CheckImages//Default//86C.png', cv2.IMREAD_GRAYSCALE)
 		findshirt = cv2.imread('CheckImages//Default//86.png', cv2.IMREAD_GRAYSCALE)
 	else:
 		try:
 			findshirtC = cv2.imread('CheckImages//Modded//86C.png', cv2.IMREAD_GRAYSCALE)
-		except:
-			print("You don't have the Shirt crate yet")
+		except Exception as e:
+			print("Exception: ", e)
+			print("You don't have the Shirt crate yet in ItemScan")
+			logging.info(str(datetime.datetime.now()) + " Failed loading modded shirt crate icon in ItemScan " + str(e))
 		try:
 			findshirt = cv2.imread('CheckImages//Modded//86.png', cv2.IMREAD_GRAYSCALE)
-		except:
-			print("You don't have the individual Shirt yet")
+		except Exception as e:
+			print("Exception: ", e)
+			print("You don't have the individual Shirt yet in ItemScan")
+			logging.info(str(datetime.datetime.now()) + " Failed loading modded individual shirt icon in ItemScan " + str(e))
 	try:
 		resC = cv2.matchTemplate(screen, findshirtC, cv2.TM_CCOEFF_NORMED)
-	except:
-		print("Looks like you're missing the shirt crate")
+	except Exception as e:
+		print("Exception: ", e)
+		print("Looks like you're missing the shirt crate in ItemScan")
+		logging.info(str(datetime.datetime.now()) + " Maybe missing shirt crate icon in ItemScan " + str(e))
 	try:
 		res = cv2.matchTemplate(screen, findshirt, cv2.TM_CCOEFF_NORMED)
-	except:
-		print("Looks like you're missing the individual shirts")
+	except Exception as e:
+		print("Exception: ", e)
+		print("Looks like you're missing the individual shirts in ItemScan")
+		logging.info(str(datetime.datetime.now()) + " Maybe missing individual shirt icon in ItemScan " + str(e))
 	threshold = .99
 	FoundShirt = False
 	try:
@@ -579,17 +533,21 @@ def ItemScan(screen, garbage):
 			print("Found Shirts")
 			y, x = np.unravel_index(res.argmax(), res.shape)
 			FoundShirt = True
-	except:
-		print("Don't have the individual shirts icon or not looking at a stockpile")
+	except Exception as e:
+		print("Exception: ", e)
+		print("Don't have the individual shirts icon or not looking at a stockpile in ItemScan")
+		logging.info(str(datetime.datetime.now()) + " Don't have the individual shirts icon or not looking at a stockpile in ItemScan " + str(e))
 	try:
 		if np.amax(resC) > threshold:
 			print("Found Shirt Crate")
 			y, x = np.unravel_index(resC.argmax(), resC.shape)
 			FoundShirt = True
-	except:
-		print("Don't have the shirt crate icon or not looking at a stockpile")
+	except Exception as e:
+		print("Exception: ", e)
+		print("Don't have the shirt crate icon or not looking at a stockpile in ItemScan")
+		logging.info(str(datetime.datetime.now()) + " Don't have the shirt crate icon or not looking at a stockpile in ItemScan " + str(e))
 	if not FoundShirt:
-		print("Found nothing.  Either don't have shirt icon(s) or not looking at a stockpile")
+		print("Found nothing.  Either don't have shirt icon(s) or not looking at a stockpile in ItemScan")
 		y = 0
 		x = 0
 
@@ -600,7 +558,7 @@ def ItemScan(screen, garbage):
 		stockpile = screen[y - 32:1080, x - 11:x + 389]
 
 	if menu.debug.get() == 1:
-		cv2.imshow('Stockpile in this image?', stockpile)
+		cv2.imshow('Stockpile in this image in ItemScan?', stockpile)
 		cv2.waitKey(0)
 	# UNCOMMENT IF TESTING A SPECIFIC IMAGE
 	# stockpile = screen
@@ -678,10 +636,13 @@ def ItemScan(screen, garbage):
 				FoundStockpileType = "None"
 				ThisStockpileName = "None"
 				pass
-		except:
+		except Exception as e:
+			print("Exception: ", e)
 			print("Probably not looking at a stockpile or don't have the game open.  Looked for: ", str(image))
 			FoundStockpileType = "None"
 			ThisStockpileName = "None"
+			logging.info(str(datetime.datetime.now()) + " Probably not looking at a stockpile or don't have the game open.")
+			logging.info(str(datetime.datetime.now()) + "Looked for: ", str(image) + str(e))
 			pass
 
 	# These stockpile types allow for crates (ie: Seaport)
@@ -702,9 +663,10 @@ def ItemScan(screen, garbage):
 		if FoundStockpileType in CrateList:
 			print("Crate Type")
 			# Grab all the crate CheckImages
-			StockpileImages = [(str(item[0]), folder + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[17]) for item in items.data if str(item[17]) == "0"]
+			print(item)
+			StockpileImages = [(str(item[0]), folder + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[12]) for item in items.data if str(item[19]) == "0"]
 			# Grab all the individual vehicles and shippables
-			StockpileImagesAppend = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[17]) for item in items.data if (str(item[9]) == "7" and str(item[17]) == "0") or (str(item[9]) == "8" and str(item[17]) == "0")]
+			StockpileImagesAppend = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[11]) for item in items.data if (str(item[9]) == "7" and str(item[19]) == "0") or (str(item[9]) == "8" and str(item[19]) == "0")]
 			StockpileImages.extend(StockpileImagesAppend)
 			#print("Checking for:", StockpileImages)
 		elif FoundStockpileType in SingleList:
@@ -712,7 +674,7 @@ def ItemScan(screen, garbage):
 			# Grab all the individual items
 			# for item in range(len(items.data)):
 			# 	print(item)
-			StockpileImages = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[17]) for item in items.data]
+			StockpileImages = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[11]) for item in items.data]
 			#print("Checking for:", StockpileImages)
 		else:
 			print("No idea what type...")
@@ -723,76 +685,83 @@ def ItemScan(screen, garbage):
 		#print("StockpileImages", StockpileImages)
 		for image in StockpileImages:
 			checked += 1
-			try:
-				findimage = cv2.imread(image[1], cv2.IMREAD_GRAYSCALE)
-				res = cv2.matchTemplate(stockpile, findimage, cv2.TM_CCOEFF_NORMED)
-				threshold = .99
-				flag = False
-				if np.amax(res) > threshold:
-					flag = True
-					y, x = np.unravel_index(res.argmax(), res.shape)
-					# Found a thing, now find amount
-					numberlist = []
-					for number in items.numbers:
-						findnum = cv2.imread(number[0], cv2.IMREAD_GRAYSCALE)
-						# Clip the area where the stock number will be
-						numberarea = stockpile[y+8:y+28, x+45:x+87]
-						resnum = cv2.matchTemplate(numberarea, findnum, cv2.TM_CCOEFF_NORMED)
-						threshold = .90
-						numloc = np.where(resnum >= threshold)
-						# It only looks for up to 3 of each number for each item, since after that it would be a "k+" scenario, which never happens in stockpiles
-						# This will need to be changed to allow for more digits whenever it does in-person looks at BB stockpiles and such, where it will show up to 5 digits
-						if len(numloc[1]) > 0:
-							numberlist.append(tuple([numloc[1][0],number[1]]))
-						if len(numloc[1]) > 1:
-							numberlist.append(tuple([numloc[1][1],number[1]]))
-						if len(numloc[1]) > 2:
-							numberlist.append(tuple([numloc[1][2],number[1]]))
-						# Sort the list of numbers by position closest to the left, putting the numbers in order by extension
-						numberlist.sort(key=lambda y: y[0])
+			if str(image[4]) == '1':
+				try:
+					findimage = cv2.imread(image[1], cv2.IMREAD_GRAYSCALE)
+					res = cv2.matchTemplate(stockpile, findimage, cv2.TM_CCOEFF_NORMED)
+					threshold = .99
+					flag = False
+					if np.amax(res) > threshold:
+						flag = True
+						y, x = np.unravel_index(res.argmax(), res.shape)
+						# Found a thing, now find amount
+						numberlist = []
+						for number in items.numbers:
+							findnum = cv2.imread(number[0], cv2.IMREAD_GRAYSCALE)
+							# Clip the area where the stock number will be
+							numberarea = stockpile[y+8:y+28, x+45:x+87]
+							resnum = cv2.matchTemplate(numberarea, findnum, cv2.TM_CCOEFF_NORMED)
+							threshold = .90
+							numloc = np.where(resnum >= threshold)
+							# It only looks for up to 3 of each number for each item, since after that it would be a "k+" scenario, which never happens in stockpiles
+							# This will need to be changed to allow for more digits whenever it does in-person looks at BB stockpiles and such, where it will show up to 5 digits
+							if len(numloc[1]) > 0:
+								numberlist.append(tuple([numloc[1][0],number[1]]))
+							if len(numloc[1]) > 1:
+								numberlist.append(tuple([numloc[1][1],number[1]]))
+							if len(numloc[1]) > 2:
+								numberlist.append(tuple([numloc[1][2],number[1]]))
+							# Sort the list of numbers by position closest to the left, putting the numbers in order by extension
+							numberlist.sort(key=lambda y: y[0])
 
-					# If the number ends in a K, it just adds 000 since you don't know if that's 1001 or 1999
-					# k+ never happens in stockpiles, so this only affects town halls, bunker bases, etc
-					if len(numberlist) == 1:
-						quantity = int(str(numberlist[0][1]))
-					elif len(numberlist) == 2:
-						if numberlist[1][1] == "k+":
-							quantity = int(str(numberlist[0][1]) + "000")
+						# If the number ends in a K, it just adds 000 since you don't know if that's 1001 or 1999
+						# k+ never happens in stockpiles, so this only affects town halls, bunker bases, etc
+						if len(numberlist) == 1:
+							quantity = int(str(numberlist[0][1]))
+						elif len(numberlist) == 2:
+							if numberlist[1][1] == "k+":
+								quantity = int(str(numberlist[0][1]) + "000")
+							else:
+								quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])))
+						elif len(numberlist) == 3:
+							if numberlist[2][1] == "k+":
+								quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + "000")
+							else:
+								quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]))
+						elif len(numberlist) == 4:
+							if numberlist[3][1] == "k+":
+								quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + "000")
+							else:
+								quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + str(numberlist[3][1]))
+						# place shirts first, since they're always at the top of every stockpile
+						if image[0] == "86":
+							itemsort = 0
+						# bunker supplies next
+						elif image[0] == "93":
+							itemsort = 1
+						# garrison supplies last
+						elif image[0] == "90":
+							itemsort = 2
+						elif image[3] != "Vehicle" and image[3] != "Shippables":
+							itemsort = 5
+						elif image[3] == "Vehicle":
+							itemsort = 10
 						else:
-							quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])))
-					elif len(numberlist) == 3:
-						if numberlist[2][1] == "k+":
-							quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + "000")
+							itemsort = 15
+						if image[1][(len(image[1])-5):(len(image[1])-4)] == "C":
+							stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 1)))
 						else:
-							quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]))
-					elif len(numberlist) == 4:
-						if numberlist[3][1] == "k+":
-							quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + "000")
-						else:
-							quantity = int(str(numberlist[0][1]) + (str(numberlist[1][1])) + str(numberlist[2][1]) + str(numberlist[3][1]))
-					# place shirts first, since they're always at the top of every stockpile
-					if image[0] == "86":
-						itemsort = 0
-					# bunker supplies next
-					elif image[0] == "93":
-						itemsort = 1
-					# garrison supplies last
-					elif image[0] == "90":
-						itemsort = 2
-					elif image[3] != "Vehicle" and image[3] != "Shippables":
-						itemsort = 5
-					elif image[3] == "Vehicle":
-						itemsort = 10
-					else:
-						itemsort = 15
-					if image[1][(len(image[1])-5):(len(image[1])-4)] == "C":
-						stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 1)))
-					else:
-						stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 0)))
-			except:
-				# print("Exception for some reason")
+							stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 0)))
+				except Exception as e:
+					print("Exception: ", e)
+					print(image)
+					print("Failed while looking for: ", str(image[2]), " Icon is likely missing.")
+					logging.info(str(datetime.datetime.now()) + "Failed while looking for (missing?): ", str(image[2]) + str(e))
+					pass
+			else:
+				if menu.debug.get() == 1:
+					print("Skipping icon: ", str(image[2]), "because ItemNumbering.csv lists it as impossible/never displayed in stockpile images (like pistol ammo and crates of warheads)", image[4])
 				pass
-				# print(len(numberlist))
 
 		#print("Stockpile Contents:", stockpilecontents)
 		items.sortedcontents = list(sorted(stockpilecontents, key=lambda x: (x[3], x[4], -x[2])))
@@ -843,7 +812,7 @@ def ItemScan(screen, garbage):
 				else: print(storemanBotPrefix + "An unhandled error occured: " + response["error"])
 			except Exception as e:
 				print("There was an error connecting to the Bot")
-				print(e)
+				print("Exception: ", e)
 
 
 		if menu.XLSXExport.get() == 1:
@@ -959,7 +928,6 @@ def NameAndDestroy(event):
 	PopupWindow.destroy()
 
 
-
 def SaveIconAndDestroy(image):
 	global PopupWindow
 	global IconEntry
@@ -1017,148 +985,9 @@ def XLSXExport():
 		workbook.close()
 
 
-# Created this function in order to test changing the hotkey while the program is running
-# def changehotkey():
-# 	print("That hotkey hit")
-# 	newhotkey = "f8"
-# 	clear_hotkeys()
-# 	bindings = [
-# 		[["f2"], None, on_activate],
-# 		[["f3"], None, on_activate_two],
-# 		[[newhotkey], None, changehotkey],
-# 	]
-#
-# 	register_hotkeys(bindings)
-#
-# 	start_checking_hotkeys()
-
-
-################################################
-### Potentially can be used to detect new hotkey
-################################################
-# def on_press_detect(key):
-# 	global NewHotkeyDetected
-# 	# global ArtyLocHotkey
-# 	# global TargetLocHotkey
-# 	global vkclean
-# 	global vkorchar
-# 	global keyname
-# 	global CurrentHotkeyLabel
-# 	global justkey
-# 	global vkfinal
-# 	# print('press ', key.__dict__)
-# 	arglist = dict(key.__dict__)
-# 	saved_args = locals()
-# 	# print(saved_args)
-# 	# print(type(arglist))
-# 	dirtyvk = list(arglist.items())[0]
-# 	# print(dirtyvk)
-# 	# print(type(dirtyvk))
-# 	(vk, vkmiddle) = dirtyvk
-# 	vktemp = str(vkmiddle)
-# 	# print("Here" + str(vktemp))
-# 	# print(type(vktemp))
-# 	if vktemp[0] == "<":
-# 		# print("found <")
-# 		vklength = len(vktemp) - 1
-# 		vkclean = vktemp[1:vklength]
-# 		chartemp = list(arglist.items())[1]
-# 		(label, char) = chartemp
-# 		chartemp2 = str(char)
-# 		keyname = chartemp2
-# 		vkorchar = "vk"
-# 		justkey = keyname
-# 	else:
-# 		# print("no <")
-# 		chartemp = list(arglist.items())[1]
-# 		(label, char) = chartemp
-# 		chartemp2 = str(char)
-# 		vkclean = chartemp2
-# 		keyname = chartemp2
-# 		vkorchar = "char"
-# 		justkey = keyname
-# 	if keyname == "None":
-# 		justkey = keyname
-# 		vkclean = "145"
-# 		vkorchar = "vk"
-# 	elif keyname in ("shift", "ctrl_l", "ctrl_r", "alt_l", "alt_r", "ctrl", "alt"):
-# 		justkey = keyname
-# 		vkclean = "145"
-# 		vkorchar = "vk"
-# 	# print("vkclean: " + vkclean)
-# 	if vkorchar == "vk":
-# 		vkfinal = "<" + vkclean + ">"
-# 	else:
-# 		vkfinal = vkclean
-# 	NewHotkeyDetected = True
-# 	return False
-
-
-# def on_release_detect(key):
-# 	# print('{0} released'.format(key))
-# 	if key == keyboard.Key.esc:
-# 		return False
-
-
-# def DetectHotkey(whichhotkey):
-# 	global NewHotkeyDetected
-# 	global SkipHotkey
-# 	global hotkey
-# 	global listener
-# 	global vkclean
-# 	global vkorchar
-# 	global keyname
-# 	global SkipFrame
-# 	global SkipKeySelectWindow
-# 	NewHotkeyDetected = False
-# 	listener.stop()
-# 	with keyboard.Listener(
-# 			on_press=on_press_detect,
-# 			on_release=on_release_detect) as listener:
-# 		while NewHotkeyDetected == False:
-# 			listener.join()
-# 	listener.stop()
-# 	# print("Found a key and I'm back")
-# 	if vkorchar == "vk":
-# 		vkfinal = "<" + vkclean + ">"
-# 	elif vkorchar == "char":
-# 		vkfinal = vkclean
-# 	SkipBuilt = vkfinal
-# 	# print("Printing SkipBuilt")
-# 	# print(SkipBuilt)
-# 	# print("keyname is " + keyname)
-# 	listener.stop
-# 	if whichhotkey == 1:
-# 		Hotkeys.ArtyLocHotkey = SkipBuilt
-# 		Hotkeys.ArtyLocKeyname = keyname
-# 	elif whichhotkey == 2:
-# 		Hotkeys.TargetLocHotkey = SkipBuilt
-# 		Hotkeys.TargetLocKeyname = keyname
-#
-# 	######### WILL NEED TO FIX THIS IF HOTKEYS ARE CONFIGURABLE #########m
-#
-# 	# CurrentArtyLocHotkey.configure(text=str(Hotkeys.ArtyLocKeyname))
-# 	# CurrentTargetLocHotkey.configure(text=str(Hotkeys.TargetLocKeyname))
-# 	# hotkey = keyboard.HotKey(keyboard.HotKey.parse(ArtyLocHotkey), on_activate)
-# 	# print(hotkey)
-# 	print(SkipBuilt)
-# 	listener = keyboard.GlobalHotKeys({
-# 		Hotkeys.ArtyLocHotkey: on_activate,
-# 		Hotkeys.TargetLocHotkey: on_activate_two})
-# 	listener.start()
-
-
 def _on_mousewheel(event):
 	FilterCanvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
-
-# OuterFrame = ttk.Frame(StockpilerWindow)
-# OuterFrame.pack(fill=BOTH, expand=1)
-# canvas = Canvas(OuterFrame)
-# canvas.bind_all("<MouseWheel>", _on_mousewheel)
-# canvas.pack()
-# scrollbar = ttk.Scrollbar(OuterFrame, orient="vertical", command=canvas.yview)
-# StockpileFrame = ttk.Frame(canvas, style="TFrame")
 
 OuterFrame = ttk.Frame(StockpilerWindow)
 OuterFrame.pack(fill=BOTH, expand=1)
@@ -1186,11 +1015,6 @@ FilterCanvas.bind('<Configure>', lambda e: FilterCanvas.configure(scrollregion=F
 
 # If enough items are added, then the height below will have to be modified to account for any new button rows
 # Remember to make sure the Quit button is displayed
-# FilterCanvas.create_window((0, 0), window=StockpileFrame, anchor="nw", height="1691p", width="550p")
-# FilterCanvas.configure(yscrollcommand=scrollbar.set)
-# OuterFrame.pack()
-# scrollbar.pack(side="right", fill="y")
-# FilterCanvas.pack(side="left", fill="both", expand=1)
 
 
 FilterCanvas.pack(side=LEFT, fill=BOTH, expand=1)
@@ -1217,16 +1041,8 @@ TableBottom = ttk.Frame(TableCanvas)
 TableBottom.columnconfigure(0, weight=1)
 TableBottom.columnconfigure(1, weight=1)
 TableBottom.columnconfigure(2, weight=1)
-# REMOVED TO FIX BUG WITH THREADING FOR NOW
-# CSVButton = ttk.Button(TableBottom, text="Re-Export CSV", command=CSVExport, style="EnabledButton.TButton")
-# CSVButton.grid(row=0, column=0, pady=5, sticky=NSEW)
-# XSLXButton = ttk.Button(TableBottom, text="Re-Export XLSX", command=XLSXExport, style="EnabledButton.TButton")
-# XSLXButton.grid(row=0, column=1, pady=5, sticky=NSEW)
-# ReRunLearn = ttk.Button(TableBottom, text="Re-Run w/ Learn", command=lambda: Learn(1, LastStockpile))
-# ReRunLearn.grid(row=0, column=2, pady=5, sticky=NSEW)
 
 
-# TableBottom.pack(expand=True, fill='x', side=BOTTOM)
 TableBottom.pack(fill='x', side=BOTTOM)
 
 
@@ -1241,9 +1057,13 @@ def SaveFilter():
 		filterfile.write("Number,Filter\n")
 		for line in range(len(items.data)):
 			try:
-				filterfile.write(str(items.data[line][0]) + "," + str(items.data[line][17]) + "\n")
-			except:
+				filterfile.write(str(items.data[line][0]) + "," + str(items.data[line][19]) + "\n")
+			except Exception as e:
+				print("Exception: ", e)
+				logging.info(
+					str(datetime.datetime.now()) + " Failed loading filter on line: " + str(line), str(e))
 				print("Fail", line)
+
 	with open("Config.txt", "w") as exportfile:
 		exportfile.write(str(menu.CSVExport.get()) + "\n")
 		exportfile.write(str(menu.XLSXExport.get()) + "\n")
@@ -1273,33 +1093,19 @@ def CreateButtons(self):
 		folder = "CheckImages//Default//"
 	else:
 		folder = "CheckImages//Modded//"
-	# print("fresh menu", menu.icons)
-	# print("fresh sorted", sortedicons)
-	# print(items.data[1])
 	for i in range(len(items.data)+1):
-		# print("i",i)
 		for x in items.data:
-			# print("x",x)
 			if x[0] == str(i):
-				# print("Found",i)
 				if os.path.exists(folder + str(i) + ".png") or os.path.exists(folder + str(i) + "C.png"):
 					try:
-						menu.icons.append((i, folder + str(i) + ".png", int(x[9]), int(x[10]), int(x[17]), str(x[3]), str(x[8])))
-					except:
+						menu.icons.append((i, folder + str(i) + ".png", int(x[9]), int(x[10]), int(x[19]), str(x[3]), str(x[8])))
+					except Exception as e:
+						print("Exception: ", e)
 						print(x[17])
 						print("oops", i)
-			# filter.append((i, 0))
-			# print(x[3],x[9],x[10])
 
-	# print("icons", menu.icons)
+
 	sortedicons = sorted(menu.icons, key=lambda x: (x[2], x[3]))
-
-	# print("full menu", menu.icons)
-	# print("full sorted", sortedicons)
-
-	# CSVExport = IntVar()
-	# XLSXExport = IntVar()
-	# ImgExport = IntVar()
 
 	SettingsFrame.columnconfigure(0, weight=1)
 	SettingsFrame.columnconfigure(7, weight=1)
@@ -1371,7 +1177,6 @@ def CreateButtons(self):
 	SaveButton2.image = SaveImg2
 	SaveButton2.grid(row=menu.iconrow, column=0, columnspan=8, pady=5)
 	SaveButton_ttp2 = CreateToolTip(SaveButton2, 'Save Current Filter and Export Settings')
-	# menu.iconrow += 1
 
 	if menu.faction[0] == 0:
 		Wimg = PhotoImage(file="UI//W0.png")
@@ -1419,8 +1224,10 @@ def CreateButtons(self):
 				menu.itembuttons.extend((catbtn, "category", sortedicons[i][2]))
 				catbtnttp = ("cat" + str(counter) + "_ttp = CreateToolTip(catbtn, '" + str(sortedicons[i][6]) + "')")
 				exec(catbtnttp)
-			except:
+			except Exception as e:
+				print("Exception: ", e)
 				print("Category exception")
+				logging.info(str(datetime.datetime.now()) + " Category exception " + str(e))
 		if os.path.exists("UI//" + str(sortedicons[i][0]) + ".png"):
 			img = PhotoImage(file="UI//" + str(sortedicons[i][0]) + ".png")
 			if sortedicons[i][4] == 0:
@@ -1454,8 +1261,10 @@ def CreateButtons(self):
 	FilterFrame.update()
 	try:
 		print("create_window height for Filter canvas should be roughly:", str(btn.winfo_y()-505))
-	except:
+	except Exception as e:
+		print("Exception: ", e)
 		print("Might not be any buttons")
+		logging.info(str(datetime.datetime.now()) + " No buttons? " + str(e))
 
 
 def IconPicker(image):
@@ -1480,8 +1289,6 @@ def IconPicker(image):
 	IconPickerFrame = ttk.Frame(IconPickerWindow)
 	IconPickerWindow.resizable(False, False)
 	IconPickerFrame.pack()
-	# IconPickerWindow.grab_set()
-	# IconPickerWindow.focus_force()
 
 	IconPickerFrame.grid_forget()
 	NewIconLabel = ttk.Label(IconPickerFrame, text="What's this?")
@@ -1496,34 +1303,24 @@ def IconPicker(image):
 	counter = 0
 	temptime = datetime.datetime.now()
 	for x in range(len(items.data)):
-		# print(x)
 		if os.path.exists("UI//" + str(items.data[x][0]) + ".png"):
 			img = PhotoImage(file="UI//" + str(items.data[x][0]) + ".png")
 			btn = ttk.Button(IconPickerFrame, image=img, style="EnabledButton.TButton")
-			# btn = ttk.Button(IconPickerFrame, text=str(items.data[x][3]))
 			counter += 1
 			btn.image = img
 			# This stuff after the lambda makes sure they're set to the individual values, if I add more, have to be blah=blah before it
 			btn["command"] = lambda x=x, btn=btn: IndividualOrCrate(items.data[x][0])
 			if iconcolumn < 18:
 				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
-				# print("item:", items.data[x][3], "row:", iconrow, "column:", iconcolumn)
 				iconcolumn += 1
 			else:
 				iconrow += 1
 				iconcolumn = 0
 				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
-				# print("item:", items.data[x][3], "row:", iconrow, "column:", iconcolumn)
 				iconcolumn += 1
-				# print(items.data[x][3])
-			# print(btn, sortedicons[i][2])
 			tooltiptext = re.sub('\'', '', items.data[x][3])
-			# itembtnttp = ("item" + str(counter) + "_ttp = CreateToolTip(btn, '" + str(sortedicons[i][5]) + "')")
 			itembtnttp = ("item" + str(counter) + "_ttp = CreateToolTip(btn, '" + tooltiptext + "')")
 			exec(itembtnttp)
-
-	# IconPickerFrame.update()
-	# IconPickerWindow.focus_force()
 	print("Took this long to make icon picker window:", datetime.datetime.now() - temptime)
 	IconPickerWindow.wait_window()
 
@@ -1546,8 +1343,6 @@ def IndividualOrCrate(num):
 	IndOrCrateWindow = Toplevel(StockpilerWindow)
 	IndOrCrateWindow.geometry(location)
 	IndOrCrateWindow.resizable(False, False)
-	# IndOrCrateWindow.grab_set()
-	# IndOrCrateWindow.focus_force()
 	IndOrCrateFrame = ttk.Frame(IndOrCrateWindow, style="TFrame")
 	IndOrCrateFrame.pack()
 	ForLabel = ttk.Label(IndOrCrateFrame, text="For:")
@@ -1594,81 +1389,63 @@ def SaveIcon(num, type, image):
 
 
 def open_this(myNum,btn):
-	# print(myNum,btn)
-	# print(str(btn['style']))
 	if str(btn['style']) == "EnabledButton.TButton":
 		btn.configure(style="ManualDisabledButton.TButton")
-		# print(len(items.data))
 		for item in range(len(items.data)):
-			# print(item[0])
 			if str(items.data[item][0]) == str(myNum):
-				items.data[item][17] = 1
-				print(items.data[item][17])
+				items.data[item][19] = 1
+				print(items.data[item][19])
 	elif str(btn['style']) == "ManualDisabledButton.TButton":
 		btn.configure(style="EnabledButton.TButton")
 		for item in range(len(items.data)):
-			# print(item[0])
 			if str(items.data[item][0]) == str(myNum):
-				items.data[item][17] = 0
-				print(items.data[item][17])
+				items.data[item][19] = 0
+				print(items.data[item][19])
 	elif str(btn['style']) == "EnabledCategory.TButton":
 		btn.config(style="DisabledCategory.TButton")
 		menu.category[int(myNum[4:5])][1] = 1
 		print("category number was 0")
 		for item in range(len(items.data)):
-			# print(item[0])
-			# print(str(myNum[4:5]))
-			# print("before test", items.data[item][17])
 			if str(items.data[item][9]) == str(myNum[4:5]):
-				if str(items.data[item][17]) == str(0):
-					# print("yes")
-					items.data[item][17] = 2
-				# print(items.data[item][17])
-			# print("after test", items.data[item][17])
+				if str(items.data[item][19]) == str(0):
+					items.data[item][19] = 2
 		CreateButtons("blah")
 	elif str(btn['style']) == "DisabledCategory.TButton":
 		btn.config(style="EnabledCategory.TButton")
 		menu.category[int(myNum[4:5])][1] = 0
 		print("category number was 1")
 		for item in range(len(items.data)):
-			# print(item[0])
-			# print(str(myNum[4:5]))
 			if str(items.data[item][9]) == str(myNum[4:5]):
-				if str(items.data[item][17]) == str(2):
-					# print("yes")
-					items.data[item][17] = 0
+				if str(items.data[item][19]) == str(2):
+					items.data[item][19] = 0
 		CreateButtons("blah")
 	elif myNum == str("W"):
 		if str(btn['style']) == "EnabledFaction.TButton":
 			btn.config(style="DisabledFaction.TButton")
 			menu.faction[0] = 1
 			for item in range(len(items.data)):
-				if items.data[item][7] == "Warden" and str(items.data[item][17]) == "0":
-					items.data[item][17] = 3
+				if items.data[item][7] == "Warden" and str(items.data[item][19]) == "0":
+					items.data[item][19] = 3
 		else:
 			btn.config(style="EnabledFaction.TButton")
 			menu.faction[0] = 0
 			for item in range(len(items.data)):
-				if items.data[item][7] == "Warden" and str(items.data[item][17]) == "3":
-					items.data[item][17] = 0
+				if items.data[item][7] == "Warden" and str(items.data[item][19]) == "3":
+					items.data[item][19] = 0
 		CreateButtons("blah")
 	elif myNum == str("C"):
 		if str(btn['style']) == "EnabledFaction.TButton":
 			btn.config(style="DisabledFaction.TButton")
 			menu.faction[1] = 1
 			for item in range(len(items.data)):
-				# print(items.data[item][17])
-				if items.data[item][7] == "Colonial" and str(items.data[item][17]) == "0":
-					items.data[item][17] = 3
-					# print("should be disabling", items.data[item])
+				if items.data[item][7] == "Colonial" and str(items.data[item][19]) == "0":
+					items.data[item][19] = 3
 		else:
 			btn.config(style="EnabledFaction.TButton")
 			menu.faction[1] = 0
 			for item in range(len(items.data)):
-				# print(items.data[item][7])
-				if items.data[item][7] == "Colonial" and str(items.data[item][17]) == "3":
-					items.data[item][17] = 0
-					# print("should be enabling", items.data[item])
+				if items.data[item][7] == "Colonial" and str(items.data[item][19]) == "3":
+					items.data[item][19] = 0
 		CreateButtons("blah")
 
 if os.path.exists("Config.txt"):
@@ -1686,7 +1463,8 @@ if os.path.exists("Config.txt"):
 		menu.BotHost.set(content[6])
 		menu.BotPassword.set(content[7])
 		menu.BotGuildID.set(content[8])
-	except:
+	except Exception as e:
+		print("Exception: ", e)
 		logging.info(str(datetime.datetime.now()) + ' Loading from config.txt failed, setting defaults')
 		menu.CSVExport.set(1)
 		menu.XLSXExport.set(1)
@@ -1701,15 +1479,6 @@ else:
 	menu.Learning.set(0)
 
 CreateButtons("")
-
-# hotkey = keyboard.HotKey(keyboard.HotKey.parse(ArtyLocHotkey), on_activate)
-# hotkeytwo = keyboard.HotKey(keyboard.HotKey.parse(TargetLocHotkey), on_activate_two)
-
-# listener = keyboard.GlobalHotKeys({
-# 	Hotkeys.ArtyLocHotkey: on_activate,
-# 	Hotkeys.TargetLocHotkey: on_activate_two})
-# listener.start()
-
 
 bindings = [
 	[["f2"], None, on_activate],
