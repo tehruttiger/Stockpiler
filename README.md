@@ -49,7 +49,7 @@ Stockpiler runs each stockpile "grab" as a separate thread, so you do not have t
 Currently, pressing the F2 key will grab an image of the stockpile/BB/Relic Base contents you are hovering over and save it to the root folder.  If you are willing to help contribute missing items so that Stockpiler can properly tally them, these are the images that are needed.  Please message me on Discord if you're interested in helping get the remaining missing item images added.
 My Discord is ruttiger#6198
 
-Special thanks to **Catalinuru**, **AceAstra** and **Drougavis** for their help testing and hunting down missing icons.
+Special thanks to **nikthechampiongr**, **Catalinuru**, **AceAstra** and **Drougavis** for their help testing and hunting down missing icons.  Also a **Tkaixiang** for coding his amazing Storeman Bot that greatly expands the utility of the app.
 
 Compiled versions compiled to EXE using Nuitka
 
@@ -72,6 +72,6 @@ Console Window - Console Based (helpful for troubleshooting, please submit any e
 
 Additional Files - Add Folder - add the CheckImages, Stockpiles and UI folders
 
-Additional Files - Add Files - add the Filter.csv and ItemNumbering.csv files
+Additional Files - Add Files - add the Filter.csv, ItemNumbering.csv and Bmat.ico files
 
 Advanced - collect-all - pynput
