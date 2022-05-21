@@ -1,6 +1,7 @@
 import os
 import os.path
 import time
+import tkinter
 from tkinter import *
 from tkinter import ttk
 
@@ -20,6 +21,7 @@ import xlsxwriter
 from tksheet import Sheet
 import requests
 import threading
+import keyboard
 
 global stockpilename
 global PopupWindow
@@ -78,7 +80,7 @@ for xfile in files:
 			os.remove(str(file_path) + xfile)
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
-Version = "1.3.1b"
+Version = "1.3.2b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -86,6 +88,7 @@ StockpilerWindow.title('Stockpiler ' + Version)
 StockpilerWindow.geometry("537x600")
 # Width locked since button array doesn't adjust dynamically
 StockpilerWindow.resizable(width=False, height=False)
+StockpilerWindow.iconbitmap(default='Bmat.ico')
 
 
 class menu(object):
@@ -816,7 +819,7 @@ def ItemScan(screen, garbage):
 					response = r.json()
 
 					storemanBotPrefix = "[Storeman Bot Link]: "
-					if (response["success"]): print(storemanBotPrefix + "Sent to server successfully")
+					if (response["success"]): print(storemanBotPrefix + "Scan of " + ThisStockpileName + " sent to server successfully")
 					elif (response["error"] == "empty-stockpile-name"): print(storemanBotPrefix + "Stockpile name is invalid. Perhaps the stockpile name was not detected or empty.")
 					elif (response["error"] == "invalid-password"): print(storemanBotPrefix + "Invalid password, check that the Bot Password is correct.")
 					elif (response["error"] == "invalid-guild-id"): print(storemanBotPrefix + "The Guild ID entered was not found on the Storeman Bot server. Please check that it is correct.")
@@ -846,16 +849,6 @@ def ItemScan(screen, garbage):
 			ResultSheet.set_sheet_data(data=items.slimcontents)
 		else:
 			popup("NoStockpile")
-
-
-def on_activate():
-	# print("Button Hit")
-	GrabStockpileImage()
-
-
-def on_activate_two():
-	# print("Second Button Hit")
-	LearnOrNot()
 
 
 def LearnOrNot():
@@ -1503,13 +1496,15 @@ else:
 
 CreateButtons("")
 
-bindings = [
-	[["f2"], None, on_activate],
-	[["f3"], None, on_activate_two],
-]
+# bindings = [
+# 	[["f2"], None, GrabStockpileImage],
+# 	[["f3"], None, LearnOrNot],
+# ]
 
-register_hotkeys(bindings)
+keyboard.add_hotkey("F2", lambda: GrabStockpileImage())
+keyboard.add_hotkey("F3", lambda: LearnOrNot())
 
-start_checking_hotkeys()
+# register_hotkeys(bindings)
+# start_checking_hotkeys()
 
 StockpilerWindow.mainloop()
