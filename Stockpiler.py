@@ -767,19 +767,19 @@ def ItemScan(screen, garbage):
 									stockpilecontents.append(list((image[0], image[2], quantity, itemsort, 0)))
 						except Exception as e:
 							print("Exception: ", e)
-							print("Failed while looking for: ", str(image[2]), " Icon is likely missing.")
-							logging.info(str(datetime.datetime.now()) + "Failed while looking for (missing?): ", str(image[2]) + str(e))
+							if menu.debug.get() == 1:
+								print("Failed while looking for: ", str(image[2]))
+								logging.info(str(datetime.datetime.now()) + "Failed while looking for (missing?): ", str(image[2]) + str(e))
 							pass
 					else:
-						print("File missing:",str(image[1]), str(image[2]))
+						if menu.debug.get() == 1:
+							print("File missing:",str(image[1]), str(image[2]))
 				else:
 					if menu.debug.get() == 1:
 						print("Skipping icon: ", str(image[2]), "because ItemNumbering.csv lists it as impossible/never displayed in stockpile images (like pistol ammo and crates of warheads)", image[4])
 					pass
 
-			#print("Stockpile Contents:", stockpilecontents)
 			items.sortedcontents = list(sorted(stockpilecontents, key=lambda x: (x[3], x[4], -x[2])))
-			#print("Sorted Contents:", items.sortedcontents)
 			# Here's where we sort stockpilecontents by category, then number, so they spit out the same as screenshot
 			# Everything but vehicles and shippables first, then single vehicle, then crates of vehicles, then single shippables, then crates of shippables
 			if ThisStockpileName in ("Seaport","Storage Depot","Outpost","Town Base","Relic Base","Bunker Base","Encampment","Safe House"):
