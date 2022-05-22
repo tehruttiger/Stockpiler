@@ -21,7 +21,7 @@ import xlsxwriter
 from tksheet import Sheet
 import requests
 import threading
-import keyboard
+# import keyboard
 
 global stockpilename
 global PopupWindow
@@ -80,7 +80,7 @@ for xfile in files:
 			os.remove(str(file_path) + xfile)
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
-Version = "1.3.2b"
+Version = "1.3.3b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -1496,15 +1496,19 @@ else:
 
 CreateButtons("")
 
-# bindings = [
-# 	[["f2"], None, GrabStockpileImage],
-# 	[["f3"], None, LearnOrNot],
-# ]
 
-keyboard.add_hotkey("F2", lambda: GrabStockpileImage())
-keyboard.add_hotkey("F3", lambda: LearnOrNot())
+bindings = [
+	[["f2"], None, GrabStockpileImage],
+	[["f3"], None, LearnOrNot],
+]
 
-# register_hotkeys(bindings)
-# start_checking_hotkeys()
+
+register_hotkeys(bindings)
+start_checking_hotkeys()
+
+
+# This is/was the new implementation of hotkey listening that doesn't solve the problem with Linux
+# keyboard.add_hotkey("F2", lambda: GrabStockpileImage())
+# keyboard.add_hotkey("F3", lambda: LearnOrNot())
 
 StockpilerWindow.mainloop()
