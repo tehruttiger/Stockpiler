@@ -286,8 +286,14 @@ def GrabStockpileImage():
 	if np.amax(res) > threshold:
 		stateloc = np.where(res >= threshold)
 		print(stateloc)
-		statey = stateloc[0].astype(int) - 35
-		statex = stateloc[1].astype(int) - 35
+		if stateloc[0].astype(int) - 35 >= 0:
+			statey = stateloc[0].astype(int) - 35
+		else:
+			statey = 0
+		if stateloc[1].astype(int) - 35 >= 0:
+			statex = stateloc[1].astype(int) - 35
+		else:
+			statex = 0
 		greyscreen = greyscreen[int(statey):int(statey) + 1079, int(statex):int(statex) + 1919]
 		if menu.debug.get() == 1:
 			cv2.imshow("Grabbed in image GrabStockpileImage", screen)
@@ -473,9 +479,14 @@ def SearchImage(Pass, LearnImage):
 			threshold = .95
 			if np.amax(res) > threshold:
 				stateloc = np.where(res >= threshold)
-				statey = stateloc[0].astype(int) - 35
-				statex = stateloc[1].astype(int) - 35
-
+				if stateloc[0].astype(int) - 35 >= 0:
+					statey = stateloc[0].astype(int) - 35
+				else:
+					statey = 0
+				if stateloc[1].astype(int) - 35 >= 0:
+					statex = stateloc[1].astype(int) - 35
+				else:
+					statex = 0
 				screen = screen[int(statey):int(statey) + 1079, int(statex):int(statex) + 1919]
 				print("It thinks it found the window position in SearchImage and is grabbing location: X:", str(statex),
 					  " Y:", str(statey))
