@@ -80,7 +80,7 @@ for xfile in files:
 			os.remove(str(file_path) + xfile)
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
-Version = "1.3.3b"
+Version = "1.3.4b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -375,8 +375,14 @@ def Learn(LearnInt, image):
 		threshold = .95
 		if np.amax(res) > threshold:
 			stateloc = np.where(res >= threshold)
-			statey = stateloc[0].astype(int) - 35
-			statex = stateloc[1].astype(int) - 35
+			if stateloc[0].astype(int) - 35 >= 0:
+				statey = stateloc[0].astype(int) - 35
+			else:
+				statey = 0
+			if stateloc[1].astype(int) - 35 >= 0:
+				statex = stateloc[1].astype(int) - 35
+			else:
+				statex = 0
 			# If/when it moves to multiple resolutions, these hardcoded sizes will need to be variables
 			screen = screen[int(statey):int(statey) + resy, int(statex):int(statex) + resx]
 			print("It thinks it found the window position in Learn and is grabbing location: X:", str(statex), " Y:", str(statey))
@@ -583,9 +589,9 @@ def ItemScan(screen, garbage):
 	for image in StockpileTypes:
 		try:
 			findtype = cv2.imread(image[0], cv2.IMREAD_GRAYSCALE)
-			# if menu.debug.get() == 1:
-			# 	cv2.imshow("Looking for this",findtype)
-			# 	cv2.waitKey(0)
+			if menu.debug.get() == 1:
+				cv2.imshow("Looking for this", findtype)
+				cv2.waitKey(0)
 			res = cv2.matchTemplate(stockpile, findtype, cv2.TM_CCOEFF_NORMED)
 			# Threshold is a bit lower for types as they are slightly see-thru
 			typethreshold = .95
@@ -651,7 +657,7 @@ def ItemScan(screen, garbage):
 			FoundStockpileType = "None"
 			ThisStockpileName = "None"
 			logging.info(str(datetime.datetime.now()) + " Probably not looking at a stockpile or don't have the game open.")
-			logging.info(str(datetime.datetime.now()) + "Looked for: ", str(image) + str(e))
+			logging.info(str(datetime.datetime.now()) + " Looked for: ", str(image) + str(e))
 			pass
 
 	# These stockpile types allow for crates (ie: Seaport)
