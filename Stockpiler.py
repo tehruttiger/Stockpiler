@@ -80,7 +80,7 @@ for xfile in files:
 			os.remove(str(file_path) + xfile)
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
-Version = "1.3.4b"
+Version = "1.4b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -97,7 +97,7 @@ class menu(object):
 	lastcat = 0
 	itembuttons = []
 	icons = []
-	category = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]]
+	category = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0], [9, 0]]
 	faction = [0, 0]
 	topscroll = 0
 	BotHost = StringVar()
@@ -112,8 +112,26 @@ class menu(object):
 	Learning = IntVar()
 	PickerX = -1
 	PickerY = -1
+	bindings = list()
+	grabshift = IntVar()
+	grabctrl = IntVar()
+	grabalt = IntVar()
+	grabhotkey = StringVar()
+	scanshift = IntVar()
+	scanctrl = IntVar()
+	scanalt = IntVar()
+	scanhotkey = StringVar()
+	grabhotkeystring = "f2"
+	scanhotkeystring = "f3"
+	grabmods = "000"
+	scanmods = "000"
 
-
+menu.grabshift.set(0)
+menu.grabctrl.set(0)
+menu.grabalt.set(0)
+menu.scanshift.set(0)
+menu.scanctrl.set(0)
+menu.scanalt.set(0)
 menu.debug.set(0)
 
 s = ttk.Style()
@@ -448,7 +466,8 @@ def Learn(LearnInt, image):
 						break
 				if not Found:
 					print("Not found, should launch IconPicker")
-					IconPicker(currenticon)
+					IconCatPicker(currenticon, 0)
+					# IconPicker(currenticon)
 		SearchImage(1, screen)
 		CreateButtons("blah")
 	else:
@@ -615,7 +634,7 @@ def ItemScan(screen, garbage):
 				if image[1] == "Seaport" or image[1] == "Storage Depot":
 					findtab = cv2.imread('CheckImages//Tab.png', cv2.IMREAD_GRAYSCALE)
 					res = cv2.matchTemplate(stockpile, findtab, cv2.TM_CCOEFF_NORMED)
-					tabthreshold = .99
+					tabthreshold = .95
 					if np.amax(res) > tabthreshold:
 						print("Found the Tab")
 						y, x = np.unravel_index(res.argmax(), res.shape)
@@ -650,15 +669,18 @@ def ItemScan(screen, garbage):
 								ThisStockpileName = NewStockpileName
 					else:
 						# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
+						print("Didn't find the Tab, so it looks like it's not a named stockpile")
 						ThisStockpileName = FoundStockpileTypeName
 				else:
 					# It's not a named stockpile, so just call it by the type of location (Bunker Base, Encampment, etc)
+					print("Not a named stockpile, it's a Bunker Base, Encampment, something like that")
 					ThisStockpileName = FoundStockpileTypeName
 				# StockpileName = StockpileNameEntry.get()
 				# cv2.imwrite('Stockpiles//' + StockpileName + '.png', stockpilename)
 				break
 			else:
 				# print("Didn't find",image[1])
+				print("Doesn't look like any known stockpile type")
 				FoundStockpileType = "None"
 				ThisStockpileName = "None"
 				pass
@@ -831,6 +853,8 @@ def ItemScan(screen, garbage):
 					data.append([x[1], x[2]])
 				requestObj["data"] = data
 
+				# print("Bot Data", data)
+
 				try:
 					r = requests.post(menu.BotHost.get(), json=requestObj)
 					response = r.json()
@@ -934,11 +958,18 @@ def popup(type):
 		NoFoxholeLabel = ttk.Label(PopupFrame, text="Foxhole isn't running.\nLaunch Foxhole and retry.", style="TLabel")
 		NoFoxholeLabel.grid(row=2, column=0)
 	elif type == "NoStockpile":
-		NoStockpileLabel = ttk.Label(PopupFrame, text="Didn't detect stockpile.\nHover over a stockpile on the map and retry.", style="TLabel")
+		NoStockpileLabel = ttk.Label(PopupFrame, text="Didn't detect stockpile.\nHover over a stockpile on the map and "
+													  "retry.", style="TLabel")
 		NoStockpileLabel.grid(row=2, column=0)
 	elif type == "BlankName":
-		BlankorPublicLabel = ttk.Label(PopupFrame, text="You must type in the name (which cannot be Public).\nThis field cannot be left blank.\nYou'll need to rescan it.", style="TLabel")
+		BlankorPublicLabel = ttk.Label(PopupFrame, text="You must type in the name (which cannot be Public).\nThis field "
+														"cannot be left blank.\nYou'll need to rescan it.", style="TLabel")
 		BlankorPublicLabel.grid(row=2, column=0)
+	elif type == "DuplicateHotkeys":
+		DuplicateHotkeyLabel = ttk.Label(PopupFrame, text="Warning: If your hotkeys are identical or overlap (ie: F2 and"
+														  " Shift + F2)\nthen it\'s possible that the hotkey will only "
+														  "grab a stockpile image and will not scan.")
+		DuplicateHotkeyLabel.grid(row=2, column=0)
 	OKButton = ttk.Button(PopupFrame, text="OK", command=lambda: Destroy("blah"))
 	PopupWindow.bind('<Return>', Destroy)
 	OKButton.grid(row=10, column=0, sticky="NSEW")
@@ -1049,7 +1080,8 @@ FilterFrame = ttk.Frame(FilterCanvas)
 TableFrame = ttk.Frame(TableCanvas)
 SettingsFrame = ttk.Frame(SettingsCanvas)
 
-FilterCanvas.create_window((0, 0), window=FilterFrame, anchor="nw", height="1970p", width="550p")
+# create_window height for Filter canvas should be roughly: is below
+FilterCanvas.create_window((0, 0), window=FilterFrame, anchor="nw", height="2024p", width="550p")
 TableCanvas.create_window((0, 0), window=TableFrame, anchor="nw", height="410p", width="402p")
 SettingsCanvas.create_window((0, 0), window=SettingsFrame, anchor="nw", height="500p", width="402p")
 
@@ -1096,6 +1128,15 @@ def SaveFilter():
 		exportfile.write(str(menu.BotHost.get()) + "\n")
 		exportfile.write(str(menu.BotPassword.get()) + "\n")
 		exportfile.write(str(menu.BotGuildID.get()) + "\n")
+		exportfile.write(str(menu.grabhotkey.get()) + "\n")
+		exportfile.write(str(menu.scanhotkey.get()) + "\n")
+		menu.grabhotkeystring = menu.grabhotkey.get()
+		menu.scanhotkeystring = menu.scanhotkey.get()
+		exportfile.write(str(menu.grabshift.get()) + str(menu.grabctrl.get()) + str(menu.grabalt.get()) + "\n")
+		exportfile.write(str(menu.scanshift.get()) + str(menu.scanctrl.get()) + str(menu.scanalt.get()) + "\n")
+	menu.grabmods = str(menu.grabshift.get()) + str(menu.grabctrl.get()) + str(menu.grabalt.get())
+	menu.scanmods = str(menu.scanshift.get()) + str(menu.scanctrl.get()) + str(menu.scanalt.get())
+	SetHotkeys("")
 	CreateButtons("")
 
 
@@ -1126,11 +1167,61 @@ def CreateButtons(self):
 						print(x[17])
 						print("oops", i)
 
-
 	sortedicons = sorted(menu.icons, key=lambda x: (x[2], x[3]))
 
 	SettingsFrame.columnconfigure(0, weight=1)
 	SettingsFrame.columnconfigure(7, weight=1)
+	GrabImageEntryLabel = ttk.Label(SettingsFrame, text="Grab Stockpile Image:")
+	GrabImageEntryLabel.grid(row=menu.iconrow, column=0)
+	GrabImageEntry = ttk.Entry(SettingsFrame, textvariable=menu.grabhotkey, width=10)
+	GrabImageEntry.grid(row=menu.iconrow, column=1)
+	GrabImageEntry.delete(0, 'end')
+	GrabImageEntry.insert(0, menu.grabhotkeystring)
+	GrabImageEntry_ttp = CreateToolTip(GrabImageEntry, 'Available hotkeys are: all letters, numbers, function keys (as f#)'
+													 ', backspace, tab, clear, enter, pause, caps_lock, escape, space, '
+													 'page_up, page_down, end, home, up, down, left, right, select, print, '
+													 'print_screen, insert, delete, help, numpad numbers (as numpad_#), '
+													 'separator_key (pipe key), multiply_key, add_key, subtract_key, '
+													 'decimal_key, divide_key, num_lock, scroll_lock, and symbols '
+													 '(+ - ` , . / ; [ ] \')')
+	GrabShiftCheck = ttk.Checkbutton(SettingsFrame, text="Shift?", variable=menu.grabshift)
+	GrabShiftCheck.grid(row=menu.iconrow, column=2)
+	GrabCtrlCheck = ttk.Checkbutton(SettingsFrame, text="Ctrl?", variable=menu.grabctrl)
+	GrabCtrlCheck.grid(row=menu.iconrow, column=3)
+	GrabAltCheck = ttk.Checkbutton(SettingsFrame, text="Alt?", variable=menu.grabalt)
+	GrabAltCheck.grid(row=menu.iconrow, column=4)
+	# LearningCheck = ttk.Checkbutton(SettingsFrame, text="Learning Mode?", variable=menu.Learning)
+
+	menu.iconrow += 1
+	ScanEntryLabel = ttk.Label(SettingsFrame, text="Scan Stockpile:")
+	ScanEntryLabel.grid(row=menu.iconrow, column=0)
+	ScanEntry = ttk.Entry(SettingsFrame, textvariable=menu.scanhotkey, width=10)
+	ScanEntry.grid(row=menu.iconrow, column=1)
+	ScanEntry.delete(0, 'end')
+	ScanEntry.insert(0, menu.scanhotkeystring)
+	ScanEntry_ttp = CreateToolTip(ScanEntry, 'Available hotkeys are: all letters, numbers, function keys (as f#)'
+													 ', backspace, tab, clear, enter, pause, caps_lock, escape, space, '
+													 'page_up, page_down, end, home, up, down, left, right, select, print, '
+													 'print_screen, insert, delete, help, numpad numbers (as numpad_#), '
+													 'separator_key (pipe key), multiply_key, add_key, subtract_key, '
+													 'decimal_key, divide_key, num_lock, scroll_lock, and symbols '
+													 '(+ - ` , . / ; [ ] \')')
+	ScanShiftCheck = ttk.Checkbutton(SettingsFrame, text="Shift?", variable=menu.scanshift)
+	ScanShiftCheck.grid(row=menu.iconrow, column=2)
+	ScanCtrlCheck = ttk.Checkbutton(SettingsFrame, text="Ctrl?", variable=menu.scanctrl)
+	ScanCtrlCheck.grid(row=menu.iconrow, column=3)
+	ScanAltCheck = ttk.Checkbutton(SettingsFrame, text="Alt?", variable=menu.scanalt)
+	ScanAltCheck.grid(row=menu.iconrow, column=4)
+	menu.iconrow += 1
+	ResetHotkeysButton = ttk.Button(SettingsFrame, text="Reset Hotkeys", command=ResetHotkeys)
+	ResetHotkeysButton.grid(row=menu.iconrow, column=0, columnspan=8, pady=1)
+	ResetHotkeys_ttp = CreateToolTip(ResetHotkeysButton, 'Some combinations may not work, like Ctrl + Shift + F-keys.\n'
+														 'This button will reset the hotkeys to default.  Remember to '
+														 'save your settings.')
+	menu.iconrow += 1
+	setsep = ttk.Separator(SettingsFrame, orient=HORIZONTAL)
+	setsep.grid(row=menu.iconrow, columnspan=8, sticky="ew", pady=10)
+	menu.iconrow += 1
 	SetLabel = ttk.Label(SettingsFrame, text="Icon set?", style="TLabel")
 	SetLabel.grid(row=menu.iconrow, column=0)
 	DefaultRadio = ttk.Radiobutton(SettingsFrame, text="Default", variable=menu.Set, value=0)
@@ -1259,8 +1350,6 @@ def CreateButtons(self):
 			else:
 				btn = ttk.Button(FilterFrame, image=img, style="DisabledButton.TButton")
 			counter += 1
-
-
 			btn.image = img
 			# This stuff after the lambda makes sure they're set to the individual values, if I add more, have to be blah=blah before it
 			btn["command"] = lambda i=i, btn=btn: open_this(sortedicons[i][0],btn)
@@ -1294,9 +1383,11 @@ def SavePickerPosition(x, y):
 	menu.PickerY = y
 
 
-def IconPicker(image):
-	global IconPickerWindow
+def IconCatPicker(image, back):
+	global IconCatPickerWindow
 	global tempicon
+	if back == 1:
+		WhatItemWindow.destroy()
 	tempicon = image
 	root_x = StockpilerWindow.winfo_rootx()
 	root_y = StockpilerWindow.winfo_rooty()
@@ -1315,35 +1406,42 @@ def IconPicker(image):
 		win_y = root_y - 20
 
 	location = "+" + str(win_x) + "+" + str(win_y)
-	IconPickerWindow = Toplevel(StockpilerWindow)
-	IconPickerWindow.geometry(location)
-	IconPickerFrame = ttk.Frame(IconPickerWindow)
-	IconPickerWindow.resizable(False, False)
-	IconPickerFrame.pack()
-
-	IconPickerFrame.grid_forget()
-	NewIconLabel = ttk.Label(IconPickerFrame, text="What's this?")
-	NewIconLabel.grid(row=0, column=0, columnspan=2)
-	im = Image.fromarray(image)
-	tkimage = ImageTk.PhotoImage(im)
-	NewIconImage = ttk.Label(IconPickerFrame, image=tkimage)
-	NewIconImage.image = image
-	NewIconImage.grid(row=0, column=2)
-	SavePositionBtn = ttk.Button(IconPickerFrame, text="Save Window Position", style="EnabledButton.TButton", command=lambda: SavePickerPosition(IconPickerWindow.winfo_x(), IconPickerWindow.winfo_y()))
-	SavePositionBtn.grid(row=0, column=5, columnspan=5)
-	iconcolumn = 0
-	iconrow = 1
+	IconCatPickerWindow = Toplevel(StockpilerWindow)
+	IconCatPickerWindow.geometry(location)
+	IconCatPickerFrame = ttk.Frame(IconCatPickerWindow)
+	IconCatPickerWindow.resizable(False, False)
+	IconCatPickerFrame.pack()
+	IconCatPickerFrame.grid_forget()
+	iconrow = iconcolumn = 0
+	unique_list = []
 	counter = 0
-	temptime = datetime.datetime.now()
-	for x in range(len(items.data)):
-		if os.path.exists("UI//" + str(items.data[x][0]) + ".png"):
-			img = PhotoImage(file="UI//" + str(items.data[x][0]) + ".png")
-			btn = ttk.Button(IconPickerFrame, image=img, style="EnabledButton.TButton")
+	NewIconLabel = ttk.Label(IconCatPickerFrame, text="What category is this item in?")
+	NewIconLabel.grid(row=iconrow, column=0, columnspan=5)
+	iconrow += 1
+	im = Image.fromarray(image)
+	bigim = im.resize(size=(200, 200), resample=Image.NEAREST)
+	tkimage = ImageTk.PhotoImage(im)
+	tkimagebig = ImageTk.PhotoImage(bigim)
+	NewIconImage = ttk.Label(IconCatPickerFrame, image=tkimage)
+	NewIconImage.image = image
+	NewIconImage.grid(row=iconrow, column=0)
+	BigIconImage = ttk.Label(IconCatPickerFrame, image=tkimagebig)
+	BigIconImage.image = image
+	BigIconImage.grid(row=iconrow, column=1, columnspan=4)
+	iconrow += 1
+	for x in items.data:
+		if [x[9],x[8]] not in unique_list:
+			unique_list.append([x[9], x[8]])
+	for x in unique_list:
+		if os.path.exists("UI//cat" + str(x[0]) + ".png"):
+			img = PhotoImage(file="UI//cat" + str(x[0]) + ".png")
+			btn = ttk.Button(IconCatPickerFrame, image=img, style="EnabledButton.TButton")
 			counter += 1
 			btn.image = img
 			# This stuff after the lambda makes sure they're set to the individual values, if I add more, have to be blah=blah before it
-			btn["command"] = lambda x=x, btn=btn: IndividualOrCrate(items.data[x][0])
-			if iconcolumn < 18:
+			btn["command"] = lambda x=x, btn=btn: WhatItem(image, x[0])
+			# btn["command"] = lambda x=x, btn=btn: IndividualOrCrate(items.data[x][0])
+			if iconcolumn < 5:
 				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
 				iconcolumn += 1
 			else:
@@ -1351,27 +1449,168 @@ def IconPicker(image):
 				iconcolumn = 0
 				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
 				iconcolumn += 1
-			tooltiptext = re.sub('\'', '', items.data[x][3])
+			tooltiptext = re.sub('\'', '', x[1])
 			itembtnttp = ("item" + str(counter) + "_ttp = CreateToolTip(btn, '" + tooltiptext + "')")
 			exec(itembtnttp)
-	print("Took this long to make icon picker window:", datetime.datetime.now() - temptime)
-	IconPickerWindow.wait_window()
+	IconCatPickerWindow.wait_window()
 
 
-def IndividualOrCrate(num):
+def WhatItem(image, catnumber):
+	global WhatItemWindow
 	global tempicon
-	print(num)
-	IconPickerWindow.destroy()
+	IconCatPickerWindow.destroy()
+	tempicon = image
+	root_x = StockpilerWindow.winfo_rootx()
+	root_y = StockpilerWindow.winfo_rooty()
+	if menu.PickerX != -1:
+		win_x = menu.PickerX
+		win_y = menu.PickerY
+	elif root_x == root_y == -32000:
+		win_x = 20
+		win_y = 20
+	elif root_x < 20:
+		win_x = 20
+		win_y = 20
+	else:
+		# This window is so big in its current form that it just needs to be further in the corner
+		win_x = root_x - 20
+		win_y = root_y - 20
+
+	location = "+" + str(win_x) + "+" + str(win_y)
+	WhatItemWindow = Toplevel(StockpilerWindow)
+	WhatItemWindow.geometry(location)
+	WhatItemFrame = ttk.Frame(WhatItemWindow)
+	WhatItemWindow.resizable(False, False)
+	WhatItemFrame.pack()
+	WhatItemFrame.grid_forget()
+	iconrow = iconcolumn = 0
+	NewIconLabel = ttk.Label(WhatItemFrame, text="What item is this?")
+	NewIconLabel.grid(row=iconrow, column=0, columnspan=5)
+	iconrow += 1
+	im = Image.fromarray(image)
+	tkimage = ImageTk.PhotoImage(im)
+	NewIconImage = ttk.Label(WhatItemFrame, image=tkimage)
+	NewIconImage.image = image
+	NewIconImage.grid(row=iconrow, column=0)
+	bigim = im.resize(size=(200, 200), resample=Image.NEAREST)
+	tkimagebig = ImageTk.PhotoImage(bigim)
+	BigIconImage = ttk.Label(WhatItemFrame, image=tkimagebig)
+	BigIconImage.image = image
+	BigIconImage.grid(row=iconrow, column=1, columnspan=4)
+	iconrow += 1
+	unique_list = []
+	counter = 0
+	for x in items.data:
+		if x[9] == catnumber:
+			unique_list.append([x[0], x[3]])
+	for x in unique_list:
+		print(x)
+		if os.path.exists("UI//" + str(x[0]) + ".png"):
+			img = PhotoImage(file="UI//" + str(x[0]) + ".png")
+			btn = ttk.Button(WhatItemFrame, image=img, style="EnabledButton.TButton")
+			counter += 1
+			btn.image = img
+			# This stuff after the lambda makes sure they're set to the individual values, if I add more, have to be blah=blah before it
+			print(x)
+			btn["command"] = lambda x=x, btn=btn: IndividualOrCrate(x[0], image)
+			if iconcolumn < 11:
+				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
+				iconcolumn += 1
+			else:
+				iconrow += 1
+				iconcolumn = 0
+				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
+				iconcolumn += 1
+			tooltiptext = re.sub('\'', '', x[1])
+			itembtnttp = ("item" + str(counter) + "_ttp = CreateToolTip(btn, '" + tooltiptext + "')")
+			exec(itembtnttp)
+	iconrow += 1
+	BackButton = ttk.Button(WhatItemFrame, text="Back to Category Picker", command=lambda: IconCatPicker(image, 1))
+	BackButton.grid(row=iconrow, column=0, columnspan=2)
+	WhatItemWindow.wait_window()
+
+
+# def IconPicker(image):
+# 	global IconPickerWindow
+# 	global tempicon
+# 	tempicon = image
+# 	root_x = StockpilerWindow.winfo_rootx()
+# 	root_y = StockpilerWindow.winfo_rooty()
+# 	if menu.PickerX != -1:
+# 		win_x = menu.PickerX
+# 		win_y = menu.PickerY
+# 	elif root_x == root_y == -32000:
+# 		win_x = 20
+# 		win_y = 20
+# 	elif root_x < 20:
+# 		win_x = 20
+# 		win_y = 20
+# 	else:
+# 		# This window is so big in its current form that it just needs to be further in the corner
+# 		win_x = root_x - 20
+# 		win_y = root_y - 20
+#
+# 	location = "+" + str(win_x) + "+" + str(win_y)
+# 	IconPickerWindow = Toplevel(StockpilerWindow)
+# 	IconPickerWindow.geometry(location)
+# 	IconPickerFrame = ttk.Frame(IconPickerWindow)
+# 	IconPickerWindow.resizable(False, False)
+# 	IconPickerFrame.pack()
+#
+# 	IconPickerFrame.grid_forget()
+# 	NewIconLabel = ttk.Label(IconPickerFrame, text="What's this?")
+# 	NewIconLabel.grid(row=0, column=0, columnspan=2)
+# 	im = Image.fromarray(image)
+# 	tkimage = ImageTk.PhotoImage(im)
+# 	NewIconImage = ttk.Label(IconPickerFrame, image=tkimage)
+# 	NewIconImage.image = image
+# 	NewIconImage.grid(row=0, column=2)
+# 	SavePositionBtn = ttk.Button(IconPickerFrame, text="Save Window Position", style="EnabledButton.TButton", command=lambda: SavePickerPosition(IconPickerWindow.winfo_x(), IconPickerWindow.winfo_y()))
+# 	SavePositionBtn.grid(row=0, column=5, columnspan=5)
+# 	iconcolumn = 0
+# 	iconrow = 1
+# 	counter = 0
+# 	temptime = datetime.datetime.now()
+# 	for x in range(len(items.data)):
+# 		if os.path.exists("UI//" + str(items.data[x][0]) + ".png"):
+# 			img = PhotoImage(file="UI//" + str(items.data[x][0]) + ".png")
+# 			btn = ttk.Button(IconPickerFrame, image=img, style="EnabledButton.TButton")
+# 			counter += 1
+# 			btn.image = img
+# 			# This stuff after the lambda makes sure they're set to the individual values, if I add more, have to be blah=blah before it
+# 			btn["command"] = lambda x=x, btn=btn: IndividualOrCrate(items.data[x][0])
+# 			if iconcolumn < 18:
+# 				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
+# 				iconcolumn += 1
+# 			else:
+# 				iconrow += 1
+# 				iconcolumn = 0
+# 				btn.grid(row=iconrow, column=iconcolumn, sticky="W", padx=2, pady=2)
+# 				iconcolumn += 1
+# 			tooltiptext = re.sub('\'', '', items.data[x][3])
+# 			itembtnttp = ("item" + str(counter) + "_ttp = CreateToolTip(btn, '" + tooltiptext + "')")
+# 			exec(itembtnttp)
+# 	print("Took this long to make icon picker window:", datetime.datetime.now() - temptime)
+# 	IconPickerWindow.wait_window()
+
+
+def IndividualOrCrate(num, image):
+	WhatItemWindow.destroy()
 	global IndOrCrateWindow
 	root_x = StockpilerWindow.winfo_rootx()
 	root_y = StockpilerWindow.winfo_rooty()
-	if root_x == root_y == -32000:
-		win_x = 90
-		win_y = 90
+	if menu.PickerX != -1:
+		win_x = menu.PickerX
+		win_y = menu.PickerY
+	elif root_x == root_y == -32000:
+		win_x = 20
+		win_y = 20
+	elif root_x < 20:
+		win_x = 20
+		win_y = 20
 	else:
 		win_x = root_x - 20
-		win_y = root_y + 125
-
+		win_y = root_y - 20
 	location = "+" + str(win_x) + "+" + str(win_y)
 	IndOrCrateWindow = Toplevel(StockpilerWindow)
 	IndOrCrateWindow.geometry(location)
@@ -1382,15 +1621,20 @@ def IndividualOrCrate(num):
 	ForLabel.grid(row=0, column=0)
 	YouSelectedLabel = ttk.Label(IndOrCrateFrame, text="You\nSelected:")
 	YouSelectedLabel.grid(row=0, column=1)
-	im = Image.fromarray(tempicon)
+	im = Image.fromarray(image)
 	tkimage = ImageTk.PhotoImage(im)
 	NewIconImage = ttk.Label(IndOrCrateFrame, image=tkimage)
 	NewIconImage.image = tempicon
 	NewIconImage.grid(row=1, column=0)
+	bigim = im.resize(size=(200, 200), resample=Image.NEAREST)
+	tkimagebig = ImageTk.PhotoImage(bigim)
+	BigIconImage = ttk.Label(IndOrCrateFrame, image=tkimagebig)
+	BigIconImage.image = image
+	BigIconImage.grid(row=2, column=0)
 	UIimage = PhotoImage(file="Compare//" + str(num) + ".png")
 	SelectedImage = ttk.Label(IndOrCrateFrame, image=UIimage)
 	SelectedImage.image = UIimage
-	SelectedImage.grid(row=1, column=1)
+	SelectedImage.grid(row=1, column=1, rowspan=2)
 	IndividualButton = ttk.Button(IndOrCrateFrame, text="Individual", style="EnabledButton.TButton", command=lambda: SaveIcon(num,0,tempicon))
 	IndividualButton.grid(row=5, column=0)
 	CrateButton = ttk.Button(IndOrCrateFrame, text="Crate", style="EnabledButton.TButton", command=lambda: SaveIcon(num,1,tempicon))
@@ -1403,7 +1647,7 @@ def IndividualOrCrate(num):
 def BackToPicker(image):
 	global IndOrCrateWindow
 	IndOrCrateWindow.destroy()
-	IconPicker(image)
+	IconCatPicker(image, 0)
 
 
 def SaveIcon(num, type, image):
@@ -1486,6 +1730,7 @@ if os.path.exists("Config.txt"):
 		content = file.readlines()
 	content = [x.strip() for x in content]
 	try:
+		print("Attempting to load from Config.txt")
 		logging.info(str(datetime.datetime.now()) + ' Attempting to load from config.txt')
 		menu.CSVExport.set(int(content[0]))
 		menu.XLSXExport.set(int(content[1]))
@@ -1499,33 +1744,104 @@ if os.path.exists("Config.txt"):
 	except Exception as e:
 		print("Exception: ", e)
 		logging.info(str(datetime.datetime.now()) + ' Loading from config.txt failed, setting defaults')
-		menu.CSVExport.set(1)
-		menu.XLSXExport.set(1)
+		menu.CSVExport.set(0)
+		menu.XLSXExport.set(0)
 		menu.ImgExport.set(1)
 		menu.Set.set(0)
 		menu.Learning.set(0)
+	try:
+		print("Attempting to load hotkeys from config.txt")
+		logging.info(str(datetime.datetime.now()) + ' Attempting to load from hotkeys from config.txt')
+		menu.grabhotkey.set(content[9])
+		menu.scanhotkey.set(content[10])
+		menu.grabhotkeystring = menu.grabhotkey.get()
+		menu.scanhotkeystring = menu.scanhotkey.get()
+		menu.grabshift.set(content[11][0])
+		menu.grabctrl.set(content[11][1])
+		menu.grabalt.set(content[11][2])
+		menu.grabmods = str(menu.grabshift.get()) + str(menu.grabctrl.get()) + str(menu.grabalt.get())
+		menu.scanshift.set(content[12][0])
+		menu.scanctrl.set(content[12][1])
+		menu.scanalt.set(content[12][2])
+		menu.scanmods = str(menu.scanshift.get()) + str(menu.scanctrl.get()) + str(menu.scanalt.get())
+	except Exception as e:
+		print("Exception: ", e)
+		print("Failed to load hotkeys from config.txt, setting them to defaults of f2, f3")
+		logging.info(str(datetime.datetime.now()) + ' No custom hotkeys in config.txt, setting defaults of f2, f3')
+		menu.grabhotkey.set("f2")
+		menu.scanhotkey.set("f3")
+		menu.grabhotkeystring = menu.grabhotkey.get()
+		menu.scanhotkeystring = menu.scanhotkey.get()
+		menu.grabshift.set(0)
+		menu.grabctrl.set(0)
+		menu.grabalt.set(0)
+		menu.grabmods = "000"
+		menu.scanshift.set(0)
+		menu.scanctrl.set(0)
+		menu.scanalt.set(0)
+		menu.scanmods = "000"
 else:
-	menu.CSVExport.set(1)
-	menu.XLSXExport.set(1)
+	menu.CSVExport.set(0)
+	menu.XLSXExport.set(0)
 	menu.ImgExport.set(1)
 	menu.Set.set(0)
 	menu.Learning.set(0)
 
+
+def SetHotkeys(self):
+	# print(menu.grabmods, menu.scanmods)
+	clear_hotkeys()
+	if menu.grabmods[0] == "0":
+		grabshift = ""
+	else:
+		grabshift = "\"shift\","
+	if menu.grabmods[1] == "0":
+		grabctrl = ""
+	else:
+		grabctrl = "\"control\","
+	if menu.grabmods[2] == "0":
+		grabalt = ""
+	else:
+		grabalt = "\"alt\","
+	if menu.scanmods[0] == "0":
+		scanshift = ""
+	else:
+		scanshift = "\"shift\","
+	if menu.scanmods[1] == "0":
+		scanctrl = ""
+	else:
+		scanctrl = "\"control\","
+	if menu.scanmods[2] == "0":
+		scanalt = ""
+	else:
+		scanalt = "\"alt\","
+	bindingsstring = "menu.bindings = [[[" + grabshift + grabctrl + grabalt + "\"" + menu.grabhotkeystring +\
+					 "\"], None, GrabStockpileImage],[[" + scanshift + scanctrl + scanalt + "\"" + \
+					 menu.scanhotkeystring + "\"], None, LearnOrNot],]"
+	exec(bindingsstring)
+	register_hotkeys(menu.bindings)
+	start_checking_hotkeys()
+	if menu.grabhotkeystring == menu.scanhotkeystring:
+		popup("DuplicateHotkeys")
+
+
+def ResetHotkeys():
+	menu.grabshift.set(0)
+	menu.grabctrl.set(0)
+	menu.grabalt.set(0)
+	menu.grabmods = "000"
+	menu.grabhotkey.set("f2")
+	menu.grabhotkeystring = "f2"
+	menu.scanshift.set(0)
+	menu.scanctrl.set(0)
+	menu.scanalt.set(0)
+	menu.scanmods = "000"
+	menu.scanhotkey.set("f3")
+	menu.scanhotkeystring = "f3"
+	SetHotkeys("")
+
 CreateButtons("")
 
-
-bindings = [
-	[["f2"], None, GrabStockpileImage],
-	[["f3"], None, LearnOrNot],
-]
-
-
-register_hotkeys(bindings)
-start_checking_hotkeys()
-
-
-# This is/was the new implementation of hotkey listening that doesn't solve the problem with Linux
-# keyboard.add_hotkey("F2", lambda: GrabStockpileImage())
-# keyboard.add_hotkey("F3", lambda: LearnOrNot())
+SetHotkeys("")
 
 StockpilerWindow.mainloop()
