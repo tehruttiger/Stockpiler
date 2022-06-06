@@ -1,229 +1,229 @@
 #,I,C,Name,Nickname,SubType,Ammo,Faction,StockpileCategory,CategorySort,InCategorySort,IndExists,CrateExists,perCrate,Bmats,Emats,Rmats,Hemats,Relicmats
 0,-,-,Reserved,,,,,,,,0,0,,,,,,
-1,X,X,Dusk ce.III,Dusk,Assault Rifle,7.92mm,Colonial,Small Weapons,1,1,1,1,10,165,0,0,0,0
-2,X,X,Booker Storm Rifle Model 838,Booker,Assault Rifle,7.92mm,Warden,Small Weapons,1,2,1,1,10,165,0,0,0,0
-3,X,X,Aalto Storm Rifle 24,,Assault Rifle,7.92mm,Warden,Small Weapons,1,3,1,1,10,165,0,0,0,0
-4,X,X,7.92mm,,,7.92mm,Both,Small Weapons,1,4,1,1,30,120,0,0,0,0
-5,X,X,Catara mo. II,,Light Machine Gun,12.7mm,Colonial,Small Weapons,1,5,1,1,10,165,0,0,0,0
-6,X,X,KRN886-127 Gast Machine Gun,,Machine Gun,12.7mm,Colonial,Small Weapons,1,6,1,1,10,0,0,30,0,0
-7,X,X,Malone MK.2,Malone,Machine Gun,12.7mm,Warden,Small Weapons,1,7,1,1,10,0,0,30,0,0
-8,X,X,12.7mm,,,12.7mm,Both,Small Weapons,1,8,1,1,20,100,0,0,0,0
-9,X,X,PT-815 Smoke Grenade,Smoke,Smoke Grenade,,Both,Small Weapons,1,9,1,1,10,120,0,0,0,0
-10,-,-,Ferro 879,,Pistol,8mm,Both,Small Weapons,1,10,0,0,20,-,-,-,-,-
-11,X,X,Cascadier 873,,Pistol,8mm,Warden,Small Weapons,1,11,1,1,20,60,0,0,0,0
-12,-,-,8mm,,,8mm,Both,Small Weapons,1,12,0,0,40,40,0,0,0,0
-13,X,X,Cometa T2-9,,Revolver,0.44,Both,Small Weapons,1,13,1,1,20,60,0,0,0,0
-14,X,X,The Hangman 757,Hangman,Heavy Rifle,0.44,Warden,Small Weapons,1,14,1,1,20,125,0,0,0,0
-15,X,X,0.44,,,0.44,Both,Small Weapons,1,15,1,1,40,40,0,0,0,0
-16,X,X,Sampo Auto-Rifle 77,Sampo,Rifle,7.62mm,Warden,Small Weapons,1,16,1,1,20,125,0,0,0,0
-17,X,X,Argentir r.II Rifle,Argentir,Rifle,7.62mm,Colonial,Small Weapons,1,17,1,1,20,100,0,0,0,0
-18,X,X,Volta r.I Repeater,,Heavy Rifle,7.62mm,Colonial,Small Weapons,1,18,1,1,15,100,0,0,0,0
-19,X,X,Fuscina pi.I,Fuscina,Rifle,7.62mm,Colonial,Small Weapons,1,19,1,1,20,140,0,0,0,0
-20,X,X,Blakerow 871,,Rifle,7.62mm,Warden,Small Weapons,1,20,1,1,20,140,0,0,0,0
-21,X,X,KRR2-790 Omen,,Long Rifle,7.62mm,Colonial,Small Weapons,1,21,1,1,15,155,0,0,0,0
-22,X,X,Clancy Cinder M3,,Long Rifle,7.62mm,Warden,Small Weapons,1,22,1,1,15,130,0,0,0,0
-23,X,X,No.2 Loughcaster,Loughcaster,Rifle,7.62mm,Warden,Small Weapons,1,23,1,1,20,100,0,0,0,0
-24,X,X,7.62mm,,,7.62mm,Both,Small Weapons,1,24,1,1,40,80,0,0,0,0
-25,X,X,Brasa Shotgun,Shotgun,Shotgun,Buckshot,Both,Small Weapons,1,25,1,1,20,120,0,0,0,0
-26,X,X,Buckshot,,,Buckshot,Both,Small Weapons,1,26,1,1,40,80,0,0,0,0
-27,X,X,The Pitch Gun mc.V,Pitch Gun,Submachine Gun,9mm SMG,Colonial,Small Weapons,1,27,1,1,20,80,0,0,0,0
-28,X,X,Lionclaw mc.VIII,,Submachine Gun,9mm SMG,Colonial,Small Weapons,1,28,1,1,20,120,0,0,0,0
-29,X,X,"No.1 ""The Liar"" Submachinegun",,Submachine Gun,9mm SMG,Warden,Small Weapons,1,29,1,1,20,120,0,0,0,0
-30,X,X,Fiddler Submachine Gun Model 868,Fiddler,Submachine Gun,9mm SMG,Warden,Small Weapons,1,30,1,1,20,120,0,0,0,0
-31,X,X,9mm SMG,,,9mm SMG,Both,Small Weapons,1,31,1,1,40,80,0,0,0,0
-32,X,X,KRR3-792 Auger,,Sniper Rifle,8.5mm,Colonial,Small Weapons,1,32,1,1,5,200,0,15,0,0
-33,X,X,Clancy-Raca M4,,Sniper Rifle,8.5mm,Warden,Small Weapons,1,33,1,1,5,200,0,15,0,0
-34,X,X,8.5mm,,,8.5mm,Both,Small Weapons,1,34,1,1,10,150,0,0,0,0
-35,X,X,20 Neville Anti-Tank Rifle,ATR,Anti-Tank Rifle,20mm,Warden,Heavy Weapons,2,1,1,1,5,150,0,0,0,0
-36,X,X,20mm,,,20mm,Both,Heavy Weapons,2,2,1,1,10,100,0,0,0,0
-37,X,X,Venom c.II 35,,Anti-Tank RPG,A.T.R.P.G. Shell,Colonial,Heavy Weapons,2,3,1,1,5,100,0,25,0,0
-38,X,X,Bane 45,Bane,Anti-Tank RPG,A.T.R.P.G. Shell,Colonial,Heavy Weapons,2,4,1,1,5,150,0,45,0,0
-39,X,X,A.T.R.P.G. Shell,,,A.T.R.P.G. Shell,Both,Heavy Weapons,2,5,1,1,15,-,-,-,-,-
-40,X,X,Bonesaw MK.3,Bonesaw,Anti-Tank RPG,A.T.R.P.G. Indirect Shell,Warden,Heavy Weapons,2,6,1,1,5,100,0,25,0,0
-41,X,X,A.T.R.P.G. Indirect Shell,,,A.T.R.P.G. Indirect Shell,Warden,Heavy Weapons,2,7,1,1,15,60,75,0,0,0
-42,X,X,Cremari Mortar,,Mortar,Mortar Shell,Both,Heavy Weapons,2,8,1,1,5,100,0,25,0,0
-43,X,X,Mortar Flare Shell,,,Mortar Shell,Both,Heavy Weapons,2,9,1,1,15,60,10,0,0,0
-44,X,X,Mortar Shrapnel Shell,,,Mortar Shell,Both,Heavy Weapons,2,10,1,1,15,60,15,0,0,0
-45,X,X,Mortar Shell,,,Mortar Shell,Both,Heavy Weapons,2,11,1,1,15,60,35,0,0,0
-46,X,X,BF5 White Ash Flask Grenade,,Anti-Tank Grenade,,Both,Heavy Weapons,2,12,1,1,15,100,50,0,0,0
-47,X,X,Ignifist 30,,Anti-Tank RPG,,Colonial,Heavy Weapons,2,13,1,1,15,60,50,0,0,0
-48,X,X,Mounted Bonesaw MK.3,,Anti-Tank RPG,A.T.R.P.G. Indirect Shell,Warden,Heavy Weapons,2,14,1,1,5,200,0,0,0,0
-49,X,X,Green Ash Grenade,,Gas Grenade,,Both,Heavy Weapons,2,15,1,1,10,140,0,0,0,0
-50,X,X,Bombastone Grenade,,Grenade,,Colonial,Heavy Weapons,2,16,1,1,25,100,20,0,0,0
-51,X,X,A3 Harpa Fragmentation Grenade,,Grenade,,Warden,Heavy Weapons,2,17,1,1,20,100,20,0,0,0
-52,X,X,150mm,,,150mm,Both,Heavy Weapons,2,18,1,1,5,120,0,0,10,0
-53,X,X,Mammon 91-b,,HE Grenade,,Both,Heavy Weapons,2,19,1,1,20,100,10,0,0,0
-54,X,X,Daucus isg.III,,Infantry Support Gun,30mm,Colonial,Heavy Weapons,2,20,1,1,5,150,0,0,0,0
-55,X,X,120mm,,,120mm,Both,Heavy Weapons,2,21,1,1,5,60,15,0,0,0
-56,X,X,300mm,,,300mm,Both,Heavy Weapons,2,22,1,1,5,135,0,0,30,0
-57,X,X,250mm,,,250mm,Both,Heavy Weapons,2,23,1,1,5,120,0,0,25,0
-58,X,X,Anti-Tank Sticky Bomb,,,,Both,Heavy Weapons,2,24,1,1,10,50,50,0,0,0
-59,X,X,Cutler Launcher 4,,RPG,R.P.G. Shell,Warden,Heavy Weapons,2,25,1,1,5,100,0,25,0,0
-60,X,X,R.P.G. Shell,,,R.P.G. Shell,Warden,Heavy Weapons,2,26,1,1,15,60,75,0,0,0
-61,X,X,68mm AT,,,68mm AT,Both,Heavy Weapons,2,27,1,1,20,120,120,0,0,0
-62,,,75mm Round,,,75mm,Both,Heavy Weapons,2,28,0,0,20,,,,,
-63,X,X,40mm Round,,,40mm,Both,Heavy Weapons,2,29,1,1,20,160,120,0,0,0
-64,X,X,30mm,,,30mm,Both,Heavy Weapons,2,30,1,1,20,80,20,0,0,0
-65,-,-,Warhead,,,,Both,Heavy Weapons,2,31,1,0,1,0,0,200,1000,0
-66,X,X,Binoculars,,,,Both,Utility,3,1,1,1,5,75,0,0,0,0
-67,X,X,Hydra's Whisper,,Explosive Charge,,Colonial,Utility,3,1,1,1,5,100,40,0,0,0
-68,X,X,Listening Kit,,Equipment,,Both,Utility,3,1,1,1,3,120,0,0,0,0
-69,X,X,Radio Backpack,,,,Both,Utility,3,1,1,1,5,150,0,0,0,0
-70,X,X,Alligator Charge,,Explosive Charge,,Both,Utility,3,1,1,1,5,100,0,0,15,0
-71,X,X,Shovel,,,,Both,Utility,3,1,1,1,10,200,0,0,0,0
-72,X,X,Sledge Hammer,Sledge,,,Both,Utility,3,1,1,1,10,200,0,0,0,0
-73,X,X,Abisme AT-99,AT Mine,Explosive Charge,,Both,Utility,3,1,1,1,10,100,10,0,0,0
-74,X,X,Tripod,Tripod,,,Both,Utility,3,1,1,1,5,100,0,0,0,0
-75,-,-,Hammer,,,,Both,Utility,3,1,0,0,20,-,-,-,-,-
-76,X,X,Wrench,Wrench,,,Both,Utility,3,1,1,1,5,75,0,0,0,0
-77,X,X,Buckhorn CCQ-18,Bayonet,Bayonet,,Both,Utility,3,1,1,1,20,40,0,0,0,0
-78,X,X,Gas Mask,Gas Mask,,,Both,Utility,3,1,1,1,20,160,0,0,0,0
-79,X,X,Gas Mask Filter,Filter,,,Both,Utility,3,1,1,1,20,100,0,0,0,0
-80,X,X,Radio,Radio,,,Both,Utility,3,1,1,1,5,100,0,0,0,0
-81,-,-,Rocket Booster,,,,Both,Utility,3,1,1,0,1,0,0,800,0,0
-82,X,X,Bandages,Bandage,,,Both,Medical,4,1,1,1,80,160,0,0,0,0
-83,X,X,First Aid Kit,First Aid Kit,,,Both,Medical,4,2,1,1,10,60,0,0,0,0
-84,X,X,Trauma Kit,Trauma Kit,,,Both,Medical,4,3,1,1,10,80,0,0,0,0
-85,X,X,Blood Plasma,Plasma,,,Both,Medical,4,4,1,1,80,80,0,0,0,0
-86,X,X,Soldier Supplies,Shirts,,,Both,Medical,4,5,1,1,10,80,0,0,0,0
-87,X,X,Diesel,Diesel,,,Both,Resource,5,1,1,1,1,,,,,
-88,X,X,Petrol,Petrol,,,Both,Resource,5,2,1,1,1,,,,,
-89,X,X,Aluminum Alloy,,,,Both,Resource,5,3,1,1,20,,,,,
-90,X,X,Bunker Supplies,Bsups,,,Both,Resource,5,4,1,1,150,75,0,0,0,0
-91,X,X,Basic Materials,Bmats,,,Both,Resource,5,5,1,1,100,,,,,
-92,X,X,Explosive Materials,Emats,,,Both,Resource,5,6,1,1,20,,,,,
-93,X,X,Garrison Supplies,Gsups,,,Both,Resource,5,7,1,1,150,75,0,0,0,0
-94,X,X,Heavy Explosive Materials,Hemats,,,Both,Resource,5,8,1,1,20,,,,,
-95,X,X,Iron Alloy,,,,Both,Resource,5,9,1,1,20,,,,,
-96,X,X,Refined Materials,Rmats,,,Both,Resource,5,10,1,1,20,,,,,
-97,X,-,Salvage,,,,Both,Resource,5,11,1,0,,,,,,
-98,X,-,Components,,,,Both,Resource,5,12,1,0,,,,,,
-99,X,-,Sulfur,,,,Both,Resource,5,13,1,0,,,,,,
-100,X,-,Aluminum,,,,Both,Resource,5,14,1,0,,,,,,
-101,X,-,Iron,,,,Both,Resource,5,15,1,0,,,,,,
-102,X,-,Wreckage,,,,Both,Resource,5,16,1,0,,,,,,
-103,X,-,Concrete Materials,,,,Both,Resource,5,17,1,0,,,,,,
-104,X,-,Crude Oil,,,,Both,Resource,5,18,1,0,,,,,,
-105,X,X,Specialist's Overcoat,,Warden Heavy Ammo Uniform,,Warden,Uniforms,6,1,1,1,20,100,0,0,0,0
-106,X,X,Fabri Rucksack,,Colonial Engineer Uniform,,Colonial,Uniforms,6,2,1,1,20,100,0,0,0,0
-107,X,X,Sapper Gear,,Warden Engineer Uniform,,Warden,Uniforms,6,3,1,1,20,100,0,0,0,0
-108,X,X,Grenadier's Baldric,,Colonial Grenade Uniform,,Colonial,Uniforms,6,4,1,1,20,100,0,0,0,0
-109,X,X,Medic Fatigues,,Colonial Medic Uniform,,Colonial,Uniforms,6,5,1,1,20,100,0,0,0,0
-110,X,X,Physician's Jacket,,Warden Medic Uniform,,Warden,Uniforms,6,6,1,1,20,100,0,0,0,0
-111,X,X,Legionary's Oilcoat,,Colonial Rain Uniform,,Colonial,Uniforms,6,7,1,1,20,100,0,0,0,0
-112,X,X,Recon Camo,,Colonial Scout Uniform,,Colonial,Uniforms,6,8,1,1,20,100,0,0,0,0
-113,X,X,Outrider's Mantle,,Warden Scout Uniform,,Warden,Uniforms,6,9,1,1,20,100,0,0,0,0
-114,X,X,Heavy Topcoat,,Colonial Snow Uniform,,Colonial,Uniforms,6,10,1,1,20,100,0,0,0,0
-115,X,X,Caoivish Parka,,Warden Snow Uniform,,Warden,Uniforms,6,11,1,1,20,100,0,0,0,0
-116,X,-,Legionary Fatigues,,Colonial Soldier Uniform,,Colonial,Uniforms,6,12,1,1,20,100,0,0,0,0
-117,X,-,Infantry Battledress,,Warden Soldier Uniform,,Warden,Uniforms,6,13,1,1,20,100,0,0,0,0
-118,X,X,Tankman's Coveralls,,Colonial Tank Uniform,,Colonial,Uniforms,6,14,1,1,20,100,0,0,0,0
-119,X,X,Padded Boiler Suit,,Warden Tank Uniform,,Warden,Uniforms,6,15,1,1,20,100,0,0,0,0
-120,X,X,"R-12 - ""Salus"" Ambulance",,Ambulance,,Colonial,Vehicle,7,1,1,1,3,,,,,
-121,X,X,Dunne Responder 3e,,Ambulance,,Warden,Vehicle,7,2,1,1,3,,,,,
-122,X,X,"T3 ""Xiphos""",,Armoured Car,,Colonial,Vehicle,7,3,1,1,3,,,,,
-123,X,X,"T12 ""Actaeon"" Tankette",,Armoured Car,,Colonial,Vehicle,7,4,1,1,3,,,,,
-124,X,X,O'Brien v.121 Highlander,,Armoured Car,,Warden,Vehicle,7,5,1,1,3,,,,,
-125,X,X,"T5 ""Percutio""",,Armoured Car,,Colonial,Vehicle,7,6,1,1,3,,,,,
-126,X,X,O'Brien v.101 Freeman,,Armoured Car,,Warden,Vehicle,7,7,1,1,3,,,,,
-127,X,X,O'Brien v.110,,Armoured Car,,Warden,Vehicle,7,8,1,1,3,,,,,
-128,X,X,BMS - Aquatipper,,Barge,,Both,Vehicle,7,11,1,1,,,,,,
-129,X,-,Blumfield LK205,,Bicycle,,Both,Vehicle,7,12,1,0,,,,,,
-130,X,X,"R-15 - ""Chariot""",,Transport Bus,,Colonial,Vehicle,7,13,1,1,3,,,,,
-131,X,X,Dunne Caravaner 2f,,Transport Bus,,Warden,Vehicle,7,14,1,1,3,,,,,
-132,X,X,BMS - Universal Assembly Rig,CV,Construction Vehicle,,Both,Vehicle,7,15,1,1,,,,,,
-133,X,X,BMS - Class 2 Mobile Auto-Crane,Crane,Crane,,Both,Vehicle,7,16,1,1,,,,,,
-134,X,X,Noble Widow MK. XIV,,Destroyer Tank,,Warden,Vehicle,7,17,1,1,3,,,,,
-135,X,X,AA-2 Battering Ram,,Field AT Gun,,Colonial,Vehicle,7,18,1,1,3,,,,,
-136,X,X,"68-45 ""Smelter"" Heavy Field Gun",,Heavy Field Gun,,Colonial,Vehicle,7,19,1,1,3,,,,,
-137,X,X,Collins Cannon 68mm,,Field AT Gun,,Warden,Vehicle,7,20,1,1,3,,,,,
-138,X,X,Balfour Rampart 40mm,,Heavy Field Cannon,,Warden,Vehicle,7,21,1,1,3,,,,,
-139,X,X,Balfour Wolfhound 40mm,,Field Cannon,,Warden,Vehicle,7,22,1,1,3,,,,,
-140,X,X,"120-68 ""Koronides"" Field Gun",,Field Artillery,,Colonial,Vehicle,7,23,1,1,3,,,,,
-141,X,X,"G40 ""Sagittarii""",,Field Machine Gun,,Colonial,Vehicle,7,24,1,1,3,,,,,
-142,X,X,Swallowtail 988/127-2,,Field Machine Gun,,Warden,Vehicle,7,25,1,1,3,,,,,
-143,X,X,Balfour Falconer 250mm,,Field Mortar,,Warden,Vehicle,7,26,1,1,3,,,,,
-144,X,X,BMS - Packmule Flatbed,,Flatbed Truck,,Both,Vehicle,7,27,1,1,,,,,,
-145,X,X,BMS - Ironship,,Freighter,,Both,Vehicle,7,28,1,1,,,,,,
-146,X,X,"Type C - ""Charon""",,Gunboat,,Colonial,Vehicle,7,29,1,1,3,,,,,
-147,X,X,74c-2 Ronan Meteora Gunship,,Gunboat,,Warden,Vehicle,7,30,1,1,3,,,,,
-148,X,X,74b-1 Ronan Gunship,,Gunboat,,Warden,Vehicle,7,31,1,1,3,,,,,
-149,X,X,"HH-d ""Peltast""",,Half-Track,,Colonial,Vehicle,7,32,1,1,3,,,,,
-150,X,X,"HH-a ""Javelin""",,Half-Track,,Colonial,Vehicle,7,33,1,1,3,,,,,
-151,X,X,"HH-b ""Hoplite""",,Half-Track,,Colonial,Vehicle,7,34,1,1,3,,,,,
-152,X,X,Niska Mk. II Blinder,,Half-Track,,Warden,Vehicle,7,35,1,1,3,,,,,
-153,X,X,Niska Mk. I Gun Motor Carriage,,Half-Track,,Warden,Vehicle,7,36,1,1,3,,,,,
-154,X,X,BMS - Scrap Hauler,,Harvester,,Both,Vehicle,7,37,1,1,,,,,,
-155,X,X,"AB-8 ""Acheron""",,Landing APC,,Colonial,Vehicle,7,38,1,1,3,,,,,
-156,X,X,"AB-11 ""Doru""",,Landing APC,,Colonial,Vehicle,7,39,1,1,3,,,,,
-157,X,X,Mulloy APC,,Landing APC,,Warden,Vehicle,7,40,1,1,3,,,,,
-158,X,X,"HC-2 ""Scorpion""",,Light Infantry Tank,,Colonial,Vehicle,7,41,1,1,3,,,,,
-159,X,X,Devitt-Caine Mk. IV MMR,,Light Tank,,Warden,Vehicle,7,42,1,1,3,,,,,
-160,X,X,"H5 ""Hatchet""",,Light Tank,,Colonial,Vehicle,7,43,1,1,3,,,,,
-161,X,X,Devitt Ironhide Mk. IV,,Light Tank,,Warden,Vehicle,7,44,1,1,3,,,,,
-162,X,X,"H-8 ""Kraneska""",,Light Tank,,Colonial,Vehicle,7,45,1,1,3,,,,,
-163,X,X,"H-10 ""Pelekys""",,Light Tank,,Colonial,Vehicle,7,46,1,1,3,,,,,
-164,X,X,Devitt Mk. III,,Light Tank,,Warden,Vehicle,7,47,1,1,3,,,,,
-165,X,X,"86K-a ""Bardiche""",,Assault Tank,,Colonial,Vehicle,7,48,1,1,3,,,,,
-166,X,X,Gallagher Outlaw Mk. II,,Cruiser Tank,,Warden,Vehicle,7,49,1,1,3,,,,,
-167,X,X,"85K-b ""Falchion""",,Assault Tank,,Colonial,Vehicle,7,50,1,1,5,,,,,
-168,X,X,"85K-a ""Spatha""",,Assault Tank,,Colonial,Vehicle,7,51,1,1,3,,,,,
-169,X,X,Silverhand Chieftain - Mk. VI,,Assault Tank,,Warden,Vehicle,7,52,1,1,3,,,,,
-170,X,X,Silverhand - Mk. IV,,Assault Tank,,Warden,Vehicle,7,53,1,1,3,,,,,
-171,X,X,"HC-7 ""Ballista""",,Siege Tank,,Colonial,Vehicle,7,54,1,1,3,,,,,
-172,X,X,"03MM ""Caster""",,Motorcycle,,Colonial,Vehicle,7,55,1,1,3,,,,,
-173,X,X,"00MS ""Stinger""",,Motorcycle,,Colonial,Vehicle,7,56,1,1,3,,,,,
-174,X,X,Kivela Power Wheel 80-1,,Motorcycle,,Warden,Vehicle,7,57,1,1,3,,,,,
-175,X,X,"RR-3 ""Stolon"" Tanker.",,Fuel Tanker,,Colonial,Vehicle,7,58,1,1,3,,,,,
-176,X,X,Dunne Fuelrunner 2d,,Fuel Tanker,,Warden,Vehicle,7,59,1,1,3,,,,,
-177,X,X,King Gallant Mk. II,,Scout Tank,,Warden,Vehicle,7,60,1,1,3,,,,,
-178,X,X,King Spire Mk. I,,Scout Tank,,Warden,Vehicle,7,61,1,1,3,,,,,
-179,X,X,"UV-05a ""Argonaut""",,Light Utility Vehicle,,Colonial,Vehicle,7,62,1,1,3,,,,,
-180,X,X,"UV-24 ""Icarus""",,Light Utility Vehicle,,Colonial,Vehicle,7,63,1,1,3,,,,,
-181,X,X,Drummond Spitfire 100d,,Light Utility Vehicle,,Warden,Vehicle,7,64,1,1,3,,,,,
-182,X,X,"UV-5c ""Odyssey""",,Light Utility Vehicle,,Colonial,Vehicle,7,65,1,1,3,,,,,
-183,X,X,Drummond Loscann 55c,,Light Utility Vehicle,,Warden,Vehicle,7,66,1,1,3,,,,,
-184,X,X,Drummond 100a,,Light Utility Vehicle,,Warden,Vehicle,7,67,1,1,3,,,,,
-185,X,X,"T20 ""Ixion"" Tankette",,Tankette,,Colonial,Vehicle,7,68,1,1,3,,,,,
-186,X,X,BMS - White Whale,,Landing Ship,,Both,Vehicle,7,69,1,1,,,,,,
-187,X,X,R-1 Hauler,,Truck,,Colonial,Vehicle,7,70,1,1,3,,,,,
-188,X,X,Dunne Leatherback 2a,,Truck,,Warden,Vehicle,7,71,1,1,3,,,,,
-189,X,X,"R-5 ""Atlas"" Hauler",,Truck,,Colonial,Vehicle,7,72,1,1,3,,,,,
-190,X,X,Dunne Loadlugger 3c,,Truck,,Warden,Vehicle,7,73,1,1,3,,,,,
-191,X,X,"R-5b ""Sisyphus"" Hauler",,Truck,,Colonial,Vehicle,7,74,1,1,3,,,,,
-192,X,X,Dunne Landrunner 12c,,Truck,,Warden,Vehicle,7,75,1,1,3,,,,,
-193,X,X,"R-9 ""Speartip"" Escort""",,Truck,,Colonial,Vehicle,7,76,1,1,3,,,,,
-194,X,X,Dunne Transport,,Truck,,Warden,Vehicle,7,77,1,1,3,,,,,
-195,X,X,Barbed Wire Pallet,,,,Both,Shippables,8,1,1,1,3,,,,,
-196,X,X,Concrete Mixer,,,,Both,Shippables,8,2,1,1,3,,,,,
-197,X,X,68mm Anti-Tank Cannon,,,,Both,Shippables,8,3,1,1,3,,,,,
-198,X,X,"50-500 ""Thunderbolt"" Cannon",,,,Colonial,Shippables,8,4,1,1,3,,,,,
-199,X,X,Huber Exalt 150mm,,,,Warden,Shippables,8,5,1,1,3,,,,,
-200,X,X,Huber Lariat 120mm,,,,Warden,Shippables,8,6,1,1,3,,,,,
-201,X,X,12.7 Anti Infantry Flak Gun,,,,Both,Shippables,8,7,1,1,3,,,,,
-202,X,X,Metal Beam Pallet,,,,Both,Shippables,8,8,1,1,3,,,,,
-203,X,X,Resource Container,,,,Both,Shippables,8,9,1,1,3,,,,,
-204,X,X,Sandbag Pallet,,,,Both,Shippables,8,10,1,1,3,,,,,
-205,X,X,Shipping Container,,,,Both,Shippables,8,11,1,1,3,,,,,
-206,X,X,Small Shipping Container,,,,Both,Shippables,8,12,1,1,3,,,,,
-207,X,-,Barbed Wire,,,,Both,Shippables,8,13,1,0,,,,,,
-208,X,-,Sandbags,,,,Both,Shippables,8,14,1,0,,,,,,
-209,X,-,Metal Beam,,,,Both,Shippables,8,15,1,0,,,,,,
-210,X,X,Lamentum mm.IV,,Mounted Machinegun,12.7mm,Colonial,Heavy Weapons,2,32,1,1,5,,,,,
-211,X,X,"""Typhon"" ra.XII",,Mounted Anti-Tank Rifle,20mm,Colonial,Heavy Weapons,2,33,1,1,5,,,,,
-212,X,X,Culter Foebreaker,,,,Warden,Heavy Weapons,2,34,1,1,5,,,,,
-213,-,-,Ahti Model 2,Pistol,,8mm,Warden,Small Weapons,1,35,0,0,,,,,,
-214,X,X,Malone Ratcatcher Mk. 1,,,,Warden,Heavy Weapons,2,35,1,1,5,,,,,
-215,X,-,Copper,,,,Both,Resource,5,19,1,0,,,,,,
-216,X,X,Copper Alloy,,,,Both,Resource,5,20,1,1,,,,,,
-217,,,O'Brien V.113 Gravekeeper,,Armoured Car,,Warden,Vehicle,7,9,1,1,5,,,,,
-218,X,X,"T8 ""Gemini""",,Armoured Car,,Colonial,Vehicle,7,10,1,1,5,,,,,
-219,X,X,KLG901-2 Lunaire F,,Grenade Launcher,,Colonial,Heavy Weapons,2,32,1,1,10,50,,5,,
-220,,,The Ospreay,,Grenade Launcher,,Warden,Utility,3,1,1,1,20,85,,10,,
-221,X,X,Tremola Grenade GPb-1,,Explosive Grenade,,Both,Heavy Weapons,2,33,1,1,15,150,10,,,
-222,X,X,Velian Flak Vest,,Armour Uniform,,Colonial,Uniforms,6,16,1,1,5,100,,,,
-223,X,X,Gunner's Breastplate,,Armour Uniform,,Warden,Uniforms,6,17,1,1,3,100,,,,
-224,X,X,Officialis' Attire,,Officer Uniform,,Colonial,Uniforms,6,18,1,1,3,100,,,,
-225,X,X,Officer's Regalia,,Officer Uniform,,Warden,Uniforms,6,19,1,1,3,100,,,,
-226,X,X,"86K-c ""Ranseur""",,Assault Tank,,Colonial,Vehicle,7,78,1,1,,,,,,
-227,,,Gallagher Highwayman Mk. III,,Cruiser Tank,,Warden,Vehicle,7,79,1,1,,,,,,
+1,X,X,Dusk ce.III,Dusk,Assault Rifle,7.92mm,Colonial,Small Arms,1,1,1,1,10,165,0,0,0,0
+2,X,X,Booker Storm Rifle Model 838,Booker,Assault Rifle,7.92mm,Warden,Small Arms,1,2,1,1,10,165,0,0,0,0
+3,X,X,Aalto Storm Rifle 24,,Assault Rifle,7.92mm,Warden,Small Arms,1,3,1,1,10,165,0,0,0,0
+4,X,X,7.92mm,,,7.92mm,Both,Small Arms,1,4,1,1,30,120,0,0,0,0
+5,X,X,Catara mo. II,,Light Machine Gun,12.7mm,Colonial,Small Arms,1,5,1,1,10,165,0,0,0,0
+6,X,X,KRN886-127 Gast Machine Gun,,Machine Gun,12.7mm,Colonial,Small Arms,1,6,1,1,10,0,0,30,0,0
+7,X,X,Malone MK.2,Malone,Machine Gun,12.7mm,Warden,Small Arms,1,7,1,1,10,0,0,30,0,0
+8,X,X,12.7mm,,,12.7mm,Both,Small Arms,1,8,1,1,20,100,0,0,0,0
+9,X,X,PT-815 Smoke Grenade,Smoke,Smoke Grenade,,Both,Small Arms,1,9,1,1,10,120,0,0,0,0
+10,-,-,Ferro 879,,Pistol,8mm,Both,Small Arms,1,10,0,0,20,-,-,-,-,-
+11,X,X,Cascadier 873,,Pistol,8mm,Warden,Small Arms,1,11,1,1,20,60,0,0,0,0
+12,-,-,8mm,,,8mm,Both,Small Arms,1,12,0,0,40,40,0,0,0,0
+13,X,X,Cometa T2-9,,Revolver,0.44,Both,Small Arms,1,13,1,1,20,60,0,0,0,0
+14,X,X,The Hangman 757,Hangman,Heavy Rifle,0.44,Warden,Small Arms,1,14,1,1,20,125,0,0,0,0
+15,X,X,0.44,,,0.44,Both,Small Arms,1,15,1,1,40,40,0,0,0,0
+16,X,X,Sampo Auto-Rifle 77,Sampo,Rifle,7.62mm,Warden,Small Arms,1,16,1,1,20,125,0,0,0,0
+17,X,X,Argentir r.II Rifle,Argentir,Rifle,7.62mm,Colonial,Small Arms,1,17,1,1,20,100,0,0,0,0
+18,X,X,Volta r.I Repeater,,Heavy Rifle,7.62mm,Colonial,Small Arms,1,18,1,1,15,100,0,0,0,0
+19,X,X,Fuscina pi.I,Fuscina,Rifle,7.62mm,Colonial,Small Arms,1,19,1,1,20,140,0,0,0,0
+20,X,X,Blakerow 871,,Rifle,7.62mm,Warden,Small Arms,1,20,1,1,20,140,0,0,0,0
+21,X,X,KRR2-790 Omen,,Long Rifle,7.62mm,Colonial,Small Arms,1,21,1,1,15,155,0,0,0,0
+22,X,X,Clancy Cinder M3,,Long Rifle,7.62mm,Warden,Small Arms,1,22,1,1,15,130,0,0,0,0
+23,X,X,No.2 Loughcaster,Loughcaster,Rifle,7.62mm,Warden,Small Arms,1,23,1,1,20,100,0,0,0,0
+24,X,X,7.62mm,,,7.62mm,Both,Small Arms,1,24,1,1,40,80,0,0,0,0
+25,X,X,Brasa Shotgun,Shotgun,Shotgun,Buckshot,Both,Small Arms,1,25,1,1,20,120,0,0,0,0
+26,X,X,Buckshot,,,Buckshot,Both,Small Arms,1,26,1,1,40,80,0,0,0,0
+27,X,X,The Pitch Gun mc.V,Pitch Gun,Submachine Gun,9mm SMG,Colonial,Small Arms,1,27,1,1,20,80,0,0,0,0
+28,X,X,Lionclaw mc.VIII,,Submachine Gun,9mm SMG,Colonial,Small Arms,1,28,1,1,20,120,0,0,0,0
+29,X,X,"No.1 ""The Liar"" Submachinegun",,Submachine Gun,9mm SMG,Warden,Small Arms,1,29,1,1,20,120,0,0,0,0
+30,X,X,Fiddler Submachine Gun Model 868,Fiddler,Submachine Gun,9mm SMG,Warden,Small Arms,1,30,1,1,20,120,0,0,0,0
+31,X,X,9mm SMG,,,9mm SMG,Both,Small Arms,1,31,1,1,40,80,0,0,0,0
+32,X,X,KRR3-792 Auger,,Sniper Rifle,8.5mm,Colonial,Small Arms,1,32,1,1,5,200,0,15,0,0
+33,X,X,Clancy-Raca M4,,Sniper Rifle,8.5mm,Warden,Small Arms,1,33,1,1,5,200,0,15,0,0
+34,X,X,8.5mm,,,8.5mm,Both,Small Arms,1,34,1,1,10,150,0,0,0,0
+35,X,X,20 Neville Anti-Tank Rifle,ATR,Anti-Tank Rifle,20mm,Warden,Heavy Arms,2,1,1,1,5,150,0,0,0,0
+36,X,X,20mm,,,20mm,Both,Heavy Arms,2,2,1,1,10,100,0,0,0,0
+37,X,X,Venom c.II 35,,Anti-Tank RPG,A.T.R.P.G. Shell,Colonial,Heavy Arms,2,3,1,1,5,100,0,25,0,0
+38,X,X,Bane 45,Bane,Anti-Tank RPG,A.T.R.P.G. Shell,Colonial,Heavy Arms,2,4,1,1,5,150,0,45,0,0
+39,X,X,A.T.R.P.G. Shell,,,A.T.R.P.G. Shell,Both,Heavy Arms,2,5,1,1,15,-,-,-,-,-
+40,X,X,Bonesaw MK.3,Bonesaw,Anti-Tank RPG,A.T.R.P.G. Indirect Shell,Warden,Heavy Arms,2,6,1,1,5,100,0,25,0,0
+41,X,X,A.T.R.P.G. Indirect Shell,,,A.T.R.P.G. Indirect Shell,Warden,Heavy Arms,2,7,1,1,15,60,75,0,0,0
+42,X,X,Cremari Mortar,,Mortar,Mortar Shell,Both,Heavy Arms,2,8,1,1,5,100,0,25,0,0
+43,X,X,Mortar Flare Shell,,,Mortar Shell,Both,Heavy Arms,2,9,1,1,15,60,10,0,0,0
+44,X,X,Mortar Shrapnel Shell,,,Mortar Shell,Both,Heavy Arms,2,10,1,1,15,60,15,0,0,0
+45,X,X,Mortar Shell,,,Mortar Shell,Both,Heavy Arms,2,11,1,1,15,60,35,0,0,0
+46,X,X,BF5 White Ash Flask Grenade,,Anti-Tank Grenade,,Both,Heavy Arms,2,12,1,1,15,100,50,0,0,0
+47,X,X,Ignifist 30,,Anti-Tank RPG,,Colonial,Heavy Arms,2,13,1,1,15,60,50,0,0,0
+48,X,X,Mounted Bonesaw MK.3,,Anti-Tank RPG,A.T.R.P.G. Indirect Shell,Warden,Heavy Arms,2,14,1,1,5,200,0,0,0,0
+49,X,X,Green Ash Grenade,,Gas Grenade,,Both,Heavy Arms,2,15,1,1,10,140,0,0,0,0
+50,X,X,Bombastone Grenade,,Grenade,,Colonial,Heavy Arms,2,16,1,1,25,100,20,0,0,0
+51,X,X,A3 Harpa Fragmentation Grenade,,Grenade,,Warden,Heavy Arms,2,17,1,1,20,100,20,0,0,0
+52,X,X,150mm,,,150mm,Both,Heavy Ammunition,3,1,1,1,5,120,0,0,10,0
+53,X,X,Mammon 91-b,,HE Grenade,,Both,Heavy Arms,2,18,1,1,20,100,10,0,0,0
+54,X,X,Daucus isg.III,,Infantry Support Gun,30mm,Colonial,Heavy Arms,2,19,1,1,5,150,0,0,0,0
+55,X,X,120mm,,,120mm,Both,Heavy Ammunition,3,2,1,1,5,60,15,0,0,0
+56,X,X,300mm,,,300mm,Both,Heavy Ammunition,3,3,1,1,5,135,0,0,30,0
+57,X,X,250mm,,,250mm,Both,Heavy Ammunition,3,4,1,1,5,120,0,0,25,0
+58,X,X,Anti-Tank Sticky Bomb,,,,Both,Heavy Arms,2,20,1,1,10,50,50,0,0,0
+59,X,X,Cutler Launcher 4,,RPG,R.P.G. Shell,Warden,Heavy Arms,2,21,1,1,5,100,0,25,0,0
+60,X,X,R.P.G. Shell,,,R.P.G. Shell,Warden,Heavy Arms,2,22,1,1,15,60,75,0,0,0
+61,X,X,68mm AT,,,68mm AT,Both,Heavy Ammunition,3,5,1,1,20,120,120,0,0,0
+62,,,75mm Round,,,75mm,Both,Heavy Ammunition,3,6,0,0,20,,,,,
+63,X,X,40mm Round,,,40mm,Both,Heavy Ammunition,3,7,1,1,20,160,120,0,0,0
+64,X,X,30mm,,,30mm,Both,Heavy Arms,2,23,1,1,20,80,20,0,0,0
+65,-,-,Warhead,,,,Both,Heavy Ammunition,3,8,1,0,1,0,0,200,1000,0
+66,X,X,Binoculars,,,,Both,Utility,4,1,1,1,5,75,0,0,0,0
+67,X,X,Hydra's Whisper,,Explosive Charge,,Colonial,Utility,4,3,1,1,5,100,40,0,0,0
+68,X,X,Listening Kit,,Equipment,,Both,Utility,4,4,1,1,3,120,0,0,0,0
+69,X,X,Radio Backpack,,,,Both,Utility,4,5,1,1,5,150,0,0,0,0
+70,X,X,Alligator Charge,,Explosive Charge,,Both,Utility,4,6,1,1,5,100,0,0,15,0
+71,X,X,Shovel,,,,Both,Utility,4,7,1,1,10,200,0,0,0,0
+72,X,X,Sledge Hammer,Sledge,,,Both,Utility,4,8,1,1,10,200,0,0,0,0
+73,X,X,Abisme AT-99,AT Mine,Explosive Charge,,Both,Utility,4,9,1,1,10,100,10,0,0,0
+74,X,X,Tripod,Tripod,,,Both,Utility,4,10,1,1,5,100,0,0,0,0
+75,-,-,Hammer,,,,Both,Utility,4,11,0,0,20,-,-,-,-,-
+76,X,X,Wrench,Wrench,,,Both,Utility,4,12,1,1,5,75,0,0,0,0
+77,X,X,Buckhorn CCQ-18,Bayonet,Bayonet,,Both,Utility,4,13,1,1,20,40,0,0,0,0
+78,X,X,Gas Mask,Gas Mask,,,Both,Utility,4,14,1,1,20,160,0,0,0,0
+79,X,X,Gas Mask Filter,Filter,,,Both,Utility,4,15,1,1,20,100,0,0,0,0
+80,X,X,Radio,Radio,,,Both,Utility,4,2,1,1,5,100,0,0,0,0
+81,-,-,Rocket Booster,,,,Both,Utility,4,16,1,0,1,0,0,800,0,0
+82,X,X,Bandages,Bandage,,,Both,Medical,5,1,1,1,80,160,0,0,0,0
+83,X,X,First Aid Kit,First Aid Kit,,,Both,Medical,5,2,1,1,10,60,0,0,0,0
+84,X,X,Trauma Kit,Trauma Kit,,,Both,Medical,5,3,1,1,10,80,0,0,0,0
+85,X,X,Blood Plasma,Plasma,,,Both,Medical,5,4,1,1,80,80,0,0,0,0
+86,X,X,Soldier Supplies,Shirts,,,Both,Medical,5,5,1,1,10,80,0,0,0,0
+87,X,X,Diesel,Diesel,,,Both,Resource,6,1,1,1,1,,,,,
+88,X,X,Petrol,Petrol,,,Both,Resource,6,2,1,1,1,,,,,
+89,X,X,Aluminum Alloy,,,,Both,Resource,6,3,1,1,20,,,,,
+90,X,X,Bunker Supplies,Bsups,,,Both,Resource,6,4,1,1,150,75,0,0,0,0
+91,X,X,Basic Materials,Bmats,,,Both,Resource,6,5,1,1,100,,,,,
+92,X,X,Explosive Materials,Emats,,,Both,Resource,6,6,1,1,20,,,,,
+93,X,X,Garrison Supplies,Gsups,,,Both,Resource,6,7,1,1,150,75,0,0,0,0
+94,X,X,Heavy Explosive Materials,Hemats,,,Both,Resource,6,8,1,1,20,,,,,
+95,X,X,Iron Alloy,,,,Both,Resource,6,9,1,1,20,,,,,
+96,X,X,Refined Materials,Rmats,,,Both,Resource,6,10,1,1,20,,,,,
+97,X,-,Salvage,,,,Both,Resource,6,11,1,0,,,,,,
+98,X,-,Components,,,,Both,Resource,6,12,1,0,,,,,,
+99,X,-,Sulfur,,,,Both,Resource,6,13,1,0,,,,,,
+100,X,-,Aluminum,,,,Both,Resource,6,14,1,0,,,,,,
+101,X,-,Iron,,,,Both,Resource,6,15,1,0,,,,,,
+102,X,-,Wreckage,,,,Both,Resource,6,16,1,0,,,,,,
+103,X,-,Concrete Materials,,,,Both,Resource,6,17,1,0,,,,,,
+104,X,-,Crude Oil,,,,Both,Resource,6,18,1,0,,,,,,
+105,X,X,Specialist's Overcoat,,Warden Heavy Ammo Uniform,,Warden,Uniforms,7,1,1,1,20,100,0,0,0,0
+106,X,X,Fabri Rucksack,,Colonial Engineer Uniform,,Colonial,Uniforms,7,2,1,1,20,100,0,0,0,0
+107,X,X,Sapper Gear,,Warden Engineer Uniform,,Warden,Uniforms,7,3,1,1,20,100,0,0,0,0
+108,X,X,Grenadier's Baldric,,Colonial Grenade Uniform,,Colonial,Uniforms,7,4,1,1,20,100,0,0,0,0
+109,X,X,Medic Fatigues,,Colonial Medic Uniform,,Colonial,Uniforms,7,5,1,1,20,100,0,0,0,0
+110,X,X,Physician's Jacket,,Warden Medic Uniform,,Warden,Uniforms,7,6,1,1,20,100,0,0,0,0
+111,X,X,Legionary's Oilcoat,,Colonial Rain Uniform,,Colonial,Uniforms,7,7,1,1,20,100,0,0,0,0
+112,X,X,Recon Camo,,Colonial Scout Uniform,,Colonial,Uniforms,7,8,1,1,20,100,0,0,0,0
+113,X,X,Outrider's Mantle,,Warden Scout Uniform,,Warden,Uniforms,7,9,1,1,20,100,0,0,0,0
+114,X,X,Heavy Topcoat,,Colonial Snow Uniform,,Colonial,Uniforms,7,10,1,1,20,100,0,0,0,0
+115,X,X,Caoivish Parka,,Warden Snow Uniform,,Warden,Uniforms,7,11,1,1,20,100,0,0,0,0
+116,X,-,Legionary Fatigues,,Colonial Soldier Uniform,,Colonial,Uniforms,7,12,1,1,20,100,0,0,0,0
+117,X,-,Infantry Battledress,,Warden Soldier Uniform,,Warden,Uniforms,7,13,1,1,20,100,0,0,0,0
+118,X,X,Tankman's Coveralls,,Colonial Tank Uniform,,Colonial,Uniforms,7,14,1,1,20,100,0,0,0,0
+119,X,X,Padded Boiler Suit,,Warden Tank Uniform,,Warden,Uniforms,7,15,1,1,20,100,0,0,0,0
+120,X,X,"R-12 - ""Salus"" Ambulance",,Ambulance,,Colonial,Vehicle,8,1,1,1,3,,,,,
+121,X,X,Dunne Responder 3e,,Ambulance,,Warden,Vehicle,8,2,1,1,3,,,,,
+122,X,X,"T3 ""Xiphos""",,Armoured Car,,Colonial,Vehicle,8,3,1,1,3,,,,,
+123,X,X,"T12 ""Actaeon"" Tankette",,Armoured Car,,Colonial,Vehicle,8,4,1,1,3,,,,,
+124,X,X,O'Brien v.121 Highlander,,Armoured Car,,Warden,Vehicle,8,5,1,1,3,,,,,
+125,X,X,"T5 ""Percutio""",,Armoured Car,,Colonial,Vehicle,8,6,1,1,3,,,,,
+126,X,X,O'Brien v.101 Freeman,,Armoured Car,,Warden,Vehicle,8,7,1,1,3,,,,,
+127,X,X,O'Brien v.110,,Armoured Car,,Warden,Vehicle,8,8,1,1,3,,,,,
+128,X,X,BMS - Aquatipper,,Barge,,Both,Vehicle,8,11,1,1,,,,,,
+129,X,-,Blumfield LK205,,Bicycle,,Both,Vehicle,8,12,1,0,,,,,,
+130,X,X,"R-15 - ""Chariot""",,Transport Bus,,Colonial,Vehicle,8,13,1,1,3,,,,,
+131,X,X,Dunne Caravaner 2f,,Transport Bus,,Warden,Vehicle,8,14,1,1,3,,,,,
+132,X,X,BMS - Universal Assembly Rig,CV,Construction Vehicle,,Both,Vehicle,8,15,1,1,,,,,,
+133,X,X,BMS - Class 2 Mobile Auto-Crane,Crane,Crane,,Both,Vehicle,8,16,1,1,,,,,,
+134,X,X,Noble Widow MK. XIV,,Destroyer Tank,,Warden,Vehicle,8,17,1,1,3,,,,,
+135,X,X,AA-2 Battering Ram,,Field AT Gun,,Colonial,Vehicle,8,18,1,1,3,,,,,
+136,X,X,"68-45 ""Smelter"" Heavy Field Gun",,Heavy Field Gun,,Colonial,Vehicle,8,19,1,1,3,,,,,
+137,X,X,Collins Cannon 68mm,,Field AT Gun,,Warden,Vehicle,8,20,1,1,3,,,,,
+138,X,X,Balfour Rampart 40mm,,Heavy Field Cannon,,Warden,Vehicle,8,21,1,1,3,,,,,
+139,X,X,Balfour Wolfhound 40mm,,Field Cannon,,Warden,Vehicle,8,22,1,1,3,,,,,
+140,X,X,"120-68 ""Koronides"" Field Gun",,Field Artillery,,Colonial,Vehicle,8,23,1,1,3,,,,,
+141,X,X,"G40 ""Sagittarii""",,Field Machine Gun,,Colonial,Vehicle,8,24,1,1,3,,,,,
+142,X,X,Swallowtail 988/127-2,,Field Machine Gun,,Warden,Vehicle,8,25,1,1,3,,,,,
+143,X,X,Balfour Falconer 250mm,,Field Mortar,,Warden,Vehicle,8,26,1,1,3,,,,,
+144,X,X,BMS - Packmule Flatbed,,Flatbed Truck,,Both,Vehicle,8,27,1,1,,,,,,
+145,X,X,BMS - Ironship,,Freighter,,Both,Vehicle,8,28,1,1,,,,,,
+146,X,X,"Type C - ""Charon""",,Gunboat,,Colonial,Vehicle,8,29,1,1,3,,,,,
+147,X,X,74c-2 Ronan Meteora Gunship,,Gunboat,,Warden,Vehicle,8,30,1,1,3,,,,,
+148,X,X,74b-1 Ronan Gunship,,Gunboat,,Warden,Vehicle,8,31,1,1,3,,,,,
+149,X,X,"HH-d ""Peltast""",,Half-Track,,Colonial,Vehicle,8,32,1,1,3,,,,,
+150,X,X,"HH-a ""Javelin""",,Half-Track,,Colonial,Vehicle,8,33,1,1,3,,,,,
+151,X,X,"HH-b ""Hoplite""",,Half-Track,,Colonial,Vehicle,8,34,1,1,3,,,,,
+152,X,X,Niska Mk. II Blinder,,Half-Track,,Warden,Vehicle,8,35,1,1,3,,,,,
+153,X,X,Niska Mk. I Gun Motor Carriage,,Half-Track,,Warden,Vehicle,8,36,1,1,3,,,,,
+154,X,X,BMS - Scrap Hauler,,Harvester,,Both,Vehicle,8,37,1,1,,,,,,
+155,X,X,"AB-8 ""Acheron""",,Landing APC,,Colonial,Vehicle,8,38,1,1,3,,,,,
+156,X,X,"AB-11 ""Doru""",,Landing APC,,Colonial,Vehicle,8,39,1,1,3,,,,,
+157,X,X,Mulloy APC,,Landing APC,,Warden,Vehicle,8,40,1,1,3,,,,,
+158,X,X,"HC-2 ""Scorpion""",,Light Infantry Tank,,Colonial,Vehicle,8,41,1,1,3,,,,,
+159,X,X,Devitt-Caine Mk. IV MMR,,Light Tank,,Warden,Vehicle,8,42,1,1,3,,,,,
+160,X,X,"H5 ""Hatchet""",,Light Tank,,Colonial,Vehicle,8,43,1,1,3,,,,,
+161,X,X,Devitt Ironhide Mk. IV,,Light Tank,,Warden,Vehicle,8,44,1,1,3,,,,,
+162,X,X,"H-8 ""Kraneska""",,Light Tank,,Colonial,Vehicle,8,45,1,1,3,,,,,
+163,X,X,"H-10 ""Pelekys""",,Light Tank,,Colonial,Vehicle,8,46,1,1,3,,,,,
+164,X,X,Devitt Mk. III,,Light Tank,,Warden,Vehicle,8,47,1,1,3,,,,,
+165,X,X,"86K-a ""Bardiche""",,Assault Tank,,Colonial,Vehicle,8,48,1,1,3,,,,,
+166,X,X,Gallagher Outlaw Mk. II,,Cruiser Tank,,Warden,Vehicle,8,49,1,1,3,,,,,
+167,X,X,"85K-b ""Falchion""",,Assault Tank,,Colonial,Vehicle,8,50,1,1,5,,,,,
+168,X,X,"85K-a ""Spatha""",,Assault Tank,,Colonial,Vehicle,8,51,1,1,3,,,,,
+169,X,X,Silverhand Chieftain - Mk. VI,,Assault Tank,,Warden,Vehicle,8,52,1,1,3,,,,,
+170,X,X,Silverhand - Mk. IV,,Assault Tank,,Warden,Vehicle,8,53,1,1,3,,,,,
+171,X,X,"HC-7 ""Ballista""",,Siege Tank,,Colonial,Vehicle,8,54,1,1,3,,,,,
+172,X,X,"03MM ""Caster""",,Motorcycle,,Colonial,Vehicle,8,55,1,1,3,,,,,
+173,X,X,"00MS ""Stinger""",,Motorcycle,,Colonial,Vehicle,8,56,1,1,3,,,,,
+174,X,X,Kivela Power Wheel 80-1,,Motorcycle,,Warden,Vehicle,8,57,1,1,3,,,,,
+175,X,X,"RR-3 ""Stolon"" Tanker.",,Fuel Tanker,,Colonial,Vehicle,8,58,1,1,3,,,,,
+176,X,X,Dunne Fuelrunner 2d,,Fuel Tanker,,Warden,Vehicle,8,59,1,1,3,,,,,
+177,X,X,King Gallant Mk. II,,Scout Tank,,Warden,Vehicle,8,60,1,1,3,,,,,
+178,X,X,King Spire Mk. I,,Scout Tank,,Warden,Vehicle,8,61,1,1,3,,,,,
+179,X,X,"UV-05a ""Argonaut""",,Light Utility Vehicle,,Colonial,Vehicle,8,62,1,1,3,,,,,
+180,X,X,"UV-24 ""Icarus""",,Light Utility Vehicle,,Colonial,Vehicle,8,63,1,1,3,,,,,
+181,X,X,Drummond Spitfire 100d,,Light Utility Vehicle,,Warden,Vehicle,8,64,1,1,3,,,,,
+182,X,X,"UV-5c ""Odyssey""",,Light Utility Vehicle,,Colonial,Vehicle,8,65,1,1,3,,,,,
+183,X,X,Drummond Loscann 55c,,Light Utility Vehicle,,Warden,Vehicle,8,66,1,1,3,,,,,
+184,X,X,Drummond 100a,,Light Utility Vehicle,,Warden,Vehicle,8,67,1,1,3,,,,,
+185,X,X,"T20 ""Ixion"" Tankette",,Tankette,,Colonial,Vehicle,8,68,1,1,3,,,,,
+186,X,X,BMS - White Whale,,Landing Ship,,Both,Vehicle,8,69,1,1,,,,,,
+187,X,X,R-1 Hauler,,Truck,,Colonial,Vehicle,8,70,1,1,3,,,,,
+188,X,X,Dunne Leatherback 2a,,Truck,,Warden,Vehicle,8,71,1,1,3,,,,,
+189,X,X,"R-5 ""Atlas"" Hauler",,Truck,,Colonial,Vehicle,8,72,1,1,3,,,,,
+190,X,X,Dunne Loadlugger 3c,,Truck,,Warden,Vehicle,8,73,1,1,3,,,,,
+191,X,X,"R-5b ""Sisyphus"" Hauler",,Truck,,Colonial,Vehicle,8,74,1,1,3,,,,,
+192,X,X,Dunne Landrunner 12c,,Truck,,Warden,Vehicle,8,75,1,1,3,,,,,
+193,X,X,"R-9 ""Speartip"" Escort""",,Truck,,Colonial,Vehicle,8,76,1,1,3,,,,,
+194,X,X,Dunne Transport,,Truck,,Warden,Vehicle,8,77,1,1,3,,,,,
+195,X,X,Barbed Wire Pallet,,,,Both,Shippables,9,1,1,1,3,,,,,
+196,X,X,Concrete Mixer,,,,Both,Shippables,9,2,1,1,3,,,,,
+197,X,X,68mm Anti-Tank Cannon,,,,Both,Shippables,9,3,1,1,3,,,,,
+198,X,X,"50-500 ""Thunderbolt"" Cannon",,,,Colonial,Shippables,9,4,1,1,3,,,,,
+199,X,X,Huber Exalt 150mm,,,,Warden,Shippables,9,5,1,1,3,,,,,
+200,X,X,Huber Lariat 120mm,,,,Warden,Shippables,9,6,1,1,3,,,,,
+201,X,X,12.7 Anti Infantry Flak Gun,,,,Both,Shippables,9,7,1,1,3,,,,,
+202,X,X,Metal Beam Pallet,,,,Both,Shippables,9,8,1,1,3,,,,,
+203,X,X,Resource Container,,,,Both,Shippables,9,9,1,1,3,,,,,
+204,X,X,Sandbag Pallet,,,,Both,Shippables,9,10,1,1,3,,,,,
+205,X,X,Shipping Container,,,,Both,Shippables,9,11,1,1,3,,,,,
+206,X,X,Small Shipping Container,,,,Both,Shippables,9,12,1,1,3,,,,,
+207,X,-,Barbed Wire,,,,Both,Shippables,9,13,1,0,,,,,,
+208,X,-,Sandbags,,,,Both,Shippables,9,14,1,0,,,,,,
+209,X,-,Metal Beam,,,,Both,Shippables,9,15,1,0,,,,,,
+210,X,X,Lamentum mm.IV,,Mounted Machinegun,12.7mm,Colonial,Heavy Arms,2,24,1,1,5,,,,,
+211,X,X,"""Typhon"" ra.XII",,Mounted Anti-Tank Rifle,20mm,Colonial,Heavy Arms,2,26,1,1,5,,,,,
+212,X,X,Culter Foebreaker,,,,Warden,Heavy Arms,2,28,1,1,5,,,,,
+213,-,-,Ahti Model 2,Pistol,,8mm,Warden,Small Arms,1,35,0,0,,,,,,
+214,X,X,Malone Ratcatcher Mk. 1,,,,Warden,Heavy Arms,2,29,1,1,5,,,,,
+215,X,-,Copper,,,,Both,Resource,6,19,1,0,,,,,,
+216,X,X,Copper Alloy,,,,Both,Resource,6,20,1,1,,,,,,
+217,,,O'Brien V.113 Gravekeeper,,Armoured Car,,Warden,Vehicle,8,9,1,1,5,,,,,
+218,X,X,"T8 ""Gemini""",,Armoured Car,,Colonial,Vehicle,8,10,1,1,5,,,,,
+219,X,X,KLG901-2 Lunaire F,,Grenade Launcher,,Colonial,Heavy Arms,2,25,1,1,10,50,,5,,
+220,,,The Ospreay,,Grenade Launcher,,Warden,Utility,4,17,1,1,20,85,,10,,
+221,X,X,Tremola Grenade GPb-1,,Explosive Grenade,,Both,Heavy Arms,2,27,1,1,15,150,10,,,
+222,X,X,Velian Flak Vest,,Armour Uniform,,Colonial,Uniforms,7,16,1,1,5,100,,,,
+223,X,X,Gunner's Breastplate,,Armour Uniform,,Warden,Uniforms,7,17,1,1,3,100,,,,
+224,X,X,Officialis' Attire,,Officer Uniform,,Colonial,Uniforms,7,18,1,1,3,100,,,,
+225,X,X,Officer's Regalia,,Officer Uniform,,Warden,Uniforms,7,19,1,1,3,100,,,,
+226,X,X,"86K-c ""Ranseur""",,Assault Tank,,Colonial,Vehicle,8,78,1,1,,,,,,
+227,,,Gallagher Highwayman Mk. III,,Cruiser Tank,,Warden,Vehicle,8,79,1,1,,,,,,
