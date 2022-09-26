@@ -236,3 +236,11 @@
 234	X		94.5mm Round				Both	Heavy Ammunition	3	10	1	0						
 235	X		3C-High Explosive Rocket	HE Rocket			Colonial	Heavy Ammunition	3	12	1	0						
 236	X		4C-Fire Rocket	Fire Rocket			Warden	Heavy Ammunition	3	13	1	0						
+237	X		Basic Construction Materials	bCons			Both	Resource	3	22	1							
+238	X		Processed Construction Materials	pCons			Both	Resource	3	23	1							
+239	X		Steel Construction Materials	sCons			Both	Resource	3	24	1							
+240	X		Assembly Materials I	Cams			Both	Resource	3	25	1							
+241	X		Assembly Materials II	Pams			Both	Resource	3	26	1							
+242	X		Assembly Materials III	Sams			Both	Resource	3	27	1							
+243	X		Assembly Materials IV	Hams			Both	Resource	3	28	1							
+244	X		Assembly Materials V	Nams			Both	Resource	3	29	1							
