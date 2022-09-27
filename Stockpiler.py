@@ -1081,7 +1081,7 @@ TableFrame = ttk.Frame(TableCanvas)
 SettingsFrame = ttk.Frame(SettingsCanvas)
 
 # create_window height for Filter canvas should be roughly: is below
-FilterCanvas.create_window((0, 0), window=FilterFrame, anchor="nw", height="2024p", width="550p")
+FilterCanvas.create_window((0, 0), window=FilterFrame, anchor="nw", height="3000", width="550p")
 TableCanvas.create_window((0, 0), window=TableFrame, anchor="nw", height="410p", width="402p")
 SettingsCanvas.create_window((0, 0), window=SettingsFrame, anchor="nw", height="500p", width="402p")
 
