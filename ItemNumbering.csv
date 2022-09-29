@@ -252,4 +252,5 @@
 250,X,-,Damaged Components,dComps,,,Both,Resource,3,35,1,0,,,,,,
 251,X,-,Water Bucket,,,,Both,Utility,3,35,1,1,10,,,,,
 252,X,-,Gravel,,,,Both,Resource,3,36,1,1,100,,,,,
-253,X,-,Pipe,,,,Both,Shippables,9,16,1,0,,,,,,
+253,X,-,Pipe,,,,Both,Shippables,9,16,1,1,5,,,,,
+254,X,-,Fuel Container,,,,Both,Shippables,9,17,1,1,3,,,,,
