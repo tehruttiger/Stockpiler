@@ -12,11 +12,12 @@ Current Features:
 - Results tab displaying a spreadsheet of the results, from which you can copy to paste elsewhere
 - Learning mode for creating a custom icon set for those that use Mods
 - App is threaded, so you can initiate a new scan while previous scan(s) are still processing.
-- Most items can be read, other than those with missing icons as noted in Missing.csv
 - Ability to set a filter to ignore unwanted items
 - Toggles to turn on/off faction-specific items and entire categories of items in filter
 - Filter can be saved and is automatically loaded at launch
 - Choose which exports you want, save this setting and it will load automatically in the future
+
+Keep in mind, Stockpiler ONLY works in 1920x1080.  It works by matching the icons exactly, and that means it is resolution-specific.  You can always temporarily change to 1080p, scan, then go back to whatever resolution you normally use.  There are many hard-coded calculations and scans that are based on 1080p, so there is no workaround that doesn't involve multiple code changes and grabbing and cropping many new Foxhole UI images.  Feel free if you want to branch and try that yourself, but I have no plans to do so any time soon.
 
 # To use:
 1. Launch Foxhole and Deploy

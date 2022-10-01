@@ -1,5 +1,0 @@
-#,I,C,Name,Nickname,SubType,Ammo,Faction,StockpileCategory,CategorySort,InCategorySort,perCrate,Bmats,Emats,Rmats,Hemats,Relicmats
-9,,,PT-815 Smoke Grenade,Smoke,Smoke Grenade,,Both,Small Weapons,1,9,10,120,0,0,0,0
-62,,,75mm Round,,,75mm,Both,Heavy Weapons,2,28,20,,,,,
-215,,-,Copper,,,,Both,Resource,5,19,,,,,,
-216,,,Copper Alloy,,,,Both,Resource,5,20,,,,,,
