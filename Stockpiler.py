@@ -714,11 +714,14 @@ def ItemScan(screen, garbage):
 			if FoundStockpileType in CrateList:
 				print("Crate Type")
 				# Grab all the crate CheckImages
-				print(item)
+				#print(item)
+				#print(items.data[1])
 				StockpileImages = [(str(item[0]), folder + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[12]) for item in items.data if str(item[19]) == "0"]
-				# Grab all the individual vehicles and shippables
-				StockpileImagesAppend = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[11]) for item in items.data if (str(item[9]) == "7" and str(item[19]) == "0") or (str(item[9]) == "8" and str(item[19]) == "0")]
+				print(StockpileImages)
+				# Grab all the individual vehicles and shippables, make sure the two if's are the right category.  Was incorrectly set to 7 (uniforms) and 8 (vehicles) instead of 8 (vecicles) and 9 (shippables)
+				StockpileImagesAppend = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[11]) for item in items.data if (str(item[9]) == "8" and str(item[19]) == "0") or (str(item[9]) == "9" and str(item[19]) == "0")]
 				StockpileImages.extend(StockpileImagesAppend)
+				print(StockpileImages)
 				#print("Checking for:", StockpileImages)
 			elif FoundStockpileType in SingleList:
 				print("Single Type")
@@ -1081,7 +1084,7 @@ TableFrame = ttk.Frame(TableCanvas)
 SettingsFrame = ttk.Frame(SettingsCanvas)
 
 # create_window height for Filter canvas should be roughly: is below
-FilterCanvas.create_window((0, 0), window=FilterFrame, anchor="nw", height="2024p", width="550p")
+FilterCanvas.create_window((0, 0), window=FilterFrame, anchor="nw", height="2071p", width="550p")
 TableCanvas.create_window((0, 0), window=TableFrame, anchor="nw", height="410p", width="402p")
 SettingsCanvas.create_window((0, 0), window=SettingsFrame, anchor="nw", height="500p", width="402p")
 
@@ -1370,6 +1373,9 @@ def CreateButtons(self):
 	QuitButton = ttk.Button(FilterFrame, text="Quit", style="EnabledButton.TButton", command=lambda: StockpilerWindow.quit())
 	QuitButton.grid(row=500, column=0, columnspan=10, sticky="NSEW")
 	FilterFrame.update()
+	#widget_x1, widget_y1 = QuitButton.winfo_rootx(), QuitButton.winfo_rooty()
+	#print(widget_x1, widget_y1, StockpilerWindow.winfo_rootx(), StockpilerWindow.winfo_rooty())
+	#print(widget_y1 - StockpilerWindow.winfo_rooty() - 685)
 	try:
 		print("create_window height for Filter canvas should be roughly:", str(btn.winfo_y()-505))
 	except Exception as e:
