@@ -863,7 +863,7 @@ def ItemScan(screen, garbage):
 					response = r.json()
 
 					storemanBotPrefix = "[Storeman Bot Link]: "
-					if (response["success"]): print(storemanBotPrefix + "Scan of " + ThisStockpileName + " sent to server successfully")
+					if (response["success"]): print(storemanBotPrefix + "Scan of " + ThisStockpileName + " has been received by the server successfully. Your logisitics channel will be updated shortly if you have set one")
 					elif (response["error"] == "empty-stockpile-name"): print(storemanBotPrefix + "Stockpile name is invalid. Perhaps the stockpile name was not detected or empty.")
 					elif (response["error"] == "invalid-password"): print(storemanBotPrefix + "Invalid password, check that the Bot Password is correct.")
 					elif (response["error"] == "invalid-guild-id"): print(storemanBotPrefix + "The Guild ID entered was not found on the Storeman Bot server. Please check that it is correct.")
