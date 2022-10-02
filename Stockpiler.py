@@ -189,6 +189,8 @@ with open('ItemNumbering.csv', 'rt') as f_input:
 	csv_input = csv.reader(f_input, delimiter=',')
 	# Skips first line
 	header = next(csv_input)
+	# Skips reserved line
+	reserved = next(csv_input)
 	for rowdata in csv_input:
 		items.data.append(rowdata)
 		if os.path.exists("UI//" + str(rowdata[0]) + ".png"):
