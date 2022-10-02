@@ -192,7 +192,6 @@ with open('ItemNumbering.csv', 'rt') as f_input:
 	for rowdata in csv_input:
 		items.data.append(rowdata)
 		if os.path.exists("UI//" + str(rowdata[0]) + ".png"):
-			print("UI//" + str(rowdata[0]) + ".png")
 			items.UIimages.append((rowdata[0], "UI//" + str(rowdata[0]) + ".png"))
 
 # Load filter values into new array
