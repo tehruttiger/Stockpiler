@@ -6,3 +6,4 @@ pynput==1.7.6
 requests==2.28.1
 tksheet==5.4.1
 xlsxwriter==3.0.3
+pypiwin32==223
