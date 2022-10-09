@@ -3,3 +3,4 @@ logs
 Stockpiles
 Stockpiler.build
 Stockpiler.dist
+.venv
