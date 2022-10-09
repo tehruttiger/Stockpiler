@@ -80,7 +80,7 @@ for xfile in files:
 			os.remove(str(file_path) + xfile)
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
-Version = "1.4.1b"
+Version = "1.4.2b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -717,11 +717,11 @@ def ItemScan(screen, garbage):
 				#print(item)
 				#print(items.data[1])
 				StockpileImages = [(str(item[0]), folder + str(item[0]) + "C.png", (item[3] + " Crate"), item[8], item[12]) for item in items.data if str(item[19]) == "0"]
-				print(StockpileImages)
+				#print(StockpileImages)
 				# Grab all the individual vehicles and shippables, make sure the two if's are the right category.  Was incorrectly set to 7 (uniforms) and 8 (vehicles) instead of 8 (vecicles) and 9 (shippables)
 				StockpileImagesAppend = [(str(item[0]), folder + str(item[0]) + ".png", item[3], item[8], item[11]) for item in items.data if (str(item[9]) == "8" and str(item[19]) == "0") or (str(item[9]) == "9" and str(item[19]) == "0")]
 				StockpileImages.extend(StockpileImagesAppend)
-				print(StockpileImages)
+				#print(StockpileImages)
 				#print("Checking for:", StockpileImages)
 			elif FoundStockpileType in SingleList:
 				print("Single Type")
