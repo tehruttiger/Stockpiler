@@ -366,7 +366,7 @@ def GrabStockpileImage():
 			pass
 		else:
 			stockpile = cv2.cvtColor(screen, cv2.COLOR_BGR2RGB)
-			stockpile = stockpile[int(y) - 32:int(y) + 1080, int(x) - 11:int(x) + 389]
+			stockpile = stockpile[int(y) - 32:int(y) + 1080, int(x) - 11:int(x) + 589]
 			imagename = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
 			fullimagename = 'test_' + imagename + '.png'
 			cv2.imwrite(fullimagename, stockpile)
@@ -596,7 +596,7 @@ def ItemScan(screen, garbage):
 	if y == x == 0:
 		stockpile = screen
 	else:
-		stockpile = screen[y - 32:1080, x - 11:x + 389]
+		stockpile = screen[y - 32:1080, x - 11:x + 589]
 
 	if menu.debug.get() == 1:
 		cv2.imshow('Stockpile in this image in ItemScan?', stockpile)
