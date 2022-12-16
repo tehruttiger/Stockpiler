@@ -80,7 +80,7 @@ for xfile in files:
 			os.remove(str(file_path) + xfile)
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
-Version = "1.4.2b"
+Version = "1.4.3b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -859,15 +859,18 @@ def ItemScan(screen, garbage):
 				# print("Bot Data", data)
 
 				try:
-					r = requests.post(menu.BotHost.get(), json=requestObj)
+					r = requests.post(menu.BotHost.get(), json=requestObj, timeout=10)
 					response = r.json()
-
+					
+					print("=============== [Storeman Bot Link: Sending to Server] ===============")
 					storemanBotPrefix = "[Storeman Bot Link]: "
-					if (response["success"]): print(storemanBotPrefix + "Scan of " + ThisStockpileName + " has been received by the server successfully. Your logisitics channel will be updated shortly if you have set one")
+					if (response["success"]): print(storemanBotPrefix + "Scan of " + ThisStockpileName + " has been received by the server successfully. Your logisitics channel will be updated shortly if you have set one (you can use /spstatus on your server for instant updates")
 					elif (response["error"] == "empty-stockpile-name"): print(storemanBotPrefix + "Stockpile name is invalid. Perhaps the stockpile name was not detected or empty.")
 					elif (response["error"] == "invalid-password"): print(storemanBotPrefix + "Invalid password, check that the Bot Password is correct.")
 					elif (response["error"] == "invalid-guild-id"): print(storemanBotPrefix + "The Guild ID entered was not found on the Storeman Bot server. Please check that it is correct.")
 					else: print(storemanBotPrefix + "An unhandled error occured: " + response["error"])
+
+					print("=============== [Storeman Bot Link: End of Request] ===============")
 				except Exception as e:
 					print("There was an error connecting to the Bot")
 					print("Exception: ", e)
