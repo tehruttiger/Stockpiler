@@ -92,7 +92,7 @@
 90,X,X,Bunker Supplies,Bsups,,,Both,Resource,6,4,1,1,150,75,0,0,0,0
 91,X,X,Basic Materials,Bmats,,,Both,Resource,6,5,1,1,100,,,,,
 92,X,X,Explosive Materials,Emats,,,Both,Resource,6,6,1,1,20,,,,,
-93,X,X,Garrison Supplies,Gsups,,,Both,Resource,6,7,1,1,150,75,0,0,0,0
+93,X,X,Maintenance supplies,Msupps,,,Both,Resource,6,7,1,1,150,75,0,0,0,0
 94,X,X,Heavy Explosive Materials,Hemats,,,Both,Resource,6,8,1,1,20,,,,,
 95,X,X,Iron Alloy,,,,Both,Resource,6,9,1,1,20,,,,,
 96,X,X,Refined Materials,Rmats,,,Both,Resource,6,10,1,1,20,,,,,
@@ -268,3 +268,13 @@
 269,,,Rycker 4/3-F Wasp Nest,,,,Warden,Vehicle,8,88,1,1,,,,,,
 270,,,Niska-Rycker Mk. IX Skycaller,,,,Warden,Vehicle,8,89,1,1,,,,,,
 271,,,"H-19 ""Vulcan""",,,,Colonial,Vehicle,8,90,1,1,,,,,,
+272,,,Havoc Charge,,,,Both,Utility,4,91,1,1,,,,,,
+273,,,Havoc Charge Detonator,,,,Both,Utility,4,92,1,1,,,,,,
+274,,,Mounted Fissura gd.I,,,,Colonial,Heavy Ammunition,3,93,1,1,,,,,,
+275,,,Silverhand Lordscar - Mk. X,,,,Warden,Vehicle,8,94,1,1,,,,,,
+276,,,O'Brien V.190 Knave,,,,Warden,Vehicle,8,95,1,1,,,,,,
+277,,,Dunne Dousing Engine 3r,,,,Warden,Vehicle,8,96,1,1,,,,,,
+278,,,"R-12b ""Salva""",,,,Colonial,Vehicle,1,97,1,1,,,,,,
+279,,,Catena rt.IV Auto-Rifle,,,,Colonial,Small Arms,15,97,1,1,,,,,,
+280,,,King Jester - Mk.I,,,,Warden,Vehicle,8,97,1,1,,,,,,
+281,,,"T13 ""Deioneus"" Rocket Battery",,,,Warden,Vehicle,8,97,1,1,,,,,,
