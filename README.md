@@ -56,6 +56,12 @@ Compiled versions compiled to EXE using Nuitka
 
 Nuitka was a giant pain in the butt to get working the first time around and I honestly don't remember all the steps I took to get it to where I have it now.  If you're able to work your way through that, you can use either compile string below.
 
+You can now use a build script:
+```
+./build.sh (Linux)
+.\build.bat (Windows)
+```
+
 Compile string (without console window) is:
 `python -m nuitka --mingw64 --plugin-enable=tk-inter --plugin-enable=numpy --standalone --windows-disable-console --follow-imports --show-progress Stockpiler.py`
 
