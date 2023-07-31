@@ -72,8 +72,8 @@ Onefile - One Directory
 Console Window - Console Based (helpful for troubleshooting, please submit any errors you get as Issues here on GitHub)
 
 Additional Files - Add Folder - add the CheckImages, Stockpiles and UI folders
-```
 
 Additional Files - Add Files - add the Filter.csv, ItemNumbering.csv and Bmat.ico files
 
 Advanced - collect-all - pynput
+```
