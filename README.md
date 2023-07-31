@@ -13,7 +13,7 @@ Current Features:
 - Ability to set a filter to ignore unwanted items
 - Toggles to turn on/off faction-specific items and entire categories of items in filter
 - Settings can be saved and are automatically loaded at launch
-- Export to a [Stockpile Discord Tot](https://github.com/Tkaixiang/Storeman-Bot)
+- Export to a [Stockpile Discord Bot](https://github.com/Tkaixiang/Storeman-Bot)
 
 [❗❗❗] Stockpiler works **only** on `1920x1080` or `2560x1080` **without modded icons**. There is *experimental support* for other resolutions and modded icons (see _Learning Mode_ below), but this has shown to still be **very** buggy.
 
