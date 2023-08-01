@@ -4,3 +4,4 @@ Stockpiles
 Stockpiler.build
 Stockpiler.dist
 .venv
+*.zip

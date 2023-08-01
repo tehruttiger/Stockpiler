@@ -35,6 +35,10 @@ global IndOrCrateWindow
 global FilterFrame
 global LastStockpile
 global tempicon
+foxhole_height = 1080
+foxhole_width = 1920
+width_ratio = 1.0
+height_ratio = 1.0
 
 class items(object):
 	data = []
@@ -90,14 +94,7 @@ StockpilerWindow.geometry("537x600")
 StockpilerWindow.resizable(width=False, height=False)
 StockpilerWindow.iconbitmap(default='Bmat.ico')
 
-window = gw.getWindowsWithTitle("War")[0]
-foxhole_height = window.height - 39
-foxhole_width = window.width - 16
 
-print(f"Foxhole screen size is: {foxhole_width}x{foxhole_height}")
-width_ratio = foxhole_width / 1920 
-height_ratio = foxhole_height / 1080
-print(f"Screen Ratio to original 1920x1080: {width_ratio}x{height_ratio}")
 
 class menu(object):
 	iconrow = 1
@@ -521,11 +518,26 @@ def SearchImage(Pass, LearnImage):
 	global PopupWindow
 	global CurrentStockpileName
 	global threadnum
+	global foxhole_height
+	global foxhole_width
+	global height_ratio
+	global width_ratio
 
 	if Pass != "":
 		screen = LearnImage
 	else:
 		try:
+			window = gw.getWindowsWithTitle("War")
+			if (len(window) > 0):
+				foxhole_height = window[0].height - 39
+				foxhole_width = window[0].width - 16
+			else:
+				print("[Warning: !!!] Foxhole window not detected")
+
+			print(f"Foxhole screen size is: {foxhole_width}x{foxhole_height}")
+			width_ratio = foxhole_width / 1920 
+			height_ratio = foxhole_height / 1080
+			print(f"Screen Ratio to original 1920x1080: {width_ratio}x{height_ratio}")
 			# OKAY, so you'll have to grab the whole screen, detect that thing in the upper left, then use that as a basis
 			# for cropping that full screenshot down to just the foxhole window
 			screen = np.array(ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True))
@@ -566,7 +578,6 @@ def SearchImage(Pass, LearnImage):
 					statex = 0
 				
 				screen = screen[int(statey):int(statey + (1079 * height_ratio)), int(statex):int(statex + (1919 * width_ratio))]
-				#cv2.imwrite('output.jpg', screen)
 
 				print("It thinks it found the window position in SearchImage and is grabbing location: X:", str(statex),
 					  " Y:", str(statey))
@@ -840,7 +851,6 @@ def ItemScan(screen, garbage):
 								# Found a thing, now find amount
 								numberlist = []
 								numberarea = stockpile[int(y+8*bestScale):int(y+28*bestScale), int(x+45*bestScale):int(x+87*bestScale)]
-								cv2.imwrite("numberareas/" + image[0] + "numberarea.jpg", numberarea)
 								for number in items.numbers:
 									# Clip the area where the stock number will be
 									resnum = cv2.matchTemplate(numberarea, numbers[number[1]], cv2.TM_CCOEFF_NORMED)
