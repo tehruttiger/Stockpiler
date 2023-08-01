@@ -1,8 +1,9 @@
 Config.txt
 logs
 Stockpiles
+CheckImages/Modded
 Stockpiler.build
 Stockpiler.dist
 .venv
 .vs
-env1
+env*
