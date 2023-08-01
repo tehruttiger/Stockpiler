@@ -299,6 +299,10 @@ def GrabStockpileImage():
 	global counter
 	global bestTextScale
 	global bestIconScale
+	global foxhole_height
+	global foxhole_width
+	global width_ratio
+	global height_ratio
 	# OKAY, so you'll have to grab the whole screen, detect that thing in the upper left, then use that as a basis
 	# for cropping that full screenshot down to just the foxhole window
 
@@ -325,13 +329,12 @@ def GrabStockpileImage():
 	best_score = None
 	res = None
 
-	global bestTextScale
-	if (foxhole_height == 1080): bestTextScale = 1.0
-	elif (not bestTextScale):
-		if (menu.experimentalResizing.get() == 1):
+	if (menu.experimentalResizing.get() == 1):
+		if (foxhole_height == 1080): bestTextScale = 1.0
+		elif (not bestTextScale):
 			best_score, bestTextScale, res = matchTemplateBestScale(screen, numbox, numtimes=20)
-		else:
-			bestTextScale = 1.0
+	else:
+		bestTextScale = 1.0
 	
 	if (not best_score):
 		if (menu.experimentalResizing.get() == 1): numbox = cv2.resize(numbox, (int(numbox.shape[1]*bestTextScale), int(numbox.shape[0]*bestTextScale)))
@@ -576,6 +579,7 @@ def SearchImage(Pass, LearnImage):
 	global foxhole_width
 	global height_ratio
 	global width_ratio
+	global bestTextScale
 	screen = None
 
 	if Pass != "":
@@ -607,13 +611,12 @@ def SearchImage(Pass, LearnImage):
 			best_score = None
 			res = None
 
-			global bestTextScale
-			if (foxhole_height == 1080): bestTextScale = 1.0
-			elif (not bestTextScale):
-				if (menu.experimentalResizing.get() == 1):
+			if (menu.experimentalResizing.get() == 1):
+				if (foxhole_height == 1080): bestTextScale = 1.0
+				elif (not bestTextScale):
 					best_score, bestTextScale, res = matchTemplateBestScale(screen, numbox, numtimes=20)
-				else:
-					bestTextScale = 1.0
+			else:
+				bestTextScale = 1.0
 			
 			if (not best_score):
 				if (menu.experimentalResizing.get() == 1): numbox = cv2.resize(numbox, (int(numbox.shape[1]*bestTextScale), int(numbox.shape[0]*bestTextScale)))
@@ -813,6 +816,7 @@ def ItemScan(screen, garbage):
 				print("Found the Tab")
 				y, x = np.unravel_index(res.argmax(), res.shape)
 				# Seaports and Storage Depots have the potential to have named stockpiles, so grab the name
+				print("bestTextScale:" + str(bestTextScale))
 				stockpilename = stockpile[int(y - 5*bestTextScale):int(y + 17*bestTextScale), int(x - 150*bestTextScale):int(x - 8*bestTextScale)]
 				# Make a list of all current stockpile name images
 				currentstockpiles = glob.glob("Stockpiles/*.png")
