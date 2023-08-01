@@ -13,7 +13,7 @@ Current Features:
 - Ability to set a filter to ignore unwanted items
 - Toggles to turn on/off faction-specific items and entire categories of items in filter
 - Settings can be saved and are automatically loaded at launch
-- Export to a [Stockpile Discord Tot](https://github.com/Tkaixiang/Storeman-Bot)
+- Export to a [Stockpile Discord Bot](https://github.com/Tkaixiang/Storeman-Bot)
 
 [❗❗❗] Stockpiler works **only** on `1920x1080` or `2560x1080` **without modded icons**. There is *experimental support* for other resolutions and modded icons (see _Learning Mode_ below), but this has shown to still be **very** buggy.
 
@@ -51,10 +51,18 @@ My Discord is `ruttiger#6198`
 
 Special thanks to **nikthechampiongr**, **Catalinuru**, **AceAstra** and **Drougavis** for their help testing and hunting down missing icons.  Also a **Tkaixiang** for coding his amazing Storeman Bot that greatly expands the utility of the app.
 
-## Compiling Stockpiler
+## Compiling Stockpiler to an .exe
 Compiled versions compiled to EXE using Nuitka
 
 Nuitka was a giant pain in the butt to get working the first time around and I honestly don't remember all the steps I took to get it to where I have it now.  If you're able to work your way through that, you can use either compile string below.
+
+Command to build:
+```
+./build.sh (Linux)
+.\build.bat (Windows)
+```
+
+### Manual Commands
 
 Compile string (without console window) is:
 `python -m nuitka --mingw64 --plugin-enable=tk-inter --plugin-enable=numpy --standalone --windows-disable-console --follow-imports --show-progress Stockpiler.py`
