@@ -85,7 +85,7 @@ for xfile in files:
 			os.remove(str(file_path) + xfile)
 			logging.info(str(datetime.datetime.now()) + " " + str(xfile) + " log file deleted")
 
-Version = "1.5b"
+Version = "1.51b"
 
 StockpilerWindow = Tk()
 StockpilerWindow.title('Stockpiler ' + Version)
@@ -816,7 +816,7 @@ def ItemScan(screen, garbage):
 				print("Found the Tab")
 				y, x = np.unravel_index(res.argmax(), res.shape)
 				# Seaports and Storage Depots have the potential to have named stockpiles, so grab the name
-				print("bestTextScale:" + str(bestTextScale))
+				#print("bestTextScale:" + str(bestTextScale))
 				stockpilename = stockpile[int(y - 5*bestTextScale):int(y + 17*bestTextScale), int(x - 150*bestTextScale):int(x - 8*bestTextScale)]
 				# Make a list of all current stockpile name images
 				currentstockpiles = glob.glob("Stockpiles/*.png")
