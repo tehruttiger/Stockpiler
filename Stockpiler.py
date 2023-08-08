@@ -1830,7 +1830,7 @@ def IndividualOrCrate(num, image):
 	BigIconImage = ttk.Label(IndOrCrateFrame, image=tkimagebig)
 	BigIconImage.image = image
 	BigIconImage.grid(row=2, column=0)
-	UIimage = PhotoImage(file="CheckImages/Default/" + str(num) + ".png")
+	UIimage = PhotoImage(file="Compare/" + str(num) + ".png")
 	SelectedImage = ttk.Label(IndOrCrateFrame, image=UIimage)
 	SelectedImage.image = UIimage
 	SelectedImage.grid(row=1, column=1, rowspan=2)
