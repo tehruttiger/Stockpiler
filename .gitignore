@@ -7,3 +7,4 @@ Stockpiler.dist
 .venv
 .vs
 env*
+*.zip
