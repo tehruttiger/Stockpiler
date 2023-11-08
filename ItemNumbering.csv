@@ -49,8 +49,8 @@
 47,X,X,Ignifist 30,,Anti-Tank RPG,,Colonial,Heavy Arms,2,13,1,1,15,60,50,0,0,0
 48,X,X,Mounted Bonesaw MK.3,,Anti-Tank RPG,A.T.R.P.G. Indirect Shell,Warden,Heavy Arms,2,14,1,1,5,200,0,0,0,0
 49,X,X,Green Ash Grenade,,Gas Grenade,,Both,Heavy Arms,2,15,1,1,10,140,0,0,0,0
-50,X,X,Bombastone Grenade,,Grenade,,Colonial,Heavy Arms,2,16,1,1,25,100,20,0,0,0
-51,X,X,A3 Harpa Fragmentation Grenade,,Grenade,,Warden,Heavy Arms,2,17,1,1,20,100,20,0,0,0
+50,X,X,Bombastone Grenade,,Grenade,,Colonial,Heavy Arms,1,35,1,1,25,100,20,0,0,0
+51,X,X,A3 Harpa Fragmentation Grenade,,Grenade,,Warden,Heavy Arms,1,36,1,1,20,100,20,0,0,0
 52,X,X,150mm,,,150mm,Both,Heavy Ammunition,3,1,1,1,5,120,0,0,10,0
 53,X,X,Mammon 91-b,,HE Grenade,,Both,Heavy Arms,2,18,1,1,20,100,10,0,0,0
 54,X,X,Daucus isg.III,,Infantry Support Gun,30mm,Colonial,Heavy Arms,2,19,1,1,5,150,0,0,0,0
@@ -209,7 +209,7 @@
 210,X,X,Lamentum mm.IV,,Mounted Machinegun,12.7mm,Colonial,Heavy Arms,2,24,1,1,5,,,,,
 211,X,X,"""Typhon"" ra.XII",,Mounted Anti-Tank Rifle,20mm,Colonial,Heavy Arms,2,26,1,1,5,,,,,
 212,X,X,Culter Foebreaker,,,,Warden,Heavy Arms,2,28,1,1,5,,,,,
-213,-,-,Ahti Model 2,Pistol,,8mm,Warden,Small Arms,1,35,0,0,,,,,,
+213,-,-,Ahti Model 2,Pistol,,8mm,Warden,Small Arms,1,37,0,0,,,,,,
 214,X,X,Malone Ratcatcher Mk. 1,,,,Warden,Heavy Arms,2,29,1,1,5,,,,,
 215,X,-,Copper,,,,Both,Resource,6,19,1,0,,,,,,
 216,X,X,Copper Alloy,,,,Both,Resource,6,20,1,1,,,,,,
@@ -275,8 +275,32 @@
 276,,,O'Brien V.190 Knave,,,,Warden,Vehicle,8,92,1,1,,,,,,
 277,,,Dunne Dousing Engine 3r,,,,Warden,Vehicle,8,93,1,1,,,,,,
 278,,,"R-12b ""Salva""",,,,Colonial,Vehicle,8,94,1,1,,,,,,
-279,,,Catena rt.IV Auto-Rifle,,,,Colonial,Small Arms,1,36,1,1,,,,,,
+279,,,Catena rt.IV Auto-Rifle,,,,Colonial,Small Arms,1,38,1,1,,,,,,
 280,,,King Jester - Mk.I,,,,Warden,Vehicle,8,95,1,1,,,,,,
 281,,,"T13 ""Deioneus"" Rocket Battery",,,,Warden,Vehicle,8,96,1,1,,,,,,
-282,,,No.2B Hawthorne,,,,Colonial,Small Arms,1,37,1,1,,,,,,
+282,,,No.2B Hawthorne,,,,Colonial,Small Arms,1,39,1,1,,,,,,
 283,,,BMS - Fabricator,,,,Both,Vehicle,8,97,1,1,,,,,,
+284,,,E680-S Rudder Lock,,,,Both,Utility,4,26,1,1,,,,,,
+285,,,Unstable Substances,,,,Both,Resource,6,39,1,1,,,,,,
+286,,,Thermal Shielding,,,,Both,Resource,6,40,1,1,,,,,,
+287,,,Rare Alloys,,,,Both,Resource,6,41,1,1,,,,,,
+288,,,Armoured Fighting Tractor,,,,Both,Vehicle,8,98,1,1,,,,,,
+289,,,Storm Tank,,,,Both,Vehicle,8,99,1,1,,,,,,
+290,,,PL-1 Phalanx,,,,Both,Vehicle,8,100,1,1,,,,,,
+291,,,Staff Car,,,,Both,Vehicle,8,101,1,1,,,,,,
+292,,,Repurposed Truck,,,,Both,Vehicle,8,102,1,1,,,,,,
+293,,,Rooster – Junkwagon,,,,Both,Vehicle,8,103,1,1,,,,,,
+294,,,Rooster – Lamploader,,,,Both,Vehicle,8,104,1,0,,,,,,
+295,,,Rooster – Tumblebox,,,,Both,Vehicle,8,105,1,0,,,,,,
+296,,,GA-6 “Cestus”,,,,Colonial,Vehicle,8,106,1,0,,,,,,
+297,,,Duncan’s Coin 20mm,,,,Warden,Vehicle,8,107,1,0,,,,,,
+298,,,Niska Mk. III Scar Twin,,,,Warden,Vehicle,8,108,1,0,,,,,,
+299,,,AU-A150 Taurine Rigger,,,,Colonial,Vehicle,8,109,1,0,,,,,,
+300,,,Cnute Cliffwrest,,,,Warden,Vehicle,8,110,1,0,,,,,,
+301,,,AOE-9 Rocket Booster,,,,Both,Shippables,9,17,1,0,,,,,,
+302,,,AOE-9 Rocket Body,,,,Both,Shippables,9,18,1,0,,,,,,
+303,,,AOE-9 Rocket Warhead,,,,Both,Shippables,9,19,1,0,,,,,,
+304,,,Naval Hull Segments,,,,Both,Shippables,9,20,1,0,,,,,,
+305,,,Naval Shell Plating,,,,Both,Shippables,9,21,1,0,,,,,,
+306,,,Naval Turbine Components,,,,Both,Shippables,9,22,1,0,,,,,,
+307,,,Model-7 “Evie”,,,,Both,Heavy Ammunition,3,13,1,1,,,,,,
