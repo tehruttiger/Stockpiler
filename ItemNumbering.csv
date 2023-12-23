@@ -48,7 +48,7 @@
 46,X,X,BF5 White Ash Flask Grenade,,Anti-Tank Grenade,,Both,Heavy Arms,2,12,1,1,15,100,50,0,0,0
 47,X,X,Ignifist 30,,Anti-Tank RPG,,Colonial,Heavy Arms,2,13,1,1,15,60,50,0,0,0
 48,X,X,Mounted Bonesaw MK.3,,Anti-Tank RPG,A.T.R.P.G. Indirect Shell,Warden,Heavy Arms,2,14,1,1,5,200,0,0,0,0
-49,X,X,Green Ash Grenade,,Gas Grenade,,Both,Small Arms,2,15,1,1,10,140,0,0,0,0
+49,X,X,Green Ash Grenade,,Gas Grenade,,Both,Small Arms,1,38,1,1,10,140,0,0,0,0
 50,X,X,Bombastone Grenade,,Grenade,,Colonial,Small Arms,1,35,1,1,25,100,20,0,0,0
 51,X,X,A3 Harpa Fragmentation Grenade,,Grenade,,Warden,Heavy Arms,1,36,1,1,20,100,20,0,0,0
 52,X,X,150mm,,,150mm,Both,Heavy Ammunition,3,1,1,1,5,120,0,0,10,0
@@ -275,7 +275,7 @@
 276,,,O'Brien V.190 Knave,,,,Warden,Vehicle,8,92,1,1,,,,,,
 277,,,Dunne Dousing Engine 3r,,,,Warden,Vehicle,8,93,1,1,,,,,,
 278,,,"R-12b ""Salva""",,,,Colonial,Vehicle,8,94,1,1,,,,,,
-279,,,Catena rt.IV Auto-Rifle,,,,Colonial,Small Arms,1,38,1,1,,,,,,
+279,,,Catena rt.IV Auto-Rifle,,,,Colonial,Small Arms,1,39,1,1,,,,,,
 280,,,King Jester - Mk.I,,,,Warden,Vehicle,8,95,1,1,,,,,,
 281,,,"T13 ""Deioneus"" Rocket Battery",,,,Warden,Vehicle,8,96,1,1,,,,,,
 282,,,No.2B Hawthorne,,,,Colonial,Small Arms,1,39,1,1,,,,,,
