@@ -50,7 +50,7 @@
 48,X,X,Mounted Bonesaw MK.3,,Anti-Tank RPG,A.T.R.P.G. Indirect Shell,Warden,Heavy Arms,2,14,1,1,5,200,0,0,0,0
 49,X,X,Green Ash Grenade,,Gas Grenade,,Both,Small Arms,1,38,1,1,10,140,0,0,0,0
 50,X,X,Bombastone Grenade,,Grenade,,Colonial,Small Arms,1,35,1,1,25,100,20,0,0,0
-51,X,X,A3 Harpa Fragmentation Grenade,,Grenade,,Warden,Heavy Arms,1,36,1,1,20,100,20,0,0,0
+51,X,X,A3 Harpa Fragmentation Grenade,,Grenade,,Warden,Small Arms,1,36,1,1,20,100,20,0,0,0
 52,X,X,150mm,,,150mm,Both,Heavy Ammunition,3,1,1,1,5,120,0,0,10,0
 53,X,X,Mammon 91-b,,HE Grenade,,Both,Heavy Arms,2,18,1,1,20,100,10,0,0,0
 54,X,X,Daucus isg.III,,Infantry Support Gun,30mm,Colonial,Heavy Arms,2,19,1,1,5,150,0,0,0,0
@@ -89,7 +89,7 @@
 87,X,X,Diesel,Diesel,,,Both,Resource,6,1,1,1,1,,,,,
 88,X,X,Petrol,Petrol,,,Both,Resource,6,2,1,1,1,,,,,
 89,X,X,Aluminum Alloy,,,,Both,Resource,6,3,1,1,20,,,,,
-90,X,X,Bunker Supplies,Bsups,,,Both,Resource,6,4,1,1,150,75,0,0,0,0
+,,,,,,,,,,,,,,,,,,
 91,X,X,Basic Materials,Bmats,,,Both,Resource,6,5,1,1,100,,,,,
 92,X,X,Explosive Materials,Emats,,,Both,Resource,6,6,1,1,20,,,,,
 93,X,X,Maintenance supplies,Msupps,,,Both,Resource,6,7,1,1,150,75,0,0,0,0
@@ -146,7 +146,7 @@
 144,X,X,BMS - Packmule Flatbed,,Flatbed Truck,,Both,Vehicle,8,27,1,1,,,,,,
 145,X,X,BMS - Ironship,,Freighter,,Both,Vehicle,8,28,1,1,,,,,,
 146,X,X,"Type C - ""Charon""",,Gunboat,,Colonial,Vehicle,8,29,1,1,3,,,,,
-147,X,X,74c-2 Ronan Meteora Gunship,,Gunboat,,Warden,Vehicle,8,30,1,1,3,,,,,
+,,,,,,,,,,,,,,,,,,
 148,X,X,74b-1 Ronan Gunship,,Gunboat,,Warden,Vehicle,8,31,1,1,3,,,,,
 149,X,X,"HH-d ""Peltast""",,Half-Track,,Colonial,Vehicle,8,32,1,1,3,,,,,
 150,X,X,"HH-a ""Javelin""",,Half-Track,,Colonial,Vehicle,8,33,1,1,3,,,,,
@@ -304,3 +304,4 @@
 305,,,Naval Shell Plating,,,,Both,Shippables,9,21,1,0,,,,,,
 306,,,Naval Turbine Components,,,,Both,Shippables,9,22,1,0,,,,,,
 307,,,Model-7 Evie,,,,Both,Heavy Ammunition,3,13,1,1,,,,,,
+308,,,Wind Sock,,,,Both,Utility,4,27,1,1,,,,,,
