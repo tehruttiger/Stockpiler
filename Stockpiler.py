@@ -826,7 +826,7 @@ def ItemScan(screen, garbage):
 					stockpilelabel = cv2.imread(image, cv2.IMREAD_GRAYSCALE)
 					if not image.endswith("image.png"):
 						res = cv2.matchTemplate(stockpilename, stockpilelabel, cv2.TM_CCOEFF_NORMED)
-						threshold = .95
+						threshold = .97
 						flag = False
 						if np.amax(res) > threshold:
 							# Named stockpile is one already seen
