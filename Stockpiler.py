@@ -1351,16 +1351,13 @@ def CreateButtons(self):
 		folder = "CheckImages//Default//"
 	else:
 		folder = "CheckImages//Modded//"
-	for i in range(len(items.data)+1):
-		for x in items.data:
-			if x[0] == str(i):
-				if os.path.exists(folder + str(i) + ".png") or os.path.exists(folder + str(i) + "C.png"):
-					try:
-						menu.icons.append((i, folder + str(i) + ".png", int(x[9]), int(x[10]), int(x[19]), str(x[3]), str(x[8])))
-					except Exception as e:
-						print("Exception: ", e)
-						print(x[17])
-						print("oops", i)
+	for x in items.data:
+			if os.path.exists(folder + x[0] + ".png") or os.path.exists(folder + x[0] + "C.png"):
+				try:
+					menu.icons.append((x[0], folder + x[0] + ".png", int(x[9]), int(x[10]), int(x[19]), str(x[3]), str(x[8])))
+				except Exception as e:
+					print("Exception: ", e)
+					print(x[17])
 	sortedicons = sorted(menu.icons, key=lambda x: (x[2], x[3]))
 
 	SettingsFrame.columnconfigure(0, weight=1)
